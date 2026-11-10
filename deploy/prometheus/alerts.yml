@@ -1,0 +1,97 @@
+# Alerting rules for the GTM crawler (spec section 26). Load with `rule_files:`.
+# Scrape the workers (worker.metrics_port) and the API (/metrics) as job "gtm-worker"
+# and "gtm-api". Thresholds are starting points: tune them to your traffic.
+# Keep every `expr` on one line: tests/test_quality_phase14.py checks its metric names.
+groups:
+  - name: gtm-crawler
+    rules:
+      - alert: CrawlQueueStarvation
+        # Jobs wait but none runs: no worker is taking work.
+        expr: max(queue_jobs{state="queued"}) > 0 unless max(queue_jobs{state=~"running|finalizing"}) > 0
+        for: 10m
+        labels: {severity: page}
+        annotations:
+          summary: "{{ $value }} crawl jobs queued and none running for 10 minutes"
+
+      - alert: CrawlWorkerStale
+        # A worker process answers scrapes but has not polled or renewed a lease.
+        expr: time() - worker_last_seen_timestamp_seconds > 300
+        for: 5m
+        labels: {severity: page}
+        annotations:
+          summary: "Worker {{ $labels.instance }} has not polled or heartbeated for 5 minutes"
+
+      - alert: CrawlWorkerCrashes
+        # A job's lease ran out: its worker died or hung, and another worker reclaimed it.
+        expr: sum(increase(job_leases_expired_total[15m])) > 0
+        labels: {severity: warn}
+        annotations:
+          summary: "{{ $value }} crawl jobs reclaimed after lease expiry in 15 minutes"
+
+      - alert: CrawlJobsAbandoned
+        # A job was claimed worker.max_job_attempts times without finishing.
+        expr: sum(increase(dead_letter_items_total{entity="job"}[30m])) > 0
+        labels: {severity: page}
+        annotations:
+          summary: "Crawl jobs dead-lettered after repeated worker crashes"
+
+      - alert: CrawlHttpErrorSpike
+        expr: sum(rate(http_requests_total{outcome!~"2xx|3xx"}[10m])) / sum(rate(http_requests_total[10m])) > 0.3
+        for: 10m
+        labels: {severity: warn}
+        annotations:
+          summary: "{{ $value | humanizePercentage }} of fetches failed over 10 minutes"
+
+      - alert: CrawlDeadLetterGrowth
+        expr: sum(increase(dead_letter_items_total[30m])) > 20
+        labels: {severity: warn}
+        annotations:
+          summary: "{{ $value }} items dead-lettered in 30 minutes"
+
+      - alert: DatabaseSlowQueries
+        expr: histogram_quantile(0.99, sum by (le) (rate(db_query_duration_seconds_bucket[5m]))) > 0.5
+        for: 10m
+        labels: {severity: warn}
+        annotations:
+          summary: "Database p99 statement latency {{ $value }}s"
+
+      - alert: DatabaseUnreachable
+        expr: min(database_up) == 0
+        for: 2m
+        labels: {severity: page}
+        annotations:
+          summary: "A crawler process cannot query PostgreSQL"
+
+      - alert: BrowserMemoryPressure
+        # Linux only (read from /proc). Compare with the container's memory limit.
+        expr: max(browser_processes_resident_memory_bytes) > 2e9
+        for: 5m
+        labels: {severity: warn}
+        annotations:
+          summary: "Chromium and its driver use {{ $value | humanize1024 }}B on {{ $labels.instance }}"
+
+      - alert: BrowserCrashes
+        expr: sum(increase(browser_restarts_total{reason="crash"}[15m])) > 3
+        labels: {severity: warn}
+        annotations:
+          summary: "Chromium crashed {{ $value }} times in 15 minutes"
+
+      - alert: SearchProviderOutage
+        # A search provider's circuit opened: it failed repeatedly.
+        expr: sum by (provider) (increase(search_requests_total{outcome=~"error|circuit_open"}[15m])) > 0 and sum by (provider) (increase(search_requests_total{outcome="ok"}[15m])) == 0
+        labels: {severity: warn}
+        annotations:
+          summary: "Search provider {{ $labels.provider }} failing, no success in 15 minutes"
+
+      - alert: DependencyCircuitOpen
+        expr: sum by (breaker) (increase(circuit_opened_total{breaker=~"search|browser"}[15m])) > 0
+        labels: {severity: warn}
+        annotations:
+          summary: "The {{ $labels.breaker }} circuit breaker opened in the last 15 minutes"
+
+      - alert: CrawlerTargetDown
+        expr: up{job=~"gtm-worker|gtm-api"} == 0
+        for: 2m
+        labels: {severity: page}
+        annotations:
+          summary: "{{ $labels.job }} {{ $labels.instance }} is down (crash or unreachable)"

@@ -1,0 +1,4238 @@
+{
+ "annefrank": {
+  "field_disagreements": [
+   {
+    "amount": 1.0,
+    "a_text": "* including € 1.00 booking fee € 16.50*",
+    "b_text": "Museumkaart ** € 1.00*",
+    "fields": {
+     "pricing_type": [
+      "transaction",
+      "one_time"
+     ],
+     "basis": [
+      "ticket",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1.0,
+    "a_text": "ICOM Card € 1.00*",
+    "b_text": "* including € 1.00 booking fee",
+    "fields": {
+     "pricing_type": [
+      "one_time",
+      "transaction"
+     ],
+     "product": [
+      null,
+      "booking fee"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 1.0,
+    "a_text": "* including € 1.00 booking fee Please note",
+    "b_text": "Student card no discount * including € 1.00 booking fee",
+    "fields": {
+     "basis": [
+      "ticket",
+      null
+     ],
+     "product": [
+      null,
+      "booking fee"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "bunny_cdn": {
+  "field_disagreements": [
+   {
+    "amount": null,
+    "a_text": "From 2 PB+ Contact us",
+    "b_text": "From 2 PB+ Contact us",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "amount": 50,
+    "a_text": "Price for 5 terabytes (Europe & North America) bunny.net $50",
+    "b_text": "Price for 5 terabytes (Europe & North America) bunny.net $50",
+    "fields": {
+     "basis": [
+      null,
+      "TB"
+     ],
+     "basis_quantity": [
+      null,
+      5
+     ],
+     "product": [
+      "Bunny CDN",
+      null
+     ],
+     "included": [
+      "5 terabytes (Europe & North America)",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "canadapost_rates": {
+  "field_disagreements": [
+   {
+    "amount": 1.44,
+    "a_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $1.44 for a single stamp",
+    "b_text": "(Up to 5 sheets of paper Footnote 1) $1.44 for a single stamp",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 1.24,
+    "a_text": "$1.24/stamp in a booklet",
+    "b_text": "$1.44 for a single stamp or $1.24/stamp in a booklet",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 1.75,
+    "a_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $1.75",
+    "b_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $1.75",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 2.61,
+    "a_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $2.61",
+    "b_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $2.61",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 4.29,
+    "a_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $4.29",
+    "b_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $4.29",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 5.98,
+    "a_text": "Over 200 g up to 300 g (Up to 60 sheets of paper Footnote 1) $5.98",
+    "b_text": "Over 200 g up to 300 g (Up to 60 sheets of paper Footnote 1) $5.98",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 6.85,
+    "a_text": "Over 300 g up to 400 g (Up to 80 sheets of paper Footnote 1) $6.85",
+    "b_text": "Over 300 g up to 400 g (Up to 80 sheets of paper Footnote 1) $6.85",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 7.36,
+    "a_text": "Over 400 g up to 500 g (Up to 100 sheets of paper Footnote 1) $7.36",
+    "b_text": "Over 400 g up to 500 g (Up to 100 sheets of paper Footnote 1) $7.36",
+    "fields": {
+     "plan": [
+      "Canada",
+      "Canada stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 1.75,
+    "a_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $1.75",
+    "b_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $1.75",
+    "fields": {
+     "plan": [
+      "U.S.",
+      "U.S. stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 2.61,
+    "a_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $2.61",
+    "b_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $2.61",
+    "fields": {
+     "plan": [
+      "U.S.",
+      "U.S. stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 4.29,
+    "a_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $4.29",
+    "b_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $4.29",
+    "fields": {
+     "plan": [
+      "U.S.",
+      "U.S. stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 7.49,
+    "a_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $7.49",
+    "b_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $7.49",
+    "fields": {
+     "plan": [
+      "U.S.",
+      "U.S. stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 14.99,
+    "a_text": "Over 200 g up to 500 g (Up to 100 sheets of paper Footnote 1) $14.99",
+    "b_text": "Over 200 g up to 500 g (Up to 100 sheets of paper Footnote 1) $14.99",
+    "fields": {
+     "plan": [
+      "U.S.",
+      "U.S. stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 3.65,
+    "a_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $3.65",
+    "b_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $3.65",
+    "fields": {
+     "plan": [
+      "International",
+      "International stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 5.21,
+    "a_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $5.21",
+    "b_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $5.21",
+    "fields": {
+     "plan": [
+      "International",
+      "International stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 8.6,
+    "a_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $8.60",
+    "b_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $8.60",
+    "fields": {
+     "plan": [
+      "International",
+      "International stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 14.99,
+    "a_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $14.99",
+    "b_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $14.99",
+    "fields": {
+     "plan": [
+      "International",
+      "International stamp rates"
+     ]
+    }
+   },
+   {
+    "amount": 29.96,
+    "a_text": "Over 200 g up to 500 g (Up to 100 sheets of paper Footnote 1) $29.96",
+    "b_text": "Over 200 g up to 500 g (Up to 100 sheets of paper Footnote 1) $29.96",
+    "fields": {
+     "plan": [
+      "International",
+      "International stamp rates"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "crunch": {
+  "field_disagreements": [
+   {
+    "amount": 100,
+    "a_text": "We’ll register your business with Companies House for just £100.",
+    "b_text": "We’ll register your business with Companies House for just £100.",
+    "fields": {
+     "pricing_type": [
+      "one_time",
+      "add_on"
+     ]
+    }
+   },
+   {
+    "amount": 100,
+    "a_text": "We’ll register your business with Companies House for just £100.",
+    "b_text": "We’ll register your business with Companies House for just £100.",
+    "fields": {
+     "pricing_type": [
+      "one_time",
+      "add_on"
+     ]
+    }
+   }
+  ],
+  "only_a": [
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "Get an instant quote in minutes.",
+    "layout": "inline",
+    "attribution": "none",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": [
+   {
+    "amount": 8,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": "month",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Virtual office",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "enjoy convenient forwarding straight to you (worth £8+VAT/month).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 8,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": "month",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Registered office address",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "’ll provide a professional registered office address (worth £8 +VAT/month).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 7,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "IR35 Solution",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "(worth £7 +VAT. Prices may vary)",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 240,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Self assessment filing",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "No stress, no surprises (worth £240 +VAT).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 90,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Additional Financial Healthcheck",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "helping your business stay on track (worth £90 +VAT).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 8,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": "month",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Registered office address",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "’ll provide a professional registered office address (worth £8 +VAT/month).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 8,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": "month",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Registered office address",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "a professional registered office address (worth £8 +VAT/month).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 7,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "IR35 Solution",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "(worth £7 +VAT. Prices may vary)",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 240,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Self assessment filing",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "No stress, no surprises (worth £240 +VAT).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 90,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "add_on",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Additional Financial Healthcheck",
+    "promotional": false,
+    "tax": "excluded",
+    "included": null,
+    "effective": null,
+    "evidence_text": "helping your business stay on track (worth £90 +VAT).",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ]
+ },
+ "dorsetmeat": {
+  "field_disagreements": [],
+  "only_a": [
+   {
+    "amount": 50.0,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "unit",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Christmas Meat Gift Card - £50",
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "Christmas Meat Gift Card - £50 £50.00",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": []
+ },
+ "holded": {
+  "field_disagreements": [
+   {
+    "amount": 14.5,
+    "a_text": "Basic29,00 €14,50 €/mo",
+    "b_text": "14,50 €/mo 29,00 €excl. VAT -50% for 3 monthsSave 43,50 €",
+    "fields": {
+     "included": [
+      null,
+      "2 users+ your accountant"
+     ]
+    }
+   },
+   {
+    "amount": 29.5,
+    "a_text": "Standard59,00 €29,50 €/mo",
+    "b_text": "29,50 €/mo 59,00 €excl. VAT -50% for 3 monthsSave 88,50 €",
+    "fields": {
+     "included": [
+      null,
+      "4 users+ your accountant"
+     ]
+    }
+   },
+   {
+    "amount": 49.5,
+    "a_text": "Advanced99,00 €49,50 €/mo",
+    "b_text": "49,50 €/mo 99,00 €excl. VAT -50% for 3 monthsSave 148,50 €",
+    "fields": {
+     "included": [
+      null,
+      "7 users+ your accountant"
+     ]
+    }
+   },
+   {
+    "amount": 29,
+    "a_text": "Basic (29 €)",
+    "b_text": "14,50 €/mo 29,00 €excl. VAT -50% for 3 monthsSave 43,50 €",
+    "fields": {
+     "included": [
+      null,
+      "2 users+ your accountant"
+     ]
+    }
+   },
+   {
+    "amount": 59,
+    "a_text": "Standard (59 €)",
+    "b_text": "29,50 €/mo 59,00 €excl. VAT -50% for 3 monthsSave 88,50 €",
+    "fields": {
+     "included": [
+      null,
+      "4 users+ your accountant"
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "Advanced (99 €)",
+    "b_text": "49,50 €/mo 99,00 €excl. VAT -50% for 3 monthsSave 148,50 €",
+    "fields": {
+     "included": [
+      null,
+      "7 users+ your accountant"
+     ]
+    }
+   },
+   {
+    "amount": 15,
+    "a_text": "Price: 15 €/month (VAT not included)",
+    "b_text": "\"price\":15,\"priceCurrency\":\"EUR\"",
+    "fields": {
+     "plan": [
+      "Plus",
+      "Holded Plus"
+     ]
+    }
+   },
+   {
+    "amount": 7.5,
+    "a_text": "first 3 months (7,50 €/month)",
+    "b_text": "50% off for the first 3 months (7,50 €/month)",
+    "fields": {
+     "plan": [
+      "Plus",
+      "Holded Plus"
+     ]
+    }
+   },
+   {
+    "amount": 15,
+    "a_text": "\"price\":15,\"priceCurrency\":\"EUR\"",
+    "b_text": "Price: 15 €/month (VAT not included).",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "plan": [
+      "Plus",
+      "Holded Plus"
+     ]
+    }
+   },
+   {
+    "amount": 29,
+    "a_text": "Price: 29 €/month (VAT not included)",
+    "b_text": "\"price\":29,\"priceCurrency\":\"EUR\"",
+    "fields": {
+     "plan": [
+      "Basic",
+      "Holded Basic"
+     ]
+    }
+   },
+   {
+    "amount": 14.5,
+    "a_text": "first 3 months (14,50 €/month)",
+    "b_text": "50% off for the first 3 months (14,50 €/month)",
+    "fields": {
+     "plan": [
+      "Basic",
+      "Holded Basic"
+     ]
+    }
+   },
+   {
+    "amount": 29,
+    "a_text": "\"price\":29,\"priceCurrency\":\"EUR\"",
+    "b_text": "Price: 29 €/month (VAT not included).",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "plan": [
+      "Basic",
+      "Holded Basic"
+     ]
+    }
+   },
+   {
+    "amount": 59,
+    "a_text": "Price: 59 €/month (VAT not included)",
+    "b_text": "\"price\":59,\"priceCurrency\":\"EUR\"",
+    "fields": {
+     "plan": [
+      "Standard",
+      "Holded Standard"
+     ]
+    }
+   },
+   {
+    "amount": 29.5,
+    "a_text": "first 3 months (29,50 €/month)",
+    "b_text": "50% off for the first 3 months (29,50 €/month)",
+    "fields": {
+     "plan": [
+      "Standard",
+      "Holded Standard"
+     ]
+    }
+   },
+   {
+    "amount": 59,
+    "a_text": "\"price\":59,\"priceCurrency\":\"EUR\"",
+    "b_text": "Price: 59 €/month (VAT not included).",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "plan": [
+      "Standard",
+      "Holded Standard"
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "Price: 99 €/month (VAT not included)",
+    "b_text": "\"price\":99,\"priceCurrency\":\"EUR\"",
+    "fields": {
+     "plan": [
+      "Advanced",
+      "Holded Advanced"
+     ]
+    }
+   },
+   {
+    "amount": 49.5,
+    "a_text": "first 3 months (49,50 €/month)",
+    "b_text": "50% off for the first 3 months (49,50 €/month)",
+    "fields": {
+     "plan": [
+      "Advanced",
+      "Holded Advanced"
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "\"price\":99,\"priceCurrency\":\"EUR\"",
+    "b_text": "Price: 99 €/month (VAT not included).",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "plan": [
+      "Advanced",
+      "Holded Advanced"
+     ]
+    }
+   },
+   {
+    "amount": 199,
+    "a_text": "Price: 199 €/month (VAT not included)",
+    "b_text": "\"price\":199,\"priceCurrency\":\"EUR\"",
+    "fields": {
+     "plan": [
+      "Premium",
+      "Holded Premium"
+     ]
+    }
+   },
+   {
+    "amount": 99.5,
+    "a_text": "first 3 months (99,50 €/month)",
+    "b_text": "50% off for the first 3 months (99,50 €/month)",
+    "fields": {
+     "plan": [
+      "Premium",
+      "Holded Premium"
+     ]
+    }
+   },
+   {
+    "amount": 199,
+    "a_text": "\"price\":199,\"priceCurrency\":\"EUR\"",
+    "b_text": "Price: 199 €/month (VAT not included).",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "plan": [
+      "Premium",
+      "Holded Premium"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "johnreed_zurich": {
+  "field_disagreements": [
+   {
+    "amount": 65,
+    "a_text": "The Flex Silver contract costs CHF 65/month (instead of CHF 110)",
+    "b_text": "FALL SPECIAL Train for only 65 CHF/month!",
+    "fields": {
+     "plan": [
+      "Flex Silver",
+      "Silver Flex"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "locaweb": {
+  "field_disagreements": [
+   {
+    "amount": 5.9,
+    "a_text": "A partir de R$5,90 76% OFF /mês*",
+    "b_text": "A partir de R$5,90 76% OFF /mês*",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 24.9,
+    "a_text": "Hospedagem Go Para quem está começando R$ 24,90 76% OFF R$ 5,90/mês*",
+    "b_text": "Para quem está começando R$ 24,90 76% OFF",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "1 site; 20.000 visitas mensais; 15 GB de Armazenamento SSD; 1 conta de email grátis",
+      "1 site, 20.000 visitas mensais, 15 GB de Armazenamento SSD, 1 conta de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 5.9,
+    "a_text": "Hospedagem Go Para quem está começando R$ 24,90 76% OFF R$ 5,90/mês*",
+    "b_text": "R$ 24,90 76% OFF R$ 5,90/mês*",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "1 site; 20.000 visitas mensais; 15 GB de Armazenamento SSD; 1 conta de email grátis",
+      "1 site, 20.000 visitas mensais, 15 GB de Armazenamento SSD, 1 conta de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 37.9,
+    "a_text": "Hospedagem I Para negócios em crescimento R$ 37,90 71% OFF R$ 10,90/mês*",
+    "b_text": "Para negócios em crescimento R$ 37,90 71% OFF",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "Sites ilimitados; 35.000 visitas mensais; 35 GB de Armazenamento SSD; 10 contas de email grátis",
+      "Sites ilimitados, 35.000 visitas mensais, 35 GB de Armazenamento SSD, 10 contas de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 10.9,
+    "a_text": "Hospedagem I Para negócios em crescimento R$ 37,90 71% OFF R$ 10,90/mês*",
+    "b_text": "R$ 37,90 71% OFF R$ 10,90/mês*",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "Sites ilimitados; 35.000 visitas mensais; 35 GB de Armazenamento SSD; 10 contas de email grátis",
+      "Sites ilimitados, 35.000 visitas mensais, 35 GB de Armazenamento SSD, 10 contas de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 59.9,
+    "a_text": "Hospedagem II Para negócios que escalaram R$ 59,90 72% OFF R$ 16,90/mês*",
+    "b_text": "Para negócios que escalaram R$ 59,90 72% OFF",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "Sites ilimitados; 120.000 visitas mensais; 60 GB de Armazenamento SSD; 30 contas de email grátis",
+      "Sites ilimitados, 120.000 visitas mensais, 60 GB de Armazenamento SSD, 30 contas de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 16.9,
+    "a_text": "Hospedagem II Para negócios que escalaram R$ 59,90 72% OFF R$ 16,90/mês*",
+    "b_text": "R$ 59,90 72% OFF R$ 16,90/mês*",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "Sites ilimitados; 120.000 visitas mensais; 60 GB de Armazenamento SSD; 30 contas de email grátis",
+      "Sites ilimitados, 120.000 visitas mensais, 60 GB de Armazenamento SSD, 30 contas de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 89.9,
+    "a_text": "Hospedagem Dedicada 4 GB Para quem precisa de + performance R$ 89,90 44% OFF R$ 49,90/mês*",
+    "b_text": "Para quem precisa de + performance R$ 89,90 44% OFF",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "Sites ilimitados; 220.000 visitas mensais; 120GB de armazenamento dedicado; 100 contas de email grátis",
+      "Sites ilimitados, 220.000 visitas mensais, 120GB de armazenamento dedicado, 100 contas de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 49.9,
+    "a_text": "Hospedagem Dedicada 4 GB Para quem precisa de + performance R$ 89,90 44% OFF R$ 49,90/mês*",
+    "b_text": "R$ 89,90 44% OFF R$ 49,90/mês*",
+    "fields": {
+     "product": [
+      "Hospedagem de sites",
+      null
+     ],
+     "included": [
+      "Sites ilimitados; 220.000 visitas mensais; 120GB de armazenamento dedicado; 100 contas de email grátis",
+      "Sites ilimitados, 220.000 visitas mensais, 120GB de armazenamento dedicado, 100 contas de email grátis"
+     ]
+    }
+   },
+   {
+    "amount": 7.9,
+    "a_text": "\"lowPrice\": \"7,90\"",
+    "b_text": "\"lowPrice\": \"7,90\"",
+    "fields": {
+     "product": [
+      null,
+      "Hospedagem de Sites"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 137.9,
+    "a_text": "\"highPrice\": \"137,90\"",
+    "b_text": "\"highPrice\": \"137,90\"",
+    "fields": {
+     "product": [
+      null,
+      "Hospedagem de Sites"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "passport_fees": {
+  "field_disagreements": [
+   {
+    "amount": 102,
+    "a_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "b_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Adult (16 and over) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 115.5,
+    "a_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "b_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Adult (16 and over) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 116,
+    "a_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "b_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Adult (16 and over) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 129.5,
+    "a_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "b_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Adult (16 and over) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 66.5,
+    "a_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "b_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Child (under 16) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 80,
+    "a_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "b_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Child (under 16) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 80.5,
+    "a_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "b_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Child (under 16) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 94,
+    "a_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "b_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Child (under 16) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Passport for people born on or before 2 September 1929 Free Free",
+    "b_text": "Passport for people born on or before 2 September 1929 Free Free",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Passport for people born on or before 2 September 1929 Free Free",
+    "b_text": "Passport for people born on or before 2 September 1929 Free Free",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 102,
+    "a_text": "\\u003ctd\\u003e£102\\u003c/td\\u003e",
+    "b_text": "Adult (16 and over) standard 34-page passport\\u003c/th\\u003e\\n \\u003ctd\\u003e£102",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Adult (16 and over) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 115.5,
+    "a_text": "\\u003ctd\\u003e£115.50\\u003c/td\\u003e",
+    "b_text": "£102\\u003c/td\\u003e\\n \\u003ctd\\u003e£115.50",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Adult (16 and over) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 116,
+    "a_text": "\\u003ctd\\u003e£116\\u003c/td\\u003e",
+    "b_text": "and over) 54-page frequent traveller passport\\u003c/th\\u003e\\n \\u003ctd\\u003e£116",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Adult (16 and over) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 129.5,
+    "a_text": "\\u003ctd\\u003e£129.50\\u003c/td\\u003e",
+    "b_text": "£116\\u003c/td\\u003e\\n \\u003ctd\\u003e£129.50",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Adult (16 and over) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 66.5,
+    "a_text": "\\u003ctd\\u003e£66.50\\u003c/td\\u003e",
+    "b_text": "Child (under 16) standard 34-page passport\\u003c/th\\u003e\\n \\u003ctd\\u003e£66.50",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Child (under 16) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 80,
+    "a_text": "\\u003ctd\\u003e£80\\u003c/td\\u003e",
+    "b_text": "£66.50\\u003c/td\\u003e\\n \\u003ctd\\u003e£80",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "standard 34-page passport",
+      "Child (under 16) standard 34-page passport"
+     ]
+    }
+   },
+   {
+    "amount": 80.5,
+    "a_text": "\\u003ctd\\u003e£80.50\\u003c/td\\u003e",
+    "b_text": "under 16) 54-page frequent traveller passport\\u003c/th\\u003e\\n \\u003ctd\\u003e£80.50",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Child (under 16) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 94,
+    "a_text": "\\u003ctd\\u003e£94\\u003c/td\\u003e",
+    "b_text": "£80.50\\u003c/td\\u003e\\n \\u003ctd\\u003e£94",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ],
+     "product": [
+      "54-page frequent traveller passport",
+      "Child (under 16) 54-page frequent traveller passport"
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "2 September 1929\\u003c/th\\u003e\\n \\u003ctd\\u003eFree\\u003c/td\\u003e",
+    "b_text": "for people born on or before 2 September 1929\\u003c/th\\u003e\\n \\u003ctd\\u003eFree",
+    "fields": {
+     "plan": [
+      "Apply online",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "\\u003ctd\\u003eFree\\u003c/td\\u003e\\n \\u003c",
+    "b_text": "September 1929\\u003c/th\\u003e\\n \\u003ctd\\u003eFree\\u003c/td\\u003e\\n \\u003ctd\\u003eFree",
+    "fields": {
+     "plan": [
+      "Apply by paper form",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "pilot": {
+  "field_disagreements": [
+   {
+    "amount": 0,
+    "a_text": "Core Starts at $ 0 $ 0 /month billed annually",
+    "b_text": "Core Starts at $ 0 $ 0 /month billed annually",
+    "fields": {
+     "billed": [
+      "annually",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Core Starts at $ 0 $ 0 /month billed annually",
+    "b_text": "Core Starts at $ 0 $ 0 /month billed annually",
+    "fields": {
+     "bound": [
+      "exact",
+      "from"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Custom Best for: Growing companies that need a customized plan for the back-office.",
+    "b_text": "Custom Best for: Growing companies that need a customized plan for the back-office.",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "amount": 1000,
+    "a_text": "For Single Member LLCs Starts at $1,000+ /year billed annually",
+    "b_text": "For Single Member LLCs Starts at $1,000+ /year billed annually",
+    "fields": {
+     "plan": [
+      "Single Member LLCs",
+      "For Single Member LLCs"
+     ]
+    }
+   },
+   {
+    "amount": 750,
+    "a_text": "Just formed? Starts at $750/year",
+    "b_text": "Just formed? Starts at $750/year Limited Availability",
+    "fields": {
+     "plan": [
+      "Single Member LLCs",
+      "For Partnerships and S-Corps"
+     ],
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 2000,
+    "a_text": "For Partnerships and S-Corps Starts at $2,000+ /year billed annually",
+    "b_text": "For Partnerships and S-Corps Starts at $2,000+ /year billed annually",
+    "fields": {
+     "plan": [
+      "Partnerships and S-Corps",
+      "For Partnerships and S-Corps"
+     ],
+     "included": [
+      "Up to 25 1099-NEC filings",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 750,
+    "a_text": "Just incorporated? Starts at $750/year",
+    "b_text": "Just incorporated? Starts at $750/year Limited Availability",
+    "fields": {
+     "plan": [
+      "Partnerships and S-Corps",
+      "For C-Corps"
+     ],
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 2450,
+    "a_text": "For C-Corps Starts at $2,450+ /year billed annually",
+    "b_text": "For C-Corps Starts at $2,450+ /year billed annually",
+    "fields": {
+     "plan": [
+      "C-Corps",
+      "For C-Corps"
+     ],
+     "included": [
+      "Up to 10 1099-NEC filings",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1750,
+    "a_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "b_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "fields": {
+     "billed": [
+      "annually",
+      null
+     ],
+     "product": [
+      "CFO Services",
+      "CFO"
+     ]
+    }
+   },
+   {
+    "amount": 1750,
+    "a_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "b_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "fields": {
+     "bound": [
+      "exact",
+      "from"
+     ],
+     "product": [
+      "CFO Services",
+      "CFO"
+     ]
+    }
+   },
+   {
+    "amount": 3150,
+    "a_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "b_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "fields": {
+     "billed": [
+      "annually",
+      null
+     ],
+     "product": [
+      "CFO Services",
+      "CFO"
+     ]
+    }
+   },
+   {
+    "amount": 3150,
+    "a_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "b_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "fields": {
+     "bound": [
+      "exact",
+      "from"
+     ],
+     "product": [
+      "CFO Services",
+      "CFO"
+     ]
+    }
+   },
+   {
+    "amount": 5250,
+    "a_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "b_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "fields": {
+     "billed": [
+      "annually",
+      null
+     ],
+     "product": [
+      "CFO Services",
+      "CFO"
+     ]
+    }
+   },
+   {
+    "amount": 5250,
+    "a_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "b_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "fields": {
+     "bound": [
+      "exact",
+      "from"
+     ],
+     "product": [
+      "CFO Services",
+      "CFO"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Custom Best for: Growing companies whose needs don’t fit in neat boxes",
+    "b_text": "Custom Best for: Growing companies whose needs don’t fit in neat boxes",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Free for pre-seed founders.",
+    "b_text": "$399/hr Free for pre-seed founders. $399/hr for everyone else.",
+    "fields": {
+     "included": [
+      null,
+      "up to five people on the cap table"
+     ]
+    }
+   },
+   {
+    "amount": 20,
+    "a_text": "For companies that incurred R&D expenses in the US 20%",
+    "b_text": "For companies that incurred R&D expenses in the US 20% We charge 20% of your total credit received.",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "pricing_type": [
+      "one_time",
+      "transaction"
+     ],
+     "basis": [
+      "credit",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 20,
+    "a_text": "We charge 20% of your total credit received.",
+    "b_text": "We charge 20% of your total credit received.",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "pricing_type": [
+      "one_time",
+      "transaction"
+     ],
+     "basis": [
+      "credit",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 199,
+    "a_text": "starting at $199/month",
+    "b_text": "\"description\": \"Get expert bookkeeping, tax, and CFO services with Pilot, starting at $199/month.",
+    "fields": {
+     "attribution": [
+      "ambiguous",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 1750,
+    "a_text": "\"category\": \"CFO Services\", \"price\": \"1750\"",
+    "b_text": "\"name\": \"CFO Basic\", \"description\": \"Custom financial model",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "plan": [
+      "Basic",
+      "CFO Basic"
+     ]
+    }
+   },
+   {
+    "amount": 3150,
+    "a_text": "\"category\": \"CFO Services\", \"price\": \"3150\"",
+    "b_text": "\"name\": \"CFO Essentials\", \"description\": \"Finance expert to launch strategic projects",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "plan": [
+      "Essentials",
+      "CFO Essentials"
+     ]
+    }
+   },
+   {
+    "amount": 5250,
+    "a_text": "\"category\": \"CFO Services\", \"price\": \"5250\"",
+    "b_text": "\"name\": \"CFO Custom\", \"description\": \"Complete finance leadership",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "plan": [
+      "Custom",
+      "CFO Custom"
+     ]
+    }
+   },
+   {
+    "amount": 500,
+    "a_text": "\"category\": \"COO Services\", \"price\": \"500\"",
+    "b_text": "\"price\": \"500\", \"priceCurrency\": \"USD\", \"priceSpecification\"",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "plan": [
+      "Essentials",
+      "COO Essentials"
+     ]
+    }
+   },
+   {
+    "amount": 20,
+    "a_text": "R&D tax credit service charging 20% of total credit received",
+    "b_text": "\"description\": \"R&D tax credit service charging 20% of total credit received\"",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "pricing_type": [
+      "one_time",
+      "transaction"
+     ],
+     "basis": [
+      "credit",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "quotezone_pet": {
+  "field_disagreements": [
+   {
+    "amount": 3.09,
+    "a_text": "Discover pet insurance quotes from as little as £3.09 Per Month*",
+    "b_text": "Discover pet insurance quotes from as little as £3.09 Per Month*",
+    "fields": {
+     "product": [
+      "Pet insurance",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 3.09,
+    "a_text": "You could pay from £3.09 per month*",
+    "b_text": "You could pay from £3.09 per month* when you compare pet insurance",
+    "fields": {
+     "product": [
+      "Pet insurance",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 3.09,
+    "a_text": "customers reported paying as little as £3.09 a month*",
+    "b_text": "Quotezone customers reported paying as little as £3.09 a month* to insure their beloved pets.",
+    "fields": {
+     "product": [
+      "Pet insurance",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   }
+  ],
+  "only_a": [
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Pet insurance",
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "It’s best to get personalised quotes to find out how much a pet policy will cost you.",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": [
+   {
+    "amount": 286.2,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "1. Bullmastiff 286.20",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 271.2,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "2. Great Dane 271.20",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 205.42,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "3. Irish Setter 205.42",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 204.25,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "4. Rhodesian Ridgeback 204.25",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 194.88,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "5. Weimaraner 194.88",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 174.26,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "6. Boxer 174.26",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 172.31,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "7. Basset Hound 172.31",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 170.77,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "8. German Shepherd Dog Cross 170.77",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 165.08,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "9. Shetland Sheepdog 165.08",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 161.4,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "10. Hungarian Vizsla 161.40",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 159.72,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "11. Dorset Old Tyme Bulldog 159.72",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 157.08,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "12. Dogue de Bordeaux 157.08",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 154.63,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "13. Flat Coated Retriever 154.63",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 153.98,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "14. Collie (Rough) 153.98",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 153.12,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "15. Siberian Husky 153.12",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 151.63,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "16. Bearded Collie 151.63",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 150.26,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "17. Bernese Mountain Dog 150.26",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 150.26,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "18. Greyhound 150.26",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 149.16,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "19. Alaskan Malamute 149.16",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 147.78,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "20. Bernese Mountain Dog Cross 147.78",
+    "layout": "table",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 286.2,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "1.Bullmastiff286.20",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 271.2,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "2.Great Dane271.20",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 205.42,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "3.Irish Setter205.42",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 204.25,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "4.Rhodesian Ridgeback204.25",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 194.88,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "5.Weimaraner194.88",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 174.26,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "6.Boxer174.26",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 172.31,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "7.Basset Hound172.31",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 170.77,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "8.German Shepherd Dog Cross170.77",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 165.08,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "9.Shetland Sheepdog165.08",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 161.4,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "10.Hungarian Vizsla161.40",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 159.72,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "11.Dorset Old Tyme Bulldog159.72",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 157.08,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "12.Dogue de Bordeaux157.08",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 154.63,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "13.Flat Coated Retriever154.63",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 153.98,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "14.Collie (Rough)153.98",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 153.12,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "15.Siberian Husky153.12",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 151.63,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "16.Bearded Collie151.63",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 150.26,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "17.Bernese Mountain Dog150.26",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 150.26,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "18.Greyhound150.26",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 149.16,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "19.Alaskan Malamute149.16",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   },
+   {
+    "amount": 147.78,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "year",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": "January to October 2024",
+    "evidence_text": "20.Bernese Mountain Dog Cross147.78",
+    "layout": "json_ld",
+    "attribution": "none",
+    "unjudgeable": []
+   }
+  ]
+ },
+ "secondhome_lisbon": {
+  "field_disagreements": [
+   {
+    "amount": 25,
+    "a_text": "Single Day Pass From €25 per person + VAT.",
+    "b_text": "Single Day Pass From €25 per person + VAT.",
+    "fields": {
+     "plan": [
+      null,
+      "Single Day Pass"
+     ],
+     "product": [
+      "Single Day Pass",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 70,
+    "a_text": "3 Bundle Day Pass €70 per person + VAT.",
+    "b_text": "3 Bundle Day Pass €70 per person + VAT.",
+    "fields": {
+     "plan": [
+      null,
+      "3 Bundle Day Pass"
+     ],
+     "product": [
+      "3 Bundle Day Pass",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 115,
+    "a_text": "5 Bundle Day Pass €115 per person + VAT.",
+    "b_text": "5 Bundle Day Pass €115 per person + VAT.",
+    "fields": {
+     "plan": [
+      null,
+      "5 Bundle Day Pass"
+     ],
+     "product": [
+      "5 Bundle Day Pass",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "smartfit_mx": {
+  "field_disagreements": [
+   {
+    "amount": 0,
+    "a_text": "DESDE $ 599.00 $ 0.00* 100% OFF en el 1er mes, después $ 599.00/mes 12 meses de fidelidad",
+    "b_text": "$ 0.00* 100% OFF en el 1er mes, después $ 599.00/mes",
+    "fields": {
+     "period": [
+      "month",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "DESDE $ 299.00 $ 0.00* 100% OFF en el 1er mes, después $ 299.00/mes 12 meses de fidelidad",
+    "b_text": "$ 0.00* 100% OFF en el 1er mes, después $ 299.00/mes",
+    "fields": {
+     "period": [
+      "month",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "DESDE $ 399.00 $ 0.00* 100% OFF en el 1er mes, después $ 399.00/mes Sin fidelidad",
+    "b_text": "$ 0.00* 100% OFF en el 1er mes, después $ 399.00/mes",
+    "fields": {
+     "period": [
+      "month",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "somenergia": {
+  "field_disagreements": [
+   {
+    "amount": 0.025,
+    "a_text": "Servicios de Ajuste: 0,025 euros/kWh (valor medio del último mes)",
+    "b_text": "Servicios de Ajuste: 0,025 euros/kWh (valor medio del último mes)",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.024688,
+    "a_text": "Bono social: 0,024688 euros/día",
+    "b_text": "Bono social: 0,024688 euros/día.",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.025,
+    "a_text": "Servicios de Ajuste: 0,025 euros/kWh (valor medio del último mes)",
+    "b_text": "Servicios de Ajuste: 0,025 euros/kWh (valor medio del último mes)",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.024688,
+    "a_text": "Bono social: 0,024688 euros/día",
+    "b_text": "Bono social: 0,024688 euros/día.",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "sumup_gb": {
+  "field_disagreements": [
+   {
+    "amount": 1.69,
+    "a_text": "Pay-as-you-go 1.69% Transaction fee Free",
+    "b_text": "Pay-as-you-go 1.69% Transaction fee Free",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.99,
+    "a_text": "Payments Plus 0.99% Transaction fee £19/month",
+    "b_text": "Payments Plus 0.99% Transaction fee £19/month",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "you only pay when you take a payment: 0.00% for in-person payments made with a SumUp card",
+    "b_text": "With our default pay-as-you-go option: 0.00% for in-person payments made with a SumUp card",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1.69,
+    "a_text": "1.69% for all other in-person payments (including American Express and premium cards)",
+    "b_text": "1.69% for in-person payments made with all cards, including American Express.",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "With Payments Plus (£19/month): 0.00% for in-person payments made with a SumUp card",
+    "b_text": "premium cards) for online payments With Payments Plus (£19/month): 0.00%",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "With Payments Plus (£19/month): 0.00% for in-person payments made with a SumUp card",
+    "b_text": "(e.g. with Payment Links or Bookings) With Payments Plus (£19/month): 0.00%",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "With Payments Plus (£19/month): 0.00% for in-person payments made with a SumUp card",
+    "b_text": "or other digital products) With Payments Plus (£19/month): 0.00%",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1.69,
+    "a_text": "Lower in-person transaction fees (from 1.69% down to *)",
+    "b_text": "Lower in-person transaction fees (from 1.69% down to *)",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "With our default pay-as-you-go option: 0.00% for in-person payments made with a SumUp card",
+    "b_text": "you only pay when you take a payment: 0.00% for in-person payments made with a SumUp card",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ],
+     "plan": [
+      "Pay-as-you-go",
+      "pay as you go"
+     ]
+    }
+   },
+   {
+    "amount": 1.69,
+    "a_text": "1.69% for in-person payments made with all cards, including American Express.",
+    "b_text": "1.69% for all other in-person payments (including American Express and premium cards)",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ],
+     "plan": [
+      "Pay-as-you-go",
+      "pay as you go"
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "With Pay As You Go: 0.00% for in-person payments made with a SumUp card",
+    "b_text": "With Pay As You Go: 0.00% for in-person payments made with a SumUp card",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1.69,
+    "a_text": "1.69% for other in-person payments (including premium, international, and American Express cards)",
+    "b_text": "1.69% for other in-person payments (including premium, international, and American Express cards)",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "How do I get 0% fees?",
+    "b_text": "How do I get 0% fees?",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "You can benefit from 0% transaction fees when customers pay with a personal SumUp card.",
+    "b_text": "You can benefit from 0% transaction fees when customers pay with a personal SumUp card.",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "You’re charged 0% fees and keep 100% of the payment",
+    "b_text": "charged 0% fees and keep 100% of the payment",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_accounting_pl": {
+  "field_disagreements": [
+   {
+    "amount": 2500,
+    "a_text": "lub 2 500 zł netto rocznie przy płatności z góry",
+    "b_text": "lub 2 500 zł netto rocznie przy płatności z góry",
+    "fields": {
+     "included": [
+      null,
+      "do 20 dokumentów miesięcznie"
+     ]
+    }
+   },
+   {
+    "amount": 900,
+    "a_text": "Rejestracja spółki z o.o. w systemie S24 kosztuje 900 zł netto",
+    "b_text": "Rejestracja spółki z o.o. w systemie S24 kosztuje 900 zł netto",
+    "fields": {
+     "product": [
+      "Rejestracja spółki z o.o.",
+      "Rejestracja spółki z o.o. w systemie S24"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Reprezentację przed urzędem skarbowym wyceniamy indywidualnie.",
+    "b_text": "Reprezentację przed urzędem skarbowym wyceniamy indywidualnie.",
+    "fields": {
+     "product": [
+      "Reprezentacja przed urzędem skarbowym",
+      "Reprezentację przed urzędem skarbowym"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_api_usage_us": {
+  "field_disagreements": [
+   {
+    "amount": 49,
+    "a_text": "Growth $49/month",
+    "b_text": "Growth $49/month $39/month, billed annually",
+    "fields": {
+     "billed": [
+      null,
+      "monthly"
+     ]
+    }
+   },
+   {
+    "amount": 399,
+    "a_text": "Scale $399/month",
+    "b_text": "Scale $399/month $319/month, billed annually",
+    "fields": {
+     "billed": [
+      null,
+      "monthly"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Enterprise Custom",
+    "b_text": "Enterprise Custom Volume pricing, SSO and a dedicated region",
+    "fields": {
+     "currency_assumed": [
+      true,
+      false
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_coworking_mx": {
+  "field_disagreements": [
+   {
+    "amount": 11500,
+    "a_text": "Oficina privada Desde $11,500MXN/mes",
+    "b_text": "Oficina privada Desde $11,500MXN/mes Para equipos de 2 a 4 personas",
+    "fields": {
+     "included": [
+      "equipos de 2 a 4 personas",
+      "Para equipos de 2 a 4 personas"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Empresas Cotiza con nosotros",
+    "b_text": "Empresas Cotiza con nosotros",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1000,
+    "a_text": "Cuota de inscripción única: $1,000 MXN",
+    "b_text": "Cuota de inscripción única: $1,000 MXN (exenta en el plan anual).",
+    "fields": {
+     "product": [
+      null,
+      "Cuota de inscripción"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Impresiones blanco y negro $2 MXN por hoja",
+    "b_text": "Impresiones blanco y negro $2 MXN por hoja",
+    "fields": {
+     "pricing_type": [
+      "usage",
+      "add_on"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_events_es": {
+  "field_disagreements": [
+   {
+    "amount": 3.5,
+    "a_text": "Gastos de gestión: 3,50 € por entrada",
+    "b_text": "Gastos de gestión: 3,50 € por entrada, se añaden al finalizar la compra.",
+    "fields": {
+     "product": [
+      null,
+      "Gastos de gestión"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 320,
+    "a_text": "Glamping desde 320€ Tienda equipada para 2 personas",
+    "b_text": "Glamping desde 320€ Tienda equipada para 2 personas.",
+    "fields": {
+     "included": [
+      "2 personas",
+      "Tienda equipada para 2 personas"
+     ]
+    }
+   },
+   {
+    "amount": 12,
+    "a_text": "Taquilla 12€/día",
+    "b_text": "Taquilla 12€/día Con carga de móvil incluida.",
+    "fields": {
+     "included": [
+      null,
+      "carga de móvil"
+     ]
+    }
+   },
+   {
+    "amount": 45,
+    "a_text": "\"lowPrice\": \"45\"",
+    "b_text": "\"lowPrice\": \"45\"",
+    "fields": {
+     "attribution": [
+      "ambiguous",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 210,
+    "a_text": "\"highPrice\": \"210\"",
+    "b_text": "\"highPrice\": \"210\"",
+    "fields": {
+     "attribution": [
+      "ambiguous",
+      "none"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_farmshop_nz": {
+  "field_disagreements": [
+   {
+    "amount": 12,
+    "a_text": "Delivery is $12 within Hamilton",
+    "b_text": "Delivery is $12 within Hamilton and $18 to the rest of the Waikato.",
+    "fields": {
+     "basis": [
+      "delivery",
+      null
+     ],
+     "product": [
+      null,
+      "Delivery"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 18,
+    "a_text": "$18 to the rest of the Waikato",
+    "b_text": "Delivery is $12 within Hamilton and $18 to the rest of the Waikato.",
+    "fields": {
+     "basis": [
+      "delivery",
+      null
+     ],
+     "product": [
+      null,
+      "Delivery"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_insurance_de": {
+  "field_disagreements": [
+   {
+    "amount": 3.49,
+    "a_text": "Basis 3,49 € / Monat",
+    "b_text": "Basis 3,49 € / Monat Versicherungssumme bis 65.000 €",
+    "fields": {
+     "included": [
+      null,
+      "Versicherungssumme bis 65.000 €, Fahrraddiebstahl bis 500 €"
+     ]
+    }
+   },
+   {
+    "amount": 5.99,
+    "a_text": "Komfort 5,99 € / Monat",
+    "b_text": "Komfort 5,99 € / Monat Versicherungssumme bis 100.000 €",
+    "fields": {
+     "included": [
+      null,
+      "Versicherungssumme bis 100.000 €, Fahrraddiebstahl bis 1.500 €"
+     ]
+    }
+   },
+   {
+    "amount": 8.99,
+    "a_text": "Premium 8,99 € / Monat",
+    "b_text": "Premium 8,99 € / Monat Unbegrenzte Versicherungssumme",
+    "fields": {
+     "included": [
+      null,
+      "Unbegrenzte Versicherungssumme, Fahrraddiebstahl bis 5.000 €"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_payments_co": {
+  "field_disagreements": [
+   {
+    "amount": 1.99,
+    "a_text": "Cobra en línea con tarifas desde 1,99%",
+    "b_text": "Cobra en línea con tarifas desde 1,99%",
+    "fields": {
+     "attribution": [
+      "ambiguous",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 2.99,
+    "a_text": "Tarjetas crédito y débito 2,99% + $900",
+    "b_text": "Tarjetas crédito y débito 2,99% + $900",
+    "fields": {
+     "product": [
+      "Tarjetas crédito y débito",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 900,
+    "a_text": "Tarjetas crédito y débito 2,99% + $900",
+    "b_text": "Tarjetas crédito y débito 2,99% + $900",
+    "fields": {
+     "product": [
+      "Tarjetas crédito y débito",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 2500,
+    "a_text": "PSE $2.500 por transacción",
+    "b_text": "PSE $2.500 por transacción",
+    "fields": {
+     "product": [
+      "PSE",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 1.5,
+    "a_text": "Nequi 1,5% + $700",
+    "b_text": "Nequi 1,5% + $700",
+    "fields": {
+     "product": [
+      "Nequi",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 700,
+    "a_text": "Nequi 1,5% + $700",
+    "b_text": "Nequi 1,5% + $700",
+    "fields": {
+     "product": [
+      "Nequi",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 3.2,
+    "a_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "b_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "fields": {
+     "product": [
+      "Efectivo en puntos Efecty",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 3800,
+    "a_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "b_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "fields": {
+     "product": [
+      "Efectivo en puntos Efecty",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Afiliación $0",
+    "b_text": "Afiliación $0",
+    "fields": {
+     "product": [
+      null,
+      "Afiliación"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 45000,
+    "a_text": "Contracargo $45.000 por caso",
+    "b_text": "Contracargo $45.000 por caso",
+    "fields": {
+     "basis": [
+      "chargeback",
+      "case"
+     ],
+     "product": [
+      null,
+      "Contracargo"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 3500,
+    "a_text": "retiros adicionales $3.500",
+    "b_text": "Gratis una vez por semana; retiros adicionales $3.500",
+    "fields": {
+     "product": [
+      null,
+      "Retiros a cuenta bancaria"
+     ],
+     "attribution": [
+      "none",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "te ofrecemos una tarifa negociada",
+    "b_text": "Si procesas más de $200 millones al mes, te ofrecemos una tarifa negociada.",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ],
+     "included": [
+      null,
+      "más de $200 millones al mes"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": [
+   {
+    "amount": 0,
+    "currency": "COP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "transaction",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Retiros a cuenta bancaria",
+    "promotional": false,
+    "tax": "excluded",
+    "included": "una vez por semana",
+    "effective": null,
+    "evidence_text": "Retiros a cuenta bancaria Gratis una vez por semana",
+    "layout": "list",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ]
+ },
+ "syn2_review_berlin_cowork": {
+  "field_disagreements": [
+   {
+    "amount": 230,
+    "a_text": "It recently raised its prices to around €230",
+    "b_text": "It recently raised its prices to around €230",
+    "fields": {
+     "product": [
+      null,
+      "Hafenwerk"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "desks are priced on request",
+    "b_text": "A day pass is €29 incl. VAT; desks are priced on request.",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 179,
+    "a_text": "Kiezdesk €15 €179 €259",
+    "b_text": "Kiezdesk €15 €179 €259",
+    "fields": {
+     "plan": [
+      "Flex desk",
+      "Flex desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 259,
+    "a_text": "Kiezdesk €15 €179 €259",
+    "b_text": "Kiezdesk €15 €179 €259",
+    "fields": {
+     "plan": [
+      "Fixed desk",
+      "Fixed desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 229,
+    "a_text": "Hafenwerk €25 €229 €329",
+    "b_text": "Hafenwerk €25 €229 €329",
+    "fields": {
+     "plan": [
+      "Flex desk",
+      "Flex desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 329,
+    "a_text": "Hafenwerk €25 €229 €329",
+    "b_text": "Hafenwerk €25 €229 €329",
+    "fields": {
+     "plan": [
+      "Fixed desk",
+      "Fixed desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 140,
+    "a_text": "Werkhalle Nord €18 from €140 €240",
+    "b_text": "Werkhalle Nord €18 from €140 €240",
+    "fields": {
+     "plan": [
+      "Flex desk",
+      "Flex desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 240,
+    "a_text": "Werkhalle Nord €18 from €140 €240",
+    "b_text": "Werkhalle Nord €18 from €140 €240",
+    "fields": {
+     "plan": [
+      "Fixed desk",
+      "Fixed desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 199,
+    "a_text": "Spreeloft €22 €199 –",
+    "b_text": "Spreeloft €22 €199 –",
+    "fields": {
+     "plan": [
+      "Flex desk",
+      "Flex desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 165,
+    "a_text": "Treptow Hub – €165 €275",
+    "b_text": "Treptow Hub – €165 €275",
+    "fields": {
+     "plan": [
+      "Flex desk",
+      "Flex desk / month"
+     ]
+    }
+   },
+   {
+    "amount": 275,
+    "a_text": "Treptow Hub – €165 €275",
+    "b_text": "Treptow Hub – €165 €275",
+    "fields": {
+     "plan": [
+      "Fixed desk",
+      "Fixed desk / month"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Atelier Mitte €29* On request On request",
+    "b_text": "Atelier Mitte €29* On request On request",
+    "fields": {
+     "plan": [
+      "Flex desk",
+      "Flex desk / month"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Atelier Mitte €29* On request On request",
+    "b_text": "Atelier Mitte €29* On request On request",
+    "fields": {
+     "plan": [
+      "Fixed desk",
+      "Fixed desk / month"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn2_shipping_se": {
+  "field_disagreements": [
+   {
+    "amount": 69,
+    "a_text": "Upp till 1 kg 69 kr 99 kr",
+    "b_text": "Upp till 1 kg 69 kr 99 kr",
+    "fields": {
+     "plan": [
+      "Till ombud",
+      null
+     ],
+     "product": [
+      null,
+      "Till ombud"
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "Upp till 1 kg 69 kr 99 kr",
+    "b_text": "Upp till 1 kg 69 kr 99 kr",
+    "fields": {
+     "plan": [
+      "Hemleverans",
+      null
+     ],
+     "product": [
+      null,
+      "Hemleverans"
+     ]
+    }
+   },
+   {
+    "amount": 89,
+    "a_text": "Upp till 2 kg 89 kr 119 kr",
+    "b_text": "Upp till 2 kg 89 kr 119 kr",
+    "fields": {
+     "plan": [
+      "Till ombud",
+      null
+     ],
+     "product": [
+      null,
+      "Till ombud"
+     ]
+    }
+   },
+   {
+    "amount": 119,
+    "a_text": "Upp till 2 kg 89 kr 119 kr",
+    "b_text": "Upp till 2 kg 89 kr 119 kr",
+    "fields": {
+     "plan": [
+      "Hemleverans",
+      null
+     ],
+     "product": [
+      null,
+      "Hemleverans"
+     ]
+    }
+   },
+   {
+    "amount": 119,
+    "a_text": "Upp till 5 kg 119 kr 159 kr",
+    "b_text": "Upp till 5 kg 119 kr 159 kr",
+    "fields": {
+     "plan": [
+      "Till ombud",
+      null
+     ],
+     "product": [
+      null,
+      "Till ombud"
+     ]
+    }
+   },
+   {
+    "amount": 159,
+    "a_text": "Upp till 5 kg 119 kr 159 kr",
+    "b_text": "Upp till 5 kg 119 kr 159 kr",
+    "fields": {
+     "plan": [
+      "Hemleverans",
+      null
+     ],
+     "product": [
+      null,
+      "Hemleverans"
+     ]
+    }
+   },
+   {
+    "amount": 159,
+    "a_text": "Upp till 10 kg 159 kr 209 kr",
+    "b_text": "Upp till 10 kg 159 kr 209 kr",
+    "fields": {
+     "plan": [
+      "Till ombud",
+      null
+     ],
+     "product": [
+      null,
+      "Till ombud"
+     ]
+    }
+   },
+   {
+    "amount": 209,
+    "a_text": "Upp till 10 kg 159 kr 209 kr",
+    "b_text": "Upp till 10 kg 159 kr 209 kr",
+    "fields": {
+     "plan": [
+      "Hemleverans",
+      null
+     ],
+     "product": [
+      null,
+      "Hemleverans"
+     ]
+    }
+   },
+   {
+    "amount": 229,
+    "a_text": "Upp till 20 kg 229 kr 289 kr",
+    "b_text": "Upp till 20 kg 229 kr 289 kr",
+    "fields": {
+     "plan": [
+      "Till ombud",
+      null
+     ],
+     "product": [
+      null,
+      "Till ombud"
+     ]
+    }
+   },
+   {
+    "amount": 289,
+    "a_text": "Upp till 20 kg 229 kr 289 kr",
+    "b_text": "Upp till 20 kg 229 kr 289 kr",
+    "fields": {
+     "plan": [
+      "Hemleverans",
+      null
+     ],
+     "product": [
+      null,
+      "Hemleverans"
+     ]
+    }
+   },
+   {
+    "amount": 29,
+    "a_text": "Tilläggsförsäkring 29 kr",
+    "b_text": "Tilläggsförsäkring 29 kr ersätter värden upp till 10 000 kr",
+    "fields": {
+     "included": [
+      null,
+      "ersätter värden upp till 10 000 kr"
+     ]
+    }
+   },
+   {
+    "amount": 8,
+    "a_text": "Drivmedelstillägg: 8 % på fraktpriset tillkommer för alla försändelser",
+    "b_text": "Drivmedelstillägg: 8 % på fraktpriset tillkommer för alla försändelser",
+    "fields": {
+     "basis": [
+      "shipment",
+      null
+     ],
+     "tax": [
+      "included",
+      null
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Kontakta vår säljavdelning för en offert.",
+    "b_text": "Skickar du fler än 200 paket i månaden? Kontakta vår säljavdelning för en offert.",
+    "fields": {
+     "tax": [
+      "included",
+      null
+     ],
+     "included": [
+      null,
+      "fler än 200 paket i månaden"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "tickettailor": {
+  "field_disagreements": [
+   {
+    "amount": 0,
+    "a_text": "No fees for issuing up to 5,000 free tickets per year. £0",
+    "b_text": "Free for free No fees for issuing up to 5,000 free tickets per year. £0",
+    "fields": {
+     "basis": [
+      "ticket",
+      null
+     ],
+     "plan": [
+      "Free",
+      "Free for free"
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "b_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "fields": {
+     "pricing_type": [
+      "unknown",
+      "transaction"
+     ],
+     "plan": [
+      null,
+      "Pay upfront"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "b_text": "totalling £0 +VAT",
+    "fields": {
+     "pricing_type": [
+      "unknown",
+      "one_time"
+     ],
+     "plan": [
+      null,
+      "Pay upfront"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 0.0,
+    "a_text": "Ticket Tailor fee: £0.00",
+    "b_text": "Ticket Tailor fee: £0.00",
+    "fields": {
+     "tax": [
+      null,
+      "excluded"
+     ]
+    }
+   },
+   {
+    "amount": 1.5,
+    "a_text": "1.5% + £0.20",
+    "b_text": "1.5% + £0.20",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.2,
+    "a_text": "1.5% + £0.20",
+    "b_text": "1.5% + £0.20",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2.9,
+    "a_text": "2.9% + $0.30",
+    "b_text": "2.9% + $0.30",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.3,
+    "a_text": "2.9% + $0.30",
+    "b_text": "2.9% + $0.30",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1.5,
+    "a_text": "1.5% + €0.25",
+    "b_text": "1.5% + €0.25",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.25,
+    "a_text": "1.5% + €0.25",
+    "b_text": "1.5% + €0.25",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2.9,
+    "a_text": "2.9% + C$0.30",
+    "b_text": "2.9% + C$0.30",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.3,
+    "a_text": "2.9% + C$0.30",
+    "b_text": "2.9% + C$0.30",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1.75,
+    "a_text": "1.75% + A$0.30",
+    "b_text": "1.75% + A$0.30",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.3,
+    "a_text": "1.75% + A$0.30",
+    "b_text": "1.75% + A$0.30",
+    "fields": {
+     "basis": [
+      "transaction",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": "Free",
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "so they can provide you a quote for your specific event(s)",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": "Free",
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "so they can provide you a quote for your specific event(s)",
+    "layout": "json_ld",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": [
+   {
+    "amount": 0.4,
+    "currency": "GBP",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "transaction",
+    "period": null,
+    "billed": null,
+    "basis": "ticket",
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Stripe",
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "Payment processing fees*: £0.40",
+    "layout": "other",
+    "attribution": "clear",
+    "unjudgeable": [
+     "*"
+    ]
+   }
+  ]
+ },
+ "tlw_wills": {
+  "field_disagreements": [
+   {
+    "amount": 3,
+    "a_text": "Estates with a gross value of up to £500,000 3% of the estate value (+VAT & disbursements)",
+    "b_text": "Estates with a gross value of up to £500,000 3% of the estate value (+VAT & disbursements)",
+    "fields": {
+     "basis": [
+      "estate value",
+      null
+     ],
+     "included": [
+      "gross value of up to £500,000",
+      "Estates with a gross value of up to £500,000"
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Estates with a gross value exceeding £500,000 2% of the estate value (+VAT & disbursements)",
+    "b_text": "Estates with a gross value exceeding £500,000 2% of the estate value (+VAT & disbursements)",
+    "fields": {
+     "basis": [
+      "estate value",
+      null
+     ],
+     "included": [
+      "gross value exceeding £500,000",
+      "Estates with a gross value exceeding £500,000"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "vox_zurich": {
+  "field_disagreements": [
+   {
+    "amount": 660,
+    "a_text": "CHF 660.- x 3 per month",
+    "b_text": "CHF 660.- x 3 per month",
+    "fields": {
+     "pricing_type": [
+      "unknown",
+      "one_time"
+     ]
+    }
+   },
+   {
+    "amount": 495,
+    "a_text": "CHF 495.- x 4 per month",
+    "b_text": "CHF 495.- x 4 per month",
+    "fields": {
+     "pricing_type": [
+      "unknown",
+      "one_time"
+     ]
+    }
+   },
+   {
+    "amount": 330,
+    "a_text": "CHF 330.- x 6 per month",
+    "b_text": "CHF 330.- x 6 per month",
+    "fields": {
+     "pricing_type": [
+      "unknown",
+      "one_time"
+     ]
+    }
+   },
+   {
+    "amount": 165,
+    "a_text": "CHF 165.- x 12 per month",
+    "b_text": "CHF 165.- x 12 per month",
+    "fields": {
+     "pricing_type": [
+      "unknown",
+      "one_time"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "wasabi": {
+  "field_disagreements": [
+   {
+    "amount": 7.99,
+    "a_text": "Starting at $7.99 TB/month",
+    "b_text": "Basic support plan Starting at $7.99 TB/month",
+    "fields": {
+     "billed": [
+      null,
+      "monthly"
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Egress & API fees $0 $0",
+    "b_text": "Egress & API fees $0 $0",
+    "fields": {
+     "product": [
+      null,
+      "Egress & API fees"
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Egress & API fees $0 $0",
+    "b_text": "Egress & API fees $0 $0",
+    "fields": {
+     "product": [
+      null,
+      "Egress & API fees"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": [
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": "RCS (Reserved Capacity Storage)",
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "Discounts determined by both the storage capacity purchased and the contract term length",
+    "layout": "table",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ]
+ },
+ "zapier_sched": {
+  "field_disagreements": [
+   {
+    "amount": 10,
+    "a_text": "Professional plan at $10/user/month (billed yearly)",
+    "b_text": "Professional plan at $10/user/month (billed yearly) unlocks unlimited scheduling pages",
+    "fields": {
+     "included": [
+      null,
+      "unlimited scheduling pages"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ }
+}

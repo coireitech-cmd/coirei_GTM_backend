@@ -1,0 +1,985 @@
+{
+  "cases": [
+    {
+      "case": "ind-ev-charging-europe",
+      "mode": "industry",
+      "status": "partial",
+      "status_reasons": [
+        "coverage: 1 of 8 research question(s) have no evidence: What does the industry include and exclude? (5 source(s) collected for it gave none (3 failed, 2 no evidence for it))",
+        "3 source(s) failed",
+        "9 source(s) skipped"
+      ],
+      "duration_seconds": 18.7,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 6,
+        "irrelevant": 1,
+        "failed": 3,
+        "skipped": 9
+      },
+      "sources_tried": 10,
+      "sources_used": 6,
+      "retrieval_rate": 0.6,
+      "domains": 6,
+      "questions": 8,
+      "questions_answered": 7,
+      "evidence": 139,
+      "duplicate_excerpts": 0,
+      "contradictions": 1,
+      "metrics": 13,
+      "competitor_pages": {
+        "tried": 0,
+        "fetched": 0,
+        "rendered": 0
+      },
+      "price_points": 0,
+      "gates": {
+        "provenance": {
+          "checked": 139,
+          "failed": 0,
+          "pass": true,
+          "examples": [],
+          "by_status": {
+            "verified_reextracted": 139
+          }
+        },
+        "citations": {
+          "checked": 138,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 15,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 18,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 9,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 71,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "sizing": {
+        "target_scope": "Europe, USD, 2024 or earlier",
+        "results": [
+          {
+            "method": "top_down",
+            "tam": 13800000000.0,
+            "sam": null,
+            "som": null,
+            "verified": false
+          }
+        ],
+        "excluded": [
+          {
+            "figure": "USD 5.69 billion to USD 18.5 billion for 2025 (Europe)",
+            "evidence_ids": [
+              "ev_291988dcb775",
+              "ev_0a5891fec139",
+              "ev_c76751d219ea",
+              "ev_02e104ab5a02"
+            ],
+            "reason": "for 2025, after the sizing year 2024"
+          },
+          {
+            "figure": "USD 18.5 billion for 2025 (geography not stated)",
+            "evidence_ids": [
+              "ev_323af5494cc4"
+            ],
+            "reason": "for 2025, after the sizing year 2024"
+          },
+          {
+            "figure": "USD 220 billion for None (geography not stated, investment, another market)",
+            "evidence_ids": [
+              "ev_9f89d0d367b9"
+            ],
+            "reason": "no year stated"
+          }
+        ],
+        "insufficient": [
+          "bottom_up: no inputs"
+        ],
+        "cross_check": null
+      },
+      "pdf": [
+        {
+          "url": "https://www.itf-oecd.org/sites/default/files/docs/building_publicly_accessible_ev_charging_infrastructure.pdf",
+          "status": "failed",
+          "detail": "http_403",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.toi.no/getfile.php/1373853-1664456499/Publikasjoner/T%C3%98I%20rapporter/2022/1867-2022/1867-Summary.pdf",
+          "status": "fetched",
+          "detail": "pdf: 7 of 7 page(s) read",
+          "evidence": 9,
+          "figures": 0,
+          "pages_cited": [
+            1,
+            2,
+            3,
+            6,
+            7
+          ],
+          "verification": {
+            "verified_reextracted": 9
+          },
+          "limitations": [
+            "page 5: table 0: irregular rows or empty cells; not used for figures",
+            "publication date from the PDF's metadata (creation date), not from its text"
+          ]
+        },
+        {
+          "url": "https://documents1.worldbank.org/curated/en/099122023122017208/pdf/P179127180ba0002c18f891afb7beb7288e.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://alternative-fuels-observatory.ec.europa.eu/sites/default/files/document-files/2024-05/Charging_ahead_Accelerating_the_roll-out_of_EU_electric_vehicle_charging_infrastructure.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.oecd.org/content/dam/oecd/en/publications/reports/2022/05/policy-brief-on-public-charging-infrastructure_f3cc8ebe/e13b0b09-en.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://documents1.worldbank.org/curated/en/225111639490843204/pdf/The-Global-Diffusion-of-Electric-Vehicles-Lessons-from-the-First-Decade.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        }
+      ],
+      "selection": {
+        "useful_sources": 5,
+        "attempts_without_evidence": {
+          "irrelevant": 1,
+          "failed": 3,
+          "no evidence": 1
+        },
+        "failures": 3,
+        "failures_recovered": 3,
+        "stopped": "remaining candidates add little (best value 0.000 < 0.08); open questions: definition",
+        "used": {
+          "useful": 5,
+          "attempts": 10,
+          "html_pages": 8,
+          "pdfs": 2,
+          "pdf_pages": 7,
+          "bytes": 2670475,
+          "waves": 3
+        },
+        "open_questions": [
+          {
+            "key": "definition",
+            "reason": "5 source(s) collected for it gave none (3 failed, 2 no evidence for it)"
+          }
+        ]
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        }
+      ],
+      "wall_seconds": 19.1,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "ind-plant-based-meat-us",
+      "mode": "industry",
+      "status": "partial",
+      "status_reasons": [
+        "coverage: 2 of 8 research question(s) have no evidence: What does the industry include and exclude? (3 source(s) collected for it gave none (1 blocked, 1 failed, 1 no evidence for it); 2 candidate(s) not collected: over the PDF allowance (2, budget.max_pdfs)); How do companies price and sell? (no se",
+        "sizing: market sizing requested but not calculated: top_down: no inputs, and no collected market-size figure matches United States, USD, 2024 or earlier; bottom_up: no inputs",
+        "5 source(s) failed",
+        "7 source(s) skipped"
+      ],
+      "duration_seconds": 54.2,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 4,
+        "failed": 5,
+        "blocked": 2,
+        "skipped": 7
+      },
+      "sources_tried": 11,
+      "sources_used": 4,
+      "retrieval_rate": 0.36,
+      "domains": 4,
+      "questions": 8,
+      "questions_answered": 6,
+      "evidence": 36,
+      "duplicate_excerpts": 0,
+      "contradictions": 0,
+      "metrics": 0,
+      "competitor_pages": {
+        "tried": 0,
+        "fetched": 0,
+        "rendered": 0
+      },
+      "price_points": 0,
+      "gates": {
+        "provenance": {
+          "checked": 36,
+          "failed": 0,
+          "pass": true,
+          "examples": [],
+          "by_status": {
+            "verified_reextracted": 36
+          }
+        },
+        "citations": {
+          "checked": 35,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 10,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "sizing": {
+        "target_scope": "United States, USD, 2024 or earlier",
+        "results": [],
+        "excluded": [],
+        "insufficient": [
+          "top_down: no inputs, and no collected market-size figure matches United States, USD, 2024 or earlier",
+          "bottom_up: no inputs"
+        ],
+        "cross_check": null
+      },
+      "pdf": [
+        {
+          "url": "https://gfi.org/wp-content/uploads/2026/02/U.S.-consumer-snapshot-Plant-based-meat.pdf",
+          "status": "failed",
+          "detail": "http_403",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.oecd.org/content/dam/oecd/en/publications/reports/2022/09/meat-protein-alternatives_54e42940/387d30cf-en.pdf",
+          "status": "blocked",
+          "detail": "robots_disallowed",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.rvo.nl/files/file/2021/06/Proteins-Study-Midwest-Report_0.pdf",
+          "status": "fetched",
+          "detail": "pdf: 50 of 84 page(s) read",
+          "evidence": 34,
+          "figures": 2,
+          "pages_cited": [
+            6,
+            7,
+            23,
+            31,
+            34,
+            35,
+            38,
+            39,
+            40,
+            41
+          ],
+          "verification": {
+            "verified_reextracted": 34
+          },
+          "limitations": [
+            "read 50 of 84 pages (market.pdf_max_pages)",
+            "page 2: table 0: irregular rows or empty cells; not used for figures",
+            "page 3: table 0: irregular rows or empty cells; not used for figures",
+            "page 3: table 1: irregular rows or empty cells; not used for figures",
+            "page 4: table 0: irregular rows or empty cells; not used for figures"
+          ]
+        },
+        {
+          "url": "https://gfi.org/wp-content/uploads/2026/05/GFI_2026-State-of-the-Industry-Plant-based-meat-seafood-eggs-dairy-and-ingredients.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://gfi.org/wp-content/uploads/2025/06/State-of-the-Industry-Plant-based-meat-seafood-eggs-dairy-and-ingredients-GFI.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://gfi.org/wp-content/uploads/2023/09/COR23030_Plant-based-meat-and-seafood-one-pager.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        }
+      ],
+      "selection": {
+        "useful_sources": 2,
+        "attempts_without_evidence": {
+          "no evidence": 2,
+          "failed": 5
+        },
+        "failures": 5,
+        "failures_recovered": 2,
+        "stopped": "remaining candidates add little (best value 0.040 < 0.08); open questions: definition, business_models",
+        "used": {
+          "useful": 2,
+          "attempts": 9,
+          "html_pages": 7,
+          "pdfs": 2,
+          "pdf_pages": 50,
+          "bytes": 6898272,
+          "waves": 3
+        },
+        "open_questions": [
+          {
+            "key": "definition",
+            "reason": "3 source(s) collected for it gave none (1 blocked, 1 failed, 1 no evidence for it); 2 candidate(s) not collected: over the PDF allowance (2, budget.max_pdfs)"
+          },
+          {
+            "key": "business_models",
+            "reason": "no search result was aimed at it"
+          }
+        ]
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        }
+      ],
+      "wall_seconds": 54.8,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "prod-invoicing-freelancers",
+      "mode": "product",
+      "status": "partial",
+      "status_reasons": [
+        "3 source(s) failed",
+        "15 source(s) skipped"
+      ],
+      "duration_seconds": 22.5,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 6,
+        "failed": 3,
+        "skipped": 15
+      },
+      "sources_tried": 9,
+      "sources_used": 6,
+      "retrieval_rate": 0.67,
+      "domains": 4,
+      "questions": 7,
+      "questions_answered": 7,
+      "evidence": 87,
+      "duplicate_excerpts": 2,
+      "contradictions": 0,
+      "metrics": 6,
+      "competitor_pages": {
+        "tried": 4,
+        "fetched": 4,
+        "rendered": 0
+      },
+      "price_points": 10,
+      "gates": {
+        "provenance": {
+          "checked": 87,
+          "failed": 0,
+          "pass": true,
+          "examples": [],
+          "by_status": {
+            "verified_reextracted": 87
+          }
+        },
+        "citations": {
+          "checked": 126,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 13,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 7,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 70,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "pdf": [],
+      "selection": {
+        "useful_sources": 2,
+        "attempts_without_evidence": {
+          "failed": 3
+        },
+        "failures": 3,
+        "failures_recovered": 2,
+        "stopped": "remaining candidates add little (best value 0.035 < 0.08); open questions: none",
+        "used": {
+          "useful": 2,
+          "attempts": 5,
+          "html_pages": 5,
+          "pdfs": 0,
+          "pdf_pages": 0,
+          "bytes": 665589,
+          "waves": 2
+        },
+        "open_questions": []
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        },
+        {
+          "name": "min_competitor_pages_fetched",
+          "ok": true,
+          "detail": 4
+        }
+      ],
+      "wall_seconds": 23.0,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "prod-email-marketing-ecommerce",
+      "mode": "product",
+      "status": "partial",
+      "status_reasons": [
+        "1 source(s) failed",
+        "13 source(s) skipped"
+      ],
+      "duration_seconds": 19.1,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 8,
+        "failed": 1,
+        "blocked": 1,
+        "irrelevant": 1,
+        "skipped": 13
+      },
+      "sources_tried": 11,
+      "sources_used": 8,
+      "retrieval_rate": 0.73,
+      "domains": 6,
+      "questions": 7,
+      "questions_answered": 7,
+      "evidence": 176,
+      "duplicate_excerpts": 3,
+      "contradictions": 0,
+      "metrics": 1,
+      "competitor_pages": {
+        "tried": 4,
+        "fetched": 4,
+        "rendered": 0
+      },
+      "price_points": 16,
+      "gates": {
+        "provenance": {
+          "checked": 176,
+          "failed": 0,
+          "pass": true,
+          "examples": [],
+          "by_status": {
+            "verified_reextracted": 176
+          }
+        },
+        "citations": {
+          "checked": 151,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 16,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 2,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 76,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "pdf": [
+        {
+          "url": "https://assets.ctfassets.net/t21gix3kzulv/1MiKietIy4ZsM5QNL3hheZ/273bf44ef091ca0a0aeca473da61bf0d/CTCT_EmailTrendsforEcommerce.pdf",
+          "status": "fetched",
+          "detail": "pdf: 20 of 20 page(s) read",
+          "evidence": 40,
+          "figures": 6,
+          "pages_cited": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            15,
+            16,
+            17
+          ],
+          "verification": {
+            "verified_reextracted": 40
+          },
+          "limitations": [
+            "publication date from the PDF's metadata (creation date), not from its text"
+          ]
+        }
+      ],
+      "selection": {
+        "useful_sources": 4,
+        "attempts_without_evidence": {
+          "failed": 1,
+          "irrelevant": 1
+        },
+        "failures": 1,
+        "failures_recovered": 1,
+        "stopped": "remaining candidates add little (best value 0.000 < 0.08); open questions: none",
+        "used": {
+          "useful": 4,
+          "attempts": 6,
+          "html_pages": 5,
+          "pdfs": 1,
+          "pdf_pages": 20,
+          "bytes": 3897356,
+          "waves": 3
+        },
+        "open_questions": []
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        },
+        {
+          "name": "min_competitor_pages_fetched",
+          "ok": true,
+          "detail": 4
+        }
+      ],
+      "wall_seconds": 19.6,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "sizing-crm-india-msme",
+      "mode": "industry",
+      "status": "partial",
+      "status_reasons": [
+        "16 source(s) skipped"
+      ],
+      "duration_seconds": 11.8,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 4,
+        "skipped": 16
+      },
+      "sources_tried": 4,
+      "sources_used": 4,
+      "retrieval_rate": 1.0,
+      "domains": 4,
+      "questions": 8,
+      "questions_answered": 8,
+      "evidence": 97,
+      "duplicate_excerpts": 0,
+      "contradictions": 0,
+      "metrics": 7,
+      "competitor_pages": {
+        "tried": 0,
+        "fetched": 0,
+        "rendered": 0
+      },
+      "price_points": 1,
+      "gates": {
+        "provenance": {
+          "checked": 97,
+          "failed": 0,
+          "pass": true,
+          "examples": [],
+          "by_status": {
+            "verified_reextracted": 97
+          }
+        },
+        "citations": {
+          "checked": 79,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 6,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 8,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 18,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 47,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "sizing": {
+        "target_scope": "India, USD, 2025 or earlier",
+        "results": [
+          {
+            "method": "top_down",
+            "tam": 2315000000.0,
+            "sam": null,
+            "som": null,
+            "verified": false
+          },
+          {
+            "method": "bottom_up",
+            "tam": 15213120000.0,
+            "sam": 760656000.0,
+            "som": 7606560.0,
+            "verified": false
+          }
+        ],
+        "excluded": [
+          {
+            "figure": "USD 83 billion for 2025 (Global)",
+            "evidence_ids": [
+              "ev_535e410c9c56"
+            ],
+            "reason": "geography Global, not India"
+          },
+          {
+            "figure": "USD 2.58 billion for 2025 (geography not stated)",
+            "evidence_ids": [
+              "ev_641670734fa7"
+            ],
+            "reason": "geography not stated: it may be global or another region than India"
+          }
+        ],
+        "insufficient": [],
+        "cross_check": "top-down and bottom-up TAM differ by 6.6x: the market definitions or inputs disagree; review before use"
+      },
+      "pdf": [
+        {
+          "url": "https://pdf.marketpublishers.com/bccresearch/customer-relationship-management-crm-software-global-markets.pdf",
+          "status": "fetched",
+          "detail": "pdf: 13 of 13 page(s) read",
+          "evidence": 2,
+          "figures": 1,
+          "pages_cited": [
+            1,
+            13
+          ],
+          "verification": {
+            "verified_reextracted": 2
+          },
+          "limitations": [
+            "page 1: table 0: irregular rows or empty cells; not used for figures",
+            "page 1: table 1: irregular rows or empty cells; not used for figures",
+            "page 1: table 2: irregular rows or empty cells; not used for figures",
+            "page 1: table 3: irregular rows or empty cells; not used for figures",
+            "page 1: table 4: irregular rows or empty cells; not used for figures"
+          ]
+        },
+        {
+          "url": "https://nucleusresearch.com/wp-content/uploads/2023/04/x78-CRM-Technology-Value-Matrix-2023.pdf",
+          "status": "fetched",
+          "detail": "pdf: 11 of 11 page(s) read",
+          "evidence": 40,
+          "figures": 0,
+          "pages_cited": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "verification": {
+            "verified_reextracted": 40
+          },
+          "limitations": [
+            "publication date from the PDF's metadata (creation date), not from its text"
+          ]
+        },
+        {
+          "url": "https://www.mospi.gov.in/sites/default/files/publication_reports/Untitled-1%20-%20CM_LIX_04_270124_Anindita%20Sinharay.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.rocsearch.com/wp-content/uploads/Evaluating-the-attractiveness-of-the-European-CRM-software-sector-for-a-PE-firm.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.mospi.gov.in/uploads/latestReleases/latest_release_1778063743760_e338f15d-195f-429f-892d-aa4155c7c4ce_Press_Note_ASUSE_2025_Report-English_(1).pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.salesforce.com/en-us/wp-content/uploads/sites/4/documents/crm/isg-buyers-guide-customer-relationship-management-2026-software-provider-report-salesforce.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.mospi.gov.in/uploads/latestReleases/latest_release_1779354023060_d1887672-d615-4e53-9e66-2e28d370b371_Press_Note_QBUSE_Q1_2026_English.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://www.mospi.gov.in/sites/default/files/press_release/Press_Note_ASUSE_202324_Report%20-English.pdf",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        },
+        {
+          "url": "https://research.isg-one.com/hubfs/crm-properties-file-values/ISG_Research_Buyers_Guide_CRM_Overall_2024_Executive_Summary.pdf?hsLang=en",
+          "status": "skipped",
+          "detail": "over the PDF allowance (2, budget.max_pdfs)",
+          "evidence": 0,
+          "figures": 0,
+          "pages_cited": [],
+          "verification": {},
+          "limitations": []
+        }
+      ],
+      "selection": {
+        "useful_sources": 4,
+        "attempts_without_evidence": {},
+        "failures": 0,
+        "failures_recovered": 0,
+        "stopped": "remaining candidates add little (best value 0.073 < 0.08); open questions: none",
+        "used": {
+          "useful": 4,
+          "attempts": 4,
+          "html_pages": 2,
+          "pdfs": 2,
+          "pdf_pages": 24,
+          "bytes": 679503,
+          "waves": 1
+        },
+        "open_questions": []
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        },
+        {
+          "name": "bottom_up.low",
+          "ok": true,
+          "detail": "[3803280000.0, 114098400.0, 570492.0] vs [3803280000.0, 114098400.0, 570492.0]"
+        },
+        {
+          "name": "bottom_up.base",
+          "ok": true,
+          "detail": "[15213120000.0, 760656000.0, 7606560.0] vs [15213120000.0, 760656000.0, 7606560.0]"
+        },
+        {
+          "name": "bottom_up.high",
+          "ok": true,
+          "detail": "[34229520000.0, 2738361600.0, 54767232.0] vs [34229520000.0, 2738361600.0, 54767232.0]"
+        }
+      ],
+      "wall_seconds": 12.3,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    }
+  ],
+  "gates_passed": true
+}

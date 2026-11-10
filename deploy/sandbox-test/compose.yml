@@ -1,0 +1,43 @@
+# TEST-ONLY browser containment check (deploy/sandbox-test/run.sh,
+# docs/security-review.md): the crawler image renders pages from a fixture
+# that is also the probe's only DNS server, so every name looked up is logged.
+#
+# The probe runs like the production worker: as the image's non-root user,
+# with deploy/chrome-seccomp.json, no added capabilities, not privileged.
+#
+# TEST-ONLY EXCEPTION: GTM__FETCH__ALLOWED_NETWORKS lets the crawler reach the
+# fixture on this private network. Never set it in a real deployment.
+
+services:
+  fixture:
+    image: ${IMAGE:-gtm-crawler}
+    user: "0:0"  # binds ports 53 and 80; test fixture only, not the crawler
+    command: ["python", "-u", "/t/fixture.py"]
+    volumes:
+      - ./fixture.py:/t/fixture.py:ro
+    networks:
+      default:
+        ipv4_address: 172.31.251.53
+
+  probe:
+    image: ${IMAGE:-gtm-crawler}
+    profiles: ["probe"]
+    command: ["python", "/t/probe.py"]
+    security_opt:
+      - seccomp=../chrome-seccomp.json
+    dns: [172.31.251.53]
+    environment:
+      GTM__IDENTITY__USER_AGENT_CONTACT: https://sandbox-test.invalid/contact
+      GTM__FETCH__ALLOWED_NETWORKS: 172.31.251.0/24  # TEST-ONLY, see above
+      GTM__LOGGING__LEVEL: WARNING
+    volumes:
+      - ./probe.py:/t/probe.py:ro
+    mem_limit: ${PROBE_MEMORY:-2560m}
+    memswap_limit: ${PROBE_MEMORY:-2560m}  # no swap: the limit is the limit
+    depends_on: [fixture]
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.31.251.0/24

@@ -1,0 +1,4967 @@
+{
+ "conventions": [
+  "(v1) C-pairing: prices paired by amount and percent, then by evidence overlap, then by field agreement (global greedy); one quicksprout pair that joined two different occurrences was split.",
+  "(v1) C-included: 'included' holds the allowances or inclusions stated with that occurrence (users, projects, storage, data, devices, minutes, nights, items said to be included), not feature descriptions, delivery formats or 'recommended for' lines.",
+  "(v1) C-included-bought: the quantity being bought is not repeated in 'included' when it is already in the product name or in basis_quantity; a variant size goes to 'included' only when the product name lacks it.",
+  "(v1) C-included-conditions: wallet top-up / spend thresholds and validity periods are purchase conditions (included null); a volume tier tied to a per-unit rate ('for a quantity of 5000-10,000 SMS') is kept in 'included' as written.",
+  "(v1) C-basis-vocab: basis uses the guide's singular generic unit: 'message' for SMS and SMS units.",
+  "(v1) C-goods-basis: goods sold as a whole item or pack with no 'per' wording have basis and basis_quantity null; a basis is set only when the text states a per-unit (/kg, /lb, / bunch, /pc).",
+  "(v1) C-names: plan and product as the page writes them at that occurrence (row or column label, heading incl. its descriptor), without footnote markers or embedded prices; an allowance in parentheses goes to 'included'.",
+  "(v1) C-plan-vs-product: on a vendor's own page separate services are 'product' (plan null) and tiers are 'plan'; on review, comparison and news pages 'product' is the tool or company priced and its tier or service line is 'plan'.",
+  "(v1) C-product-qualifier: qualifiers of a basis or ticket (employee type, card type, one-way/return, passenger row) are neither product nor plan; they stay in the evidence.",
+  "(v1) C-addon-name: an add-on's product is the add-on's name as written.",
+  "(v1) C-tax-scope: tax comes from a statement that covers the price: page-level ('All prices ...', an unscoped '* GST will be charged in addition to mentioned prices', a tax FAQ on fees) applies page-wide; a statement naming one kind of price (MRP) applies only to it; otherwise null.",
+  "(v1) C-effective-scope: an article-level 'Prices as of' / 'Sources checked on' date applies to every price in the article.",
+  "(v1) C-billed-scope: a billing commitment stated in an FAQ block ('We only offer annual billing') applies to the prices in that block.",
+  "(v1) C-period: period only when stated with the amount (incl. 'month-to-month' and a JSON-LD offer's own description); a 'Monthly/Annual billing' row label sets billed, not period.",
+  "(v1) C-promo: promotional true only on visible evidence (struck/was price, a stated discount, promo or first-term framing); a CSS class or a conflicting figure elsewhere is not evidence, and false is then judgeable.",
+  "(v1) C-same-offer: repeats of one offer (JSON-LD copy, variant option, per-unit breakdown of a discounted price) carry that offer's stated promotional and tax properties.",
+  "(v1) C-currency: a bare $ is read as the currency the page itself writes for the same shop's prices ('$9.99 AUD', JSON-LD AUD).",
+  "(v1) C-attribution: 'none' when no plan or product name exists (tiers named by size, page-wide fees); 'clear' when the product is plain even if the plan is unnamed.",
+  "(v1) C-unjudgeable: a field is unjudgeable only when the snapshot cannot settle it (toggle state not in HTML, nature of a trial-period price); a field the guide nulls when unstated (period) is not unjudgeable.",
+  "(v1) C-paise: fast2sms '0.25 paisa' read as INR 0.25 (the page's own tier lists give Rs 0.25/SMS for the same two offers, in a 'highest price' section); all other paise converted as written.",
+  "(v1) C-illustrative: a generic illustrative example naming no product ('a plan advertised around $3/month ... renew at $10-$18/month') is a not-price (other).",
+  "(v1) C-approx: 'around the low-$3s' is kept as a price with amount 3, bound about.",
+  "(v1) C-conflicts-as-written: contradictory figures on one page (instamojo cards vs table, neworg JSON-LD vs visible text, fast2sms Rs 60,000 vs 600000) are all labelled as written.",
+  "(v1) C-np-merge: not-prices are the union of A and B, merged when amounts match and one evidence contains the other (longer evidence kept); why: 'save X' = savings, 'X% off' = discount, other non-fee percentages = percentage_not_fee, a bundled benefit's worth or another party's price = other.",
+  "(v1) C-layout: layout is not compared by agree.py; A's value kept where they differ.",
+  "C-pairing-v2 (new in v2): pairs by amount and percent, then evidence similarity, then field agreement (global greedy); gives agree.py's 543 pairs, 5 only-A, 53 only-B. 'unjudgeable' differences are adjudicated as a field too.",
+  "C-template (new in v2): <template> content is inert and not rendered, so it is not visible text and is not labelled (sumup_gb variant cards/FAQs).",
+  "C-hidden-data (new in v2): amounts only in data attributes (toggle alternates: pilot quarterly CFO prices, syn2_insurance_de yearly premiums) are not visible and not labelled.",
+  "C-bare-dollar-local (new in v2): bare $ on a page about Mexico, New Zealand or Canada with no code written is currency null, not assumed USD (smartfit_mx, syn2_farmshop_nz, canadapost_rates), per the guide.",
+  "C-toggle-state (new in v2): when the HTML carries the toggle's selected state (switch__opt--on; annual values with 'billed annually' shown), billed follows it and is judgeable; a prepaid commitment whose cycle length is not stated ('Pagamento integral e antecipado') makes billed unjudgeable.",
+  "C-currency-null (new in v2): a quote or a percentage has currency null and currency_assumed false; JSON-LD priceCurrency means not assumed.",
+  "C-quote-fields (new in v2): a quote has no amount, so page-wide tax statements are not applied to it (tax null) and eligibility thresholds are not 'included'.",
+  "C-basis-stated (new in v2): basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp', 'Price for 5 terabytes'); a fee caption or pricing_type alone does not set it, and a percentage's base ('of the estate value', 'of your credit') is not a basis.",
+  "C-fee-label (new in v2): a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product.",
+  "C-aggregate-offer (new in v2): a JSON-LD AggregateOffer low/high is a range over the offers; plan null, product the enclosing JSON-LD item's name when it has one (clear), else attribution none.",
+  "C-names-v2 (new in v2): plan/product names are taken verbatim at the occurrence, including JSON-LD Offer names ('CFO Basic', 'Holded Plus'), card headings ('For C-Corps', 'Free for free'), tab labels ('Canada stamp rates', 'CFO') and FAQ spelling ('pay as you go'); a '/ month' unit in a column header is the period, not part of the name.",
+  "C-worth (new in v2): 'worth GBP X' next to a listed service (crunch quote builder) gives a value, not a price charged; not-price (other), as v1's bundled-benefit rule.",
+  "C-market-average (new in v2): averages of insurers' premiums by breed (quotezone_pet table and its FAQPage JSON-LD copy) are not an offer's price: not-price (competitor_average).",
+  "C-gift-card (new in v2): a gift card sold in a shop is a not-price (gift_card), as the guide lists gift cards.",
+  "C-cta (new in v2): navigation or advice lines about getting quotes ('Get an instant quote in minutes', 'It's best to get personalised quotes') are not quote prices; a stated quote-only case (FAQ 'they can provide you a quote' for >5,000 free tickets, 'On request' cells) is.",
+  "C-illustrative-v2 (new in v2): calculator outputs marked illustrative (tickettailor 'Payment processing fees*: GBP 0.40') are not-prices (other); JS-placeholder calculator outputs stay prices with unjudgeable ['*'] (v2 labelling note).",
+  "C-np-why (new in v2): a weight or size limit is 'other', not 'count'; a refundable deposit is 'other'."
+ ],
+ "counts": {
+  "paired_fields_resolved_A": 78,
+  "paired_fields_resolved_B": 258,
+  "paired_fields_resolved_other": 0,
+  "paired_fields_made_unjudgeable": 0,
+  "only_a_kept": 2,
+  "only_a_dropped": 3,
+  "only_b_kept": 1,
+  "only_b_dropped": 52,
+  "price_vs_notprice_conflicts": 32,
+  "not_price_why_resolved": 6,
+  "dropped_prices_added_as_not_prices": 20
+ },
+ "decisions": {
+  "tickettailor": [
+   {
+    "amount": 0,
+    "field": "basis",
+    "a": "ticket",
+    "b": null,
+    "final": null,
+    "evidence_text": "No fees for issuing up to 5,000 free tickets per year. £0",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0,
+    "field": "plan",
+    "a": "Free",
+    "b": "Free for free",
+    "final": "Free for free",
+    "evidence_text": "No fees for issuing up to 5,000 free tickets per year. £0",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The card heading is 'Free for free'."
+   },
+   {
+    "amount": 0.0,
+    "field": "pricing_type",
+    "a": "unknown",
+    "b": "transaction",
+    "final": "transaction",
+    "evidence_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "why": "The credit calculator prices the Pay upfront credits (one credit = one ticket): per-credit price is a per-ticket transaction fee of the Pay upfront plan (still unjudgeable *, JS placeholder)."
+   },
+   {
+    "amount": 0.0,
+    "field": "plan",
+    "a": null,
+    "b": "Pay upfront",
+    "final": "Pay upfront",
+    "evidence_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "why": "The credit calculator prices the Pay upfront credits (one credit = one ticket): per-credit price is a per-ticket transaction fee of the Pay upfront plan (still unjudgeable *, JS placeholder)."
+   },
+   {
+    "amount": 0.0,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "why": "The credit calculator prices the Pay upfront credits (one credit = one ticket): per-credit price is a per-ticket transaction fee of the Pay upfront plan (still unjudgeable *, JS placeholder)."
+   },
+   {
+    "amount": 0,
+    "field": "pricing_type",
+    "a": "unknown",
+    "b": "one_time",
+    "final": "one_time",
+    "evidence_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "why": "The calculator total is the one-off purchase of a 500-credit bundle of the Pay upfront plan (still unjudgeable *, JS placeholder)."
+   },
+   {
+    "amount": 0,
+    "field": "plan",
+    "a": null,
+    "b": "Pay upfront",
+    "final": "Pay upfront",
+    "evidence_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "why": "The calculator total is the one-off purchase of a 500-credit bundle of the Pay upfront plan (still unjudgeable *, JS placeholder)."
+   },
+   {
+    "amount": 0,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "500 ticket credits cost £0.00 per credit, totalling £0 +VAT",
+    "why": "The calculator total is the one-off purchase of a 500-credit bundle of the Pay upfront plan (still unjudgeable *, JS placeholder)."
+   },
+   {
+    "amount": 0.0,
+    "field": "tax",
+    "a": null,
+    "b": "excluded",
+    "final": "excluded",
+    "evidence_text": "Ticket Tailor fee: £0.00",
+    "why": "C-tax-scope: the note under the calculator says 'Ticket Tailor fees ... are exclusive of VAT'."
+   },
+   {
+    "amount": 1.5,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.5% + £0.20",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 0.2,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.5% + £0.20",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 2.9,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "2.9% + $0.30",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 0.3,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "2.9% + $0.30",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 1.5,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.5% + €0.25",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 0.25,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.5% + €0.25",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 2.9,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "2.9% + C$0.30",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 0.3,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "2.9% + C$0.30",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 1.75,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.75% + A$0.30",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": 0.3,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.75% + A$0.30",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. The 'Example Stripe fees' table states no per-unit."
+   },
+   {
+    "amount": null,
+    "field": "only_a",
+    "a": {
+     "amount": null,
+     "currency": null,
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "quote",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": null,
+     "evidence_text": "so they can provide you a quote for your specific event(s)",
+     "layout": "inline",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "b": null,
+    "final": "kept",
+    "evidence_text": "so they can provide you a quote for your specific event(s)",
+    "why": "FAQ offers a quote for more than 5,000 free tickets a year: a quote-only case. The FAQ names no plan (plan null, attribution none)."
+   },
+   {
+    "amount": null,
+    "field": "only_a",
+    "a": {
+     "amount": null,
+     "currency": null,
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "quote",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": null,
+     "evidence_text": "so they can provide you a quote for your specific event(s)",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "b": null,
+    "final": "kept",
+    "evidence_text": "so they can provide you a quote for your specific event(s)",
+    "why": "FAQPage JSON-LD copy of the quote offer (every occurrence labelled)."
+   },
+   {
+    "amount": 0.4,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 0.4,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "transaction",
+     "period": null,
+     "billed": null,
+     "basis": "ticket",
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Stripe",
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": null,
+     "evidence_text": "Payment processing fees*: £0.40",
+     "layout": "other",
+     "attribution": "clear",
+     "unjudgeable": [
+      "*"
+     ]
+    },
+    "final": "dropped",
+    "evidence_text": "Payment processing fees*: £0.40",
+    "why": "C-illustrative: the calculator's processing fee is marked 'illustrative only' for a sample ticket: not-price (other)."
+   }
+  ],
+  "pilot": [
+   {
+    "amount": 0,
+    "field": "billed",
+    "a": "annually",
+    "b": null,
+    "final": "annually",
+    "evidence_text": "Core Starts at $ 0 $ 0 /month billed annually",
+    "why": "The card writes 'billed annually' (the CFO-style toggle state is in the HTML); still unjudgeable * as a JS placeholder."
+   },
+   {
+    "amount": 0,
+    "field": "bound",
+    "a": "exact",
+    "b": "from",
+    "final": "from",
+    "evidence_text": "Core Starts at $ 0 $ 0 /month billed annually",
+    "why": "'Starts at' heads the card's price block and covers both copies of the amount (C-same-offer: a repeat of the same offer on the card carries its stated properties.)"
+   },
+   {
+    "amount": null,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "Custom Best for: Growing companies that need a customized plan for the back-office.",
+    "why": "C-currency-null: a quote or a percentage has no currency, so currency_assumed is false."
+   },
+   {
+    "amount": 1000,
+    "field": "plan",
+    "a": "Single Member LLCs",
+    "b": "For Single Member LLCs",
+    "final": "For Single Member LLCs",
+    "evidence_text": "For Single Member LLCs Starts at $1,000+ /year billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The card heading is 'For ...'."
+   },
+   {
+    "amount": 750,
+    "field": "plan",
+    "a": "Single Member LLCs",
+    "b": "For Partnerships and S-Corps",
+    "final": "For Partnerships and S-Corps",
+    "evidence_text": "Just formed? Starts at $750/year",
+    "why": "The 'Just formed? Starts at $750/year / Limited Availability' banner is inside the Partnerships and S-Corps card (raw HTML); a lower limited-availability price for new entities is promotional (C-promo)."
+   },
+   {
+    "amount": 750,
+    "field": "promotional",
+    "a": false,
+    "b": true,
+    "final": true,
+    "evidence_text": "Just formed? Starts at $750/year",
+    "why": "The 'Just formed? Starts at $750/year / Limited Availability' banner is inside the Partnerships and S-Corps card (raw HTML); a lower limited-availability price for new entities is promotional (C-promo)."
+   },
+   {
+    "amount": 2000,
+    "field": "plan",
+    "a": "Partnerships and S-Corps",
+    "b": "For Partnerships and S-Corps",
+    "final": "For Partnerships and S-Corps",
+    "evidence_text": "For Partnerships and S-Corps Starts at $2,000+ /year billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The card heading is 'For ...'."
+   },
+   {
+    "amount": 2000,
+    "field": "included",
+    "a": "Up to 25 1099-NEC filings",
+    "b": null,
+    "final": "Up to 25 1099-NEC filings",
+    "evidence_text": "For Partnerships and S-Corps Starts at $2,000+ /year billed annually",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. 'Up to N 1099-NEC filings' is a stated allowance in What's included."
+   },
+   {
+    "amount": 750,
+    "field": "plan",
+    "a": "Partnerships and S-Corps",
+    "b": "For C-Corps",
+    "final": "For C-Corps",
+    "evidence_text": "Just incorporated? Starts at $750/year",
+    "why": "The 'Just incorporated? ... Limited Availability' banner is inside the C-Corps card (raw HTML); promotional (C-promo)."
+   },
+   {
+    "amount": 750,
+    "field": "promotional",
+    "a": false,
+    "b": true,
+    "final": true,
+    "evidence_text": "Just incorporated? Starts at $750/year",
+    "why": "The 'Just incorporated? ... Limited Availability' banner is inside the C-Corps card (raw HTML); promotional (C-promo)."
+   },
+   {
+    "amount": 2450,
+    "field": "plan",
+    "a": "C-Corps",
+    "b": "For C-Corps",
+    "final": "For C-Corps",
+    "evidence_text": "For C-Corps Starts at $2,450+ /year billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The card heading is 'For ...'."
+   },
+   {
+    "amount": 2450,
+    "field": "included",
+    "a": "Up to 10 1099-NEC filings",
+    "b": null,
+    "final": "Up to 10 1099-NEC filings",
+    "evidence_text": "For C-Corps Starts at $2,450+ /year billed annually",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. 'Up to N 1099-NEC filings' is a stated allowance in What's included."
+   },
+   {
+    "amount": 500,
+    "field": "basis",
+    "a": "FBAR",
+    "b": "fbar",
+    "final": "fbar",
+    "evidence_text": "Foreign financial accounts $30 / account $500 / FBAR $500 / FBAR",
+    "why": "Guide: basis is singular lower case ('fbar')."
+   },
+   {
+    "amount": 500,
+    "field": "basis",
+    "a": "FBAR",
+    "b": "fbar",
+    "final": "fbar",
+    "evidence_text": "Foreign financial accounts $30 / account $500 / FBAR $500 / FBAR",
+    "why": "Guide: basis is singular lower case ('fbar')."
+   },
+   {
+    "amount": 1750,
+    "field": "billed",
+    "a": "annually",
+    "b": null,
+    "final": "annually",
+    "evidence_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "why": "The HTML holds the annual state ('billed annually', annual data value shown); the grey copy is the same offer (C-same-offer: a repeat of the same offer on the card carries its stated properties.), so billed annually is judgeable."
+   },
+   {
+    "amount": 1750,
+    "field": "product",
+    "a": "CFO Services",
+    "b": "CFO",
+    "final": "CFO",
+    "evidence_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The service tab is labelled 'CFO' (as 'Bookkeeping', 'Tax', 'Operations')."
+   },
+   {
+    "amount": 1750,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [],
+    "evidence_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "why": "The HTML holds the annual state ('billed annually', annual data value shown); the grey copy is the same offer (C-same-offer: a repeat of the same offer on the card carries its stated properties.), so billed annually is judgeable."
+   },
+   {
+    "amount": 1750,
+    "field": "bound",
+    "a": "exact",
+    "b": "from",
+    "final": "from",
+    "evidence_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "why": "'Starts at' heads the card's price block and covers both copies of the amount (C-same-offer: a repeat of the same offer on the card carries its stated properties.)"
+   },
+   {
+    "amount": 1750,
+    "field": "product",
+    "a": "CFO Services",
+    "b": "CFO",
+    "final": "CFO",
+    "evidence_text": "Basic Starts at $1,750 $1,750/month billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The service tab is labelled 'CFO' (as 'Bookkeeping', 'Tax', 'Operations')."
+   },
+   {
+    "amount": 3150,
+    "field": "billed",
+    "a": "annually",
+    "b": null,
+    "final": "annually",
+    "evidence_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "why": "The HTML holds the annual state ('billed annually', annual data value shown); the grey copy is the same offer (C-same-offer: a repeat of the same offer on the card carries its stated properties.), so billed annually is judgeable."
+   },
+   {
+    "amount": 3150,
+    "field": "product",
+    "a": "CFO Services",
+    "b": "CFO",
+    "final": "CFO",
+    "evidence_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The service tab is labelled 'CFO' (as 'Bookkeeping', 'Tax', 'Operations')."
+   },
+   {
+    "amount": 3150,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [],
+    "evidence_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "why": "The HTML holds the annual state ('billed annually', annual data value shown); the grey copy is the same offer (C-same-offer: a repeat of the same offer on the card carries its stated properties.), so billed annually is judgeable."
+   },
+   {
+    "amount": 3150,
+    "field": "bound",
+    "a": "exact",
+    "b": "from",
+    "final": "from",
+    "evidence_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "why": "'Starts at' heads the card's price block and covers both copies of the amount (C-same-offer: a repeat of the same offer on the card carries its stated properties.)"
+   },
+   {
+    "amount": 3150,
+    "field": "product",
+    "a": "CFO Services",
+    "b": "CFO",
+    "final": "CFO",
+    "evidence_text": "Essentials Starts at $3,150 $3,150/month billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The service tab is labelled 'CFO' (as 'Bookkeeping', 'Tax', 'Operations')."
+   },
+   {
+    "amount": 5250,
+    "field": "billed",
+    "a": "annually",
+    "b": null,
+    "final": "annually",
+    "evidence_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "why": "The HTML holds the annual state ('billed annually', annual data value shown); the grey copy is the same offer (C-same-offer: a repeat of the same offer on the card carries its stated properties.), so billed annually is judgeable."
+   },
+   {
+    "amount": 5250,
+    "field": "product",
+    "a": "CFO Services",
+    "b": "CFO",
+    "final": "CFO",
+    "evidence_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The service tab is labelled 'CFO' (as 'Bookkeeping', 'Tax', 'Operations')."
+   },
+   {
+    "amount": 5250,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [],
+    "evidence_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "why": "The HTML holds the annual state ('billed annually', annual data value shown); the grey copy is the same offer (C-same-offer: a repeat of the same offer on the card carries its stated properties.), so billed annually is judgeable."
+   },
+   {
+    "amount": 5250,
+    "field": "bound",
+    "a": "exact",
+    "b": "from",
+    "final": "from",
+    "evidence_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "why": "'Starts at' heads the card's price block and covers both copies of the amount (C-same-offer: a repeat of the same offer on the card carries its stated properties.)"
+   },
+   {
+    "amount": 5250,
+    "field": "product",
+    "a": "CFO Services",
+    "b": "CFO",
+    "final": "CFO",
+    "evidence_text": "Custom Starts at $5,250 $5,250/month billed annually",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The service tab is labelled 'CFO' (as 'Bookkeeping', 'Tax', 'Operations')."
+   },
+   {
+    "amount": null,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "Custom Best for: Growing companies whose needs don’t fit in neat boxes",
+    "why": "C-currency-null: a quote or a percentage has no currency, so currency_assumed is false."
+   },
+   {
+    "amount": 0,
+    "field": "included",
+    "a": null,
+    "b": "up to five people on the cap table",
+    "final": null,
+    "evidence_text": "Free for pre-seed founders.",
+    "why": "C-included-conditions: an eligibility or volume threshold for a quote or free tier is a purchase condition, included null."
+   },
+   {
+    "amount": 20,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "For companies that incurred R&D expenses in the US 20%",
+    "why": "C-currency-null: a quote or a percentage has no currency, so currency_assumed is false."
+   },
+   {
+    "amount": 20,
+    "field": "pricing_type",
+    "a": "one_time",
+    "b": "transaction",
+    "final": "one_time",
+    "evidence_text": "For companies that incurred R&D expenses in the US 20%",
+    "why": "A success fee on a credit claim is not a payment/order fee; one-off service fee (as the estate-administration percentages on tlw_wills)."
+   },
+   {
+    "amount": 20,
+    "field": "basis",
+    "a": "credit",
+    "b": null,
+    "final": null,
+    "evidence_text": "For companies that incurred R&D expenses in the US 20%",
+    "why": "C-basis-stated: the base of a percentage ('of the estate value', 'of your credit') is not a per-unit basis."
+   },
+   {
+    "amount": 20,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "We charge 20% of your total credit received.",
+    "why": "C-currency-null: a quote or a percentage has no currency, so currency_assumed is false."
+   },
+   {
+    "amount": 20,
+    "field": "pricing_type",
+    "a": "one_time",
+    "b": "transaction",
+    "final": "one_time",
+    "evidence_text": "We charge 20% of your total credit received.",
+    "why": "A success fee on a credit claim is not a payment/order fee; one-off service fee (as the estate-administration percentages on tlw_wills)."
+   },
+   {
+    "amount": 20,
+    "field": "basis",
+    "a": "credit",
+    "b": null,
+    "final": null,
+    "evidence_text": "We charge 20% of your total credit received.",
+    "why": "C-basis-stated: the base of a percentage ('of the estate value', 'of your credit') is not a per-unit basis."
+   },
+   {
+    "amount": 199,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "none",
+    "final": "ambiguous",
+    "evidence_text": "starting at $199/month",
+    "why": "The WebPage description names three service lines and no plan; a careful reader cannot tell which the $199/month is for: ambiguous."
+   },
+   {
+    "amount": 1750,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "\"category\": \"CFO Services\", \"price\": \"1750\"",
+    "why": "JSON-LD priceCurrency USD: currency not assumed."
+   },
+   {
+    "amount": 1750,
+    "field": "plan",
+    "a": "Basic",
+    "b": "CFO Basic",
+    "final": "CFO Basic",
+    "evidence_text": "\"category\": \"CFO Services\", \"price\": \"1750\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer name is 'CFO Basic' etc."
+   },
+   {
+    "amount": 3150,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "\"category\": \"CFO Services\", \"price\": \"3150\"",
+    "why": "JSON-LD priceCurrency USD: currency not assumed."
+   },
+   {
+    "amount": 3150,
+    "field": "plan",
+    "a": "Essentials",
+    "b": "CFO Essentials",
+    "final": "CFO Essentials",
+    "evidence_text": "\"category\": \"CFO Services\", \"price\": \"3150\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer name is 'CFO Basic' etc."
+   },
+   {
+    "amount": 5250,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "\"category\": \"CFO Services\", \"price\": \"5250\"",
+    "why": "JSON-LD priceCurrency USD: currency not assumed."
+   },
+   {
+    "amount": 5250,
+    "field": "plan",
+    "a": "Custom",
+    "b": "CFO Custom",
+    "final": "CFO Custom",
+    "evidence_text": "\"category\": \"CFO Services\", \"price\": \"5250\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer name is 'CFO Basic' etc."
+   },
+   {
+    "amount": 500,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "\"category\": \"COO Services\", \"price\": \"500\"",
+    "why": "JSON-LD priceCurrency USD: currency not assumed."
+   },
+   {
+    "amount": 500,
+    "field": "plan",
+    "a": "Essentials",
+    "b": "COO Essentials",
+    "final": "COO Essentials",
+    "evidence_text": "\"category\": \"COO Services\", \"price\": \"500\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer name is 'CFO Basic' etc."
+   },
+   {
+    "amount": 20,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "R&D tax credit service charging 20% of total credit received",
+    "why": "C-currency-null: a quote or a percentage has no currency, so currency_assumed is false."
+   },
+   {
+    "amount": 20,
+    "field": "pricing_type",
+    "a": "one_time",
+    "b": "transaction",
+    "final": "one_time",
+    "evidence_text": "R&D tax credit service charging 20% of total credit received",
+    "why": "A success fee on a credit claim is not a payment/order fee; one-off service fee (as the estate-administration percentages on tlw_wills)."
+   },
+   {
+    "amount": 20,
+    "field": "basis",
+    "a": "credit",
+    "b": null,
+    "final": null,
+    "evidence_text": "R&D tax credit service charging 20% of total credit received",
+    "why": "C-basis-stated: the base of a percentage ('of the estate value', 'of your credit') is not a per-unit basis."
+   }
+  ],
+  "bunny_cdn": [
+   {
+    "amount": null,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "From 2 PB+ Contact us",
+    "why": "C-currency-null: a quote or a percentage has no currency, so currency_assumed is false."
+   },
+   {
+    "amount": 50,
+    "field": "basis",
+    "a": null,
+    "b": "TB",
+    "final": "TB",
+    "evidence_text": "Price for 5 terabytes (Europe & North America) bunny.net $50",
+    "why": "'Price for 5 terabytes' is a price per 5 TB (basis TB, quantity 5); C-included-bought: the bought quantity is not repeated in included."
+   },
+   {
+    "amount": 50,
+    "field": "basis_quantity",
+    "a": null,
+    "b": 5,
+    "final": 5,
+    "evidence_text": "Price for 5 terabytes (Europe & North America) bunny.net $50",
+    "why": "'Price for 5 terabytes' is a price per 5 TB (basis TB, quantity 5); C-included-bought: the bought quantity is not repeated in included."
+   },
+   {
+    "amount": 50,
+    "field": "product",
+    "a": "Bunny CDN",
+    "b": null,
+    "final": null,
+    "evidence_text": "Price for 5 terabytes (Europe & North America) bunny.net $50",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The chart row names only the vendor (bunny.net): product null, attribution none."
+   },
+   {
+    "amount": 50,
+    "field": "included",
+    "a": "5 terabytes (Europe & North America)",
+    "b": null,
+    "final": null,
+    "evidence_text": "Price for 5 terabytes (Europe & North America) bunny.net $50",
+    "why": "'Price for 5 terabytes' is a price per 5 TB (basis TB, quantity 5); C-included-bought: the bought quantity is not repeated in included."
+   },
+   {
+    "amount": 50,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Price for 5 terabytes (Europe & North America) bunny.net $50",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The chart row names only the vendor (bunny.net): product null, attribution none."
+   }
+  ],
+  "wasabi": [
+   {
+    "amount": 7.99,
+    "field": "billed",
+    "a": null,
+    "b": "monthly",
+    "final": "monthly",
+    "evidence_text": "Starting at $7.99 TB/month",
+    "why": "The Pay as You Go card states 'Pay monthly' (billing commitment)."
+   },
+   {
+    "amount": 0,
+    "field": "product",
+    "a": null,
+    "b": "Egress & API fees",
+    "final": "Egress & API fees",
+    "evidence_text": "Egress & API fees $0 $0",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 0,
+    "field": "product",
+    "a": null,
+    "b": "Egress & API fees",
+    "final": "Egress & API fees",
+    "evidence_text": "Egress & API fees $0 $0",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": null,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": null,
+     "currency": null,
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "quote",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": "RCS (Reserved Capacity Storage)",
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": null,
+     "evidence_text": "Discounts determined by both the storage capacity purchased and the contract term length",
+     "layout": "table",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "Discounts determined by both the storage capacity purchased and the contract term length",
+    "why": "The RCS cell describes how discounts are set; it states neither a price nor a quote request."
+   },
+   {
+    "amount": 80,
+    "field": "not_price_why",
+    "a": "savings",
+    "b": "percentage_not_fee",
+    "final": "percentage_not_fee",
+    "evidence_text": "up to 80% less than the hyperscalers",
+    "why": "C-np-merge: 'up to 80% less than' is a non-fee comparison percentage, not 'save X'."
+   },
+   {
+    "amount": 80,
+    "field": "not_price_why",
+    "a": "savings",
+    "b": "percentage_not_fee",
+    "final": "percentage_not_fee",
+    "evidence_text": "Up to 80% less than Amazon S3",
+    "why": "C-np-merge: 'up to 80% less than' is a non-fee comparison percentage, not 'save X'."
+   }
+  ],
+  "canadapost_rates": [
+   {
+    "amount": 1.44,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $1.44 for a single stamp",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 1.24,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "$1.24/stamp in a booklet",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 1.75,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $1.75",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 2.61,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $2.61",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 4.29,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $4.29",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 5.98,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "Over 200 g up to 300 g (Up to 60 sheets of paper Footnote 1) $5.98",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 6.85,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "Over 300 g up to 400 g (Up to 80 sheets of paper Footnote 1) $6.85",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 7.36,
+    "field": "plan",
+    "a": "Canada",
+    "b": "Canada stamp rates",
+    "final": "Canada stamp rates",
+    "evidence_text": "Over 400 g up to 500 g (Up to 100 sheets of paper Footnote 1) $7.36",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 1.75,
+    "field": "plan",
+    "a": "U.S.",
+    "b": "U.S. stamp rates",
+    "final": "U.S. stamp rates",
+    "evidence_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $1.75",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 2.61,
+    "field": "plan",
+    "a": "U.S.",
+    "b": "U.S. stamp rates",
+    "final": "U.S. stamp rates",
+    "evidence_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $2.61",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 4.29,
+    "field": "plan",
+    "a": "U.S.",
+    "b": "U.S. stamp rates",
+    "final": "U.S. stamp rates",
+    "evidence_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $4.29",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 7.49,
+    "field": "plan",
+    "a": "U.S.",
+    "b": "U.S. stamp rates",
+    "final": "U.S. stamp rates",
+    "evidence_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $7.49",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 14.99,
+    "field": "plan",
+    "a": "U.S.",
+    "b": "U.S. stamp rates",
+    "final": "U.S. stamp rates",
+    "evidence_text": "Over 200 g up to 500 g (Up to 100 sheets of paper Footnote 1) $14.99",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 3.65,
+    "field": "plan",
+    "a": "International",
+    "b": "International stamp rates",
+    "final": "International stamp rates",
+    "evidence_text": "Up to 30 g (Up to 5 sheets of paper Footnote 1) $3.65",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 5.21,
+    "field": "plan",
+    "a": "International",
+    "b": "International stamp rates",
+    "final": "International stamp rates",
+    "evidence_text": "Over 30 g up to 50 g (Up to 9 sheets of paper Footnote 1) $5.21",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 8.6,
+    "field": "plan",
+    "a": "International",
+    "b": "International stamp rates",
+    "final": "International stamp rates",
+    "evidence_text": "Up to 100 g (Up to 20 sheets of paper Footnote 1) $8.60",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 14.99,
+    "field": "plan",
+    "a": "International",
+    "b": "International stamp rates",
+    "final": "International stamp rates",
+    "evidence_text": "Over 100 g up to 200 g (Up to 40 sheets of paper Footnote 1) $14.99",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 29.96,
+    "field": "plan",
+    "a": "International",
+    "b": "International stamp rates",
+    "final": "International stamp rates",
+    "evidence_text": "Over 200 g up to 500 g (Up to 100 sheets of paper Footnote 1) $29.96",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The tab labels read 'Canada stamp rates' etc."
+   },
+   {
+    "amount": 500,
+    "field": "not_price_why",
+    "a": "count",
+    "b": "other",
+    "final": "other",
+    "evidence_text": "If your letter exceeds 500 g, you will have to use our parcel services.",
+    "why": "C-np-why: 500 g is a weight limit, not a count."
+   }
+  ],
+  "annefrank": [
+   {
+    "amount": 1.0,
+    "field": "basis",
+    "a": "ticket",
+    "b": null,
+    "final": null,
+    "evidence_text": "* including € 1.00 booking fee € 16.50*",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 1.0,
+    "field": "product",
+    "a": null,
+    "b": "booking fee",
+    "final": "booking fee",
+    "evidence_text": "* including € 1.00 booking fee € 16.50*",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 1.0,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "* including € 1.00 booking fee € 16.50*",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 1.0,
+    "field": "basis",
+    "a": "ticket",
+    "b": null,
+    "final": null,
+    "evidence_text": "* including € 1.00 booking fee Please note",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 1.0,
+    "field": "product",
+    "a": null,
+    "b": "booking fee",
+    "final": "booking fee",
+    "evidence_text": "* including € 1.00 booking fee Please note",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 1.0,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "* including € 1.00 booking fee Please note",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   }
+  ],
+  "passport_fees": [
+   {
+    "amount": 102,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 102,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Adult (16 and over) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 115.5,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 115.5,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Adult (16 and over) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "Adult (16 and over) standard 34-page passport £102 £115.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 116,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 116,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Adult (16 and over) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 129.5,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 129.5,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Adult (16 and over) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "Adult (16 and over) 54-page frequent traveller passport £116 £129.50",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 66.5,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 66.5,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Child (under 16) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 80,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 80,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Child (under 16) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "Child (under 16) standard 34-page passport £66.50 £80",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 80.5,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 80.5,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Child (under 16) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 94,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 94,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Child (under 16) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "Child (under 16) 54-page frequent traveller passport £80.50 £94",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 0,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "Passport for people born on or before 2 September 1929 Free Free",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 0,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "Passport for people born on or before 2 September 1929 Free Free",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 102,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£102\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 102,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Adult (16 and over) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "\\u003ctd\\u003e£102\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 115.5,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£115.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 115.5,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Adult (16 and over) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "\\u003ctd\\u003e£115.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 116,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£116\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 116,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Adult (16 and over) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "\\u003ctd\\u003e£116\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 129.5,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£129.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 129.5,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Adult (16 and over) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "\\u003ctd\\u003e£129.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 66.5,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£66.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 66.5,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Child (under 16) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "\\u003ctd\\u003e£66.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 80,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£80\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 80,
+    "field": "product",
+    "a": "standard 34-page passport",
+    "b": "Child (under 16) standard 34-page passport",
+    "final": "standard 34-page passport",
+    "evidence_text": "\\u003ctd\\u003e£80\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 80.5,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£80.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 80.5,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Child (under 16) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "\\u003ctd\\u003e£80.50\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 94,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003e£94\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 94,
+    "field": "product",
+    "a": "54-page frequent traveller passport",
+    "b": "Child (under 16) 54-page frequent traveller passport",
+    "final": "54-page frequent traveller passport",
+    "evidence_text": "\\u003ctd\\u003e£94\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. Age group is a qualifier; product is the passport type."
+   },
+   {
+    "amount": 0,
+    "field": "plan",
+    "a": "Apply online",
+    "b": null,
+    "final": null,
+    "evidence_text": "2 September 1929\\u003c/th\\u003e\\n \\u003ctd\\u003eFree\\u003c/td\\u003e",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   },
+   {
+    "amount": 0,
+    "field": "plan",
+    "a": "Apply by paper form",
+    "b": null,
+    "final": null,
+    "evidence_text": "\\u003ctd\\u003eFree\\u003c/td\\u003e\\n \\u003c",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. The online / paper-form columns are application channels."
+   }
+  ],
+  "sumup_gb": [
+   {
+    "amount": 1.69,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "Pay-as-you-go 1.69% Transaction fee Free",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0.99,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "Payments Plus 0.99% Transaction fee £19/month",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0.0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "you only pay when you take a payment: 0.00% for in-person payments made with a SumUp card",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0.0,
+    "field": "plan",
+    "a": "Pay-as-you-go",
+    "b": "pay as you go",
+    "final": "pay as you go",
+    "evidence_text": "you only pay when you take a payment: 0.00% for in-person payments made with a SumUp card",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The FAQ writes 'pay as you go' / 'pay-as-you-go'."
+   },
+   {
+    "amount": 1.69,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.69% for all other in-person payments (including American Express and premium cards)",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 1.69,
+    "field": "plan",
+    "a": "Pay-as-you-go",
+    "b": "pay as you go",
+    "final": "pay as you go",
+    "evidence_text": "1.69% for all other in-person payments (including American Express and premium cards)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The FAQ writes 'pay as you go' / 'pay-as-you-go'."
+   },
+   {
+    "amount": 0.0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "With Payments Plus (£19/month): 0.00% for in-person payments made with a SumUp card",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0.0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "With Payments Plus (£19/month): 0.00% for in-person payments made with a SumUp card",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0.0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "With Payments Plus (£19/month): 0.00% for in-person payments made with a SumUp card",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 1.69,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "Lower in-person transaction fees (from 1.69% down to *)",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 1.69,
+    "field": "plan",
+    "a": "Pay-as-you-go",
+    "b": "pay-as-you-go",
+    "final": "pay-as-you-go",
+    "evidence_text": "Lower in-person transaction fees (from 1.69% down to *)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The FAQ writes 'pay as you go' / 'pay-as-you-go'."
+   },
+   {
+    "amount": 0.0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "With our default pay-as-you-go option: 0.00% for in-person payments made with a SumUp card",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0.0,
+    "field": "plan",
+    "a": "Pay-as-you-go",
+    "b": "pay-as-you-go",
+    "final": "pay-as-you-go",
+    "evidence_text": "With our default pay-as-you-go option: 0.00% for in-person payments made with a SumUp card",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The FAQ writes 'pay as you go' / 'pay-as-you-go'."
+   },
+   {
+    "amount": 1.69,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.69% for in-person payments made with all cards, including American Express.",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 1.69,
+    "field": "plan",
+    "a": "Pay-as-you-go",
+    "b": "pay-as-you-go",
+    "final": "pay-as-you-go",
+    "evidence_text": "1.69% for in-person payments made with all cards, including American Express.",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The FAQ writes 'pay as you go' / 'pay-as-you-go'."
+   },
+   {
+    "amount": 0.0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "With Pay As You Go: 0.00% for in-person payments made with a SumUp card",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 1.69,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "1.69% for other in-person payments (including premium, international, and American Express cards)",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "How do I get 0% fees?",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "You can benefit from 0% transaction fees when customers pay with a personal SumUp card.",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 0,
+    "field": "basis",
+    "a": "transaction",
+    "b": null,
+    "final": null,
+    "evidence_text": "You’re charged 0% fees and keep 100% of the payment",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 100,
+    "field": "not_price_why",
+    "a": "other",
+    "b": "percentage_not_fee",
+    "final": "percentage_not_fee",
+    "evidence_text": "charged 0% fees and keep 100% of the payment",
+    "why": "C-np-merge: 'keep 100% of the payment' is a non-fee percentage."
+   }
+  ],
+  "crunch": [
+   {
+    "amount": 100,
+    "field": "pricing_type",
+    "a": "one_time",
+    "b": "add_on",
+    "final": "add_on",
+    "evidence_text": "We’ll register your business with Companies House for just £100.",
+    "why": "Company formation is an optional service ticked in the quote builder on top of the accounting package: add_on (one-off, period null)."
+   },
+   {
+    "amount": 100,
+    "field": "pricing_type",
+    "a": "one_time",
+    "b": "add_on",
+    "final": "add_on",
+    "evidence_text": "We’ll register your business with Companies House for just £100.",
+    "why": "Company formation is an optional service ticked in the quote builder on top of the accounting package: add_on (one-off, period null)."
+   },
+   {
+    "amount": null,
+    "field": "only_a",
+    "a": {
+     "amount": null,
+     "currency": null,
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "quote",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": null,
+     "evidence_text": "Get an instant quote in minutes.",
+     "layout": "inline",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "b": null,
+    "final": "dropped",
+    "evidence_text": "Get an instant quote in minutes.",
+    "why": "Navigation-menu promo line for the quote builder (C-cta), not a statement of an offer's price."
+   },
+   {
+    "amount": 8,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 8,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": "month",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Virtual office",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "enjoy convenient forwarding straight to you (worth £8+VAT/month).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "enjoy convenient forwarding straight to you (worth £8+VAT/month).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 8,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 8,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": "month",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Registered office address",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "’ll provide a professional registered office address (worth £8 +VAT/month).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "’ll provide a professional registered office address (worth £8 +VAT/month).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 7,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 7,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "IR35 Solution",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "(worth £7 +VAT. Prices may vary)",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "(worth £7 +VAT. Prices may vary)",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 240,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 240,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Self assessment filing",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "No stress, no surprises (worth £240 +VAT).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "No stress, no surprises (worth £240 +VAT).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 90,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 90,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Additional Financial Healthcheck",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "helping your business stay on track (worth £90 +VAT).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "helping your business stay on track (worth £90 +VAT).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 8,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 8,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": "month",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Registered office address",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "’ll provide a professional registered office address (worth £8 +VAT/month).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "’ll provide a professional registered office address (worth £8 +VAT/month).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 8,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 8,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": "month",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Registered office address",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "a professional registered office address (worth £8 +VAT/month).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "a professional registered office address (worth £8 +VAT/month).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 7,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 7,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "IR35 Solution",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "(worth £7 +VAT. Prices may vary)",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "(worth £7 +VAT. Prices may vary)",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 240,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 240,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Self assessment filing",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "No stress, no surprises (worth £240 +VAT).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "No stress, no surprises (worth £240 +VAT).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   },
+   {
+    "amount": 90,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 90,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "add_on",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Additional Financial Healthcheck",
+     "promotional": false,
+     "tax": "excluded",
+     "included": null,
+     "effective": null,
+     "evidence_text": "helping your business stay on track (worth £90 +VAT).",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "helping your business stay on track (worth £90 +VAT).",
+    "why": "C-worth: 'worth GBP X' gives the value of a bundled or listed service, not a price charged (contrast 'an additional GBP 20 + VAT/month applies'): not-price (other), as v1 C-np-merge."
+   }
+  ],
+  "locaweb": [
+   {
+    "amount": 5.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "A partir de R$5,90 76% OFF /mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 5.9,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "clear",
+    "evidence_text": "A partir de R$5,90 76% OFF /mês*",
+    "why": "Product named by the page heading: clear (C-attribution)."
+   },
+   {
+    "amount": 5.9,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [
+     "billed"
+    ],
+    "evidence_text": "A partir de R$5,90 76% OFF /mês*",
+    "why": "'* Pagamento integral e antecipado' states a prepaid commitment whose cycle length is not in the HTML: billed cannot be settled (C-unjudgeable)."
+   },
+   {
+    "amount": 24.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem Go Para quem está começando R$ 24,90 76% OFF R$ 5,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 24.9,
+    "field": "included",
+    "a": "1 site; 20.000 visitas mensais; 15 GB de Armazenamento SSD; 1 conta de email grátis",
+    "b": "1 site, 20.000 visitas mensais, 15 GB de Armazenamento SSD, 1 conta de email grátis",
+    "final": "1 site; 20.000 visitas mensais; 15 GB de Armazenamento SSD; 1 conta de email grátis",
+    "evidence_text": "Hospedagem Go Para quem está começando R$ 24,90 76% OFF R$ 5,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 5.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem Go Para quem está começando R$ 24,90 76% OFF R$ 5,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 5.9,
+    "field": "included",
+    "a": "1 site; 20.000 visitas mensais; 15 GB de Armazenamento SSD; 1 conta de email grátis",
+    "b": "1 site, 20.000 visitas mensais, 15 GB de Armazenamento SSD, 1 conta de email grátis",
+    "final": "1 site; 20.000 visitas mensais; 15 GB de Armazenamento SSD; 1 conta de email grátis",
+    "evidence_text": "Hospedagem Go Para quem está começando R$ 24,90 76% OFF R$ 5,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 5.9,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [
+     "billed"
+    ],
+    "evidence_text": "Hospedagem Go Para quem está começando R$ 24,90 76% OFF R$ 5,90/mês*",
+    "why": "'* Pagamento integral e antecipado' states a prepaid commitment whose cycle length is not in the HTML: billed cannot be settled (C-unjudgeable)."
+   },
+   {
+    "amount": 37.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem I Para negócios em crescimento R$ 37,90 71% OFF R$ 10,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 37.9,
+    "field": "included",
+    "a": "Sites ilimitados; 35.000 visitas mensais; 35 GB de Armazenamento SSD; 10 contas de email grátis",
+    "b": "Sites ilimitados, 35.000 visitas mensais, 35 GB de Armazenamento SSD, 10 contas de email grátis",
+    "final": "Sites ilimitados; 35.000 visitas mensais; 35 GB de Armazenamento SSD; 10 contas de email grátis",
+    "evidence_text": "Hospedagem I Para negócios em crescimento R$ 37,90 71% OFF R$ 10,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 10.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem I Para negócios em crescimento R$ 37,90 71% OFF R$ 10,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 10.9,
+    "field": "included",
+    "a": "Sites ilimitados; 35.000 visitas mensais; 35 GB de Armazenamento SSD; 10 contas de email grátis",
+    "b": "Sites ilimitados, 35.000 visitas mensais, 35 GB de Armazenamento SSD, 10 contas de email grátis",
+    "final": "Sites ilimitados; 35.000 visitas mensais; 35 GB de Armazenamento SSD; 10 contas de email grátis",
+    "evidence_text": "Hospedagem I Para negócios em crescimento R$ 37,90 71% OFF R$ 10,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 10.9,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [
+     "billed"
+    ],
+    "evidence_text": "Hospedagem I Para negócios em crescimento R$ 37,90 71% OFF R$ 10,90/mês*",
+    "why": "'* Pagamento integral e antecipado' states a prepaid commitment whose cycle length is not in the HTML: billed cannot be settled (C-unjudgeable)."
+   },
+   {
+    "amount": 59.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem II Para negócios que escalaram R$ 59,90 72% OFF R$ 16,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 59.9,
+    "field": "included",
+    "a": "Sites ilimitados; 120.000 visitas mensais; 60 GB de Armazenamento SSD; 30 contas de email grátis",
+    "b": "Sites ilimitados, 120.000 visitas mensais, 60 GB de Armazenamento SSD, 30 contas de email grátis",
+    "final": "Sites ilimitados; 120.000 visitas mensais; 60 GB de Armazenamento SSD; 30 contas de email grátis",
+    "evidence_text": "Hospedagem II Para negócios que escalaram R$ 59,90 72% OFF R$ 16,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 16.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem II Para negócios que escalaram R$ 59,90 72% OFF R$ 16,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 16.9,
+    "field": "included",
+    "a": "Sites ilimitados; 120.000 visitas mensais; 60 GB de Armazenamento SSD; 30 contas de email grátis",
+    "b": "Sites ilimitados, 120.000 visitas mensais, 60 GB de Armazenamento SSD, 30 contas de email grátis",
+    "final": "Sites ilimitados; 120.000 visitas mensais; 60 GB de Armazenamento SSD; 30 contas de email grátis",
+    "evidence_text": "Hospedagem II Para negócios que escalaram R$ 59,90 72% OFF R$ 16,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 16.9,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [
+     "billed"
+    ],
+    "evidence_text": "Hospedagem II Para negócios que escalaram R$ 59,90 72% OFF R$ 16,90/mês*",
+    "why": "'* Pagamento integral e antecipado' states a prepaid commitment whose cycle length is not in the HTML: billed cannot be settled (C-unjudgeable)."
+   },
+   {
+    "amount": 89.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem Dedicada 4 GB Para quem precisa de + performance R$ 89,90 44% OFF R$ 49,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 89.9,
+    "field": "included",
+    "a": "Sites ilimitados; 220.000 visitas mensais; 120GB de armazenamento dedicado; 100 contas de email grátis",
+    "b": "Sites ilimitados, 220.000 visitas mensais, 120GB de armazenamento dedicado, 100 contas de email grátis",
+    "final": "Sites ilimitados; 220.000 visitas mensais; 120GB de armazenamento dedicado; 100 contas de email grátis",
+    "evidence_text": "Hospedagem Dedicada 4 GB Para quem precisa de + performance R$ 89,90 44% OFF R$ 49,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 49.9,
+    "field": "product",
+    "a": "Hospedagem de sites",
+    "b": null,
+    "final": "Hospedagem de sites",
+    "evidence_text": "Hospedagem Dedicada 4 GB Para quem precisa de + performance R$ 89,90 44% OFF R$ 49,90/mês*",
+    "why": "C-plan-vs-product: the page heading names the service line 'Hospedagem de sites'; cards are its plans."
+   },
+   {
+    "amount": 49.9,
+    "field": "included",
+    "a": "Sites ilimitados; 220.000 visitas mensais; 120GB de armazenamento dedicado; 100 contas de email grátis",
+    "b": "Sites ilimitados, 220.000 visitas mensais, 120GB de armazenamento dedicado, 100 contas de email grátis",
+    "final": "Sites ilimitados; 220.000 visitas mensais; 120GB de armazenamento dedicado; 100 contas de email grátis",
+    "evidence_text": "Hospedagem Dedicada 4 GB Para quem precisa de + performance R$ 89,90 44% OFF R$ 49,90/mês*",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. (separator only)."
+   },
+   {
+    "amount": 49.9,
+    "field": "unjudgeable",
+    "a": [],
+    "b": [
+     "billed"
+    ],
+    "final": [
+     "billed"
+    ],
+    "evidence_text": "Hospedagem Dedicada 4 GB Para quem precisa de + performance R$ 89,90 44% OFF R$ 49,90/mês*",
+    "why": "'* Pagamento integral e antecipado' states a prepaid commitment whose cycle length is not in the HTML: billed cannot be settled (C-unjudgeable)."
+   },
+   {
+    "amount": 7.9,
+    "field": "product",
+    "a": null,
+    "b": "Hospedagem de Sites",
+    "final": "Hospedagem de Sites",
+    "evidence_text": "\"lowPrice\": \"7,90\"",
+    "why": "C-aggregate-offer: the JSON-LD AggregateOffer sits in Product 'Hospedagem de Sites': product clear, plan null."
+   },
+   {
+    "amount": 7.9,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "\"lowPrice\": \"7,90\"",
+    "why": "C-aggregate-offer: the JSON-LD AggregateOffer sits in Product 'Hospedagem de Sites': product clear, plan null."
+   },
+   {
+    "amount": 137.9,
+    "field": "product",
+    "a": null,
+    "b": "Hospedagem de Sites",
+    "final": "Hospedagem de Sites",
+    "evidence_text": "\"highPrice\": \"137,90\"",
+    "why": "C-aggregate-offer: the JSON-LD AggregateOffer sits in Product 'Hospedagem de Sites': product clear, plan null."
+   },
+   {
+    "amount": 137.9,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "\"highPrice\": \"137,90\"",
+    "why": "C-aggregate-offer: the JSON-LD AggregateOffer sits in Product 'Hospedagem de Sites': product clear, plan null."
+   }
+  ],
+  "secondhome_lisbon": [
+   {
+    "amount": 25,
+    "field": "plan",
+    "a": null,
+    "b": "Single Day Pass",
+    "final": null,
+    "evidence_text": "Single Day Pass From €25 per person + VAT.",
+    "why": "C-plan-vs-product: day passes and pass bundles are separately bought items (as the menu tiles), not membership tiers: product."
+   },
+   {
+    "amount": 25,
+    "field": "product",
+    "a": "Single Day Pass",
+    "b": null,
+    "final": "Single Day Pass",
+    "evidence_text": "Single Day Pass From €25 per person + VAT.",
+    "why": "C-plan-vs-product: day passes and pass bundles are separately bought items (as the menu tiles), not membership tiers: product."
+   },
+   {
+    "amount": 70,
+    "field": "plan",
+    "a": null,
+    "b": "3 Bundle Day Pass",
+    "final": null,
+    "evidence_text": "3 Bundle Day Pass €70 per person + VAT.",
+    "why": "C-plan-vs-product: day passes and pass bundles are separately bought items (as the menu tiles), not membership tiers: product."
+   },
+   {
+    "amount": 70,
+    "field": "product",
+    "a": "3 Bundle Day Pass",
+    "b": null,
+    "final": "3 Bundle Day Pass",
+    "evidence_text": "3 Bundle Day Pass €70 per person + VAT.",
+    "why": "C-plan-vs-product: day passes and pass bundles are separately bought items (as the menu tiles), not membership tiers: product."
+   },
+   {
+    "amount": 115,
+    "field": "plan",
+    "a": null,
+    "b": "5 Bundle Day Pass",
+    "final": null,
+    "evidence_text": "5 Bundle Day Pass €115 per person + VAT.",
+    "why": "C-plan-vs-product: day passes and pass bundles are separately bought items (as the menu tiles), not membership tiers: product."
+   },
+   {
+    "amount": 115,
+    "field": "product",
+    "a": "5 Bundle Day Pass",
+    "b": null,
+    "final": "5 Bundle Day Pass",
+    "evidence_text": "5 Bundle Day Pass €115 per person + VAT.",
+    "why": "C-plan-vs-product: day passes and pass bundles are separately bought items (as the menu tiles), not membership tiers: product."
+   }
+  ],
+  "emr_edm": [
+   {
+    "amount": 10,
+    "field": "not_price_why",
+    "a": "other",
+    "b": "percentage_not_fee",
+    "final": "percentage_not_fee",
+    "evidence_text": "Basic Customization (Up to 10%)",
+    "why": "C-np-merge: 'Up to 10%' customisation is a non-fee percentage."
+   }
+  ],
+  "quotezone_pet": [
+   {
+    "amount": 3.09,
+    "field": "product",
+    "a": "Pet insurance",
+    "b": null,
+    "final": null,
+    "evidence_text": "Discover pet insurance quotes from as little as £3.09 Per Month*",
+    "why": "C-plan-vs-product: on a comparison page product is the company or tool priced; none is named (pet insurance is the page's category): attribution none."
+   },
+   {
+    "amount": 3.09,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Discover pet insurance quotes from as little as £3.09 Per Month*",
+    "why": "C-plan-vs-product: on a comparison page product is the company or tool priced; none is named (pet insurance is the page's category): attribution none."
+   },
+   {
+    "amount": 3.09,
+    "field": "product",
+    "a": "Pet insurance",
+    "b": null,
+    "final": null,
+    "evidence_text": "You could pay from £3.09 per month*",
+    "why": "C-plan-vs-product: on a comparison page product is the company or tool priced; none is named (pet insurance is the page's category): attribution none."
+   },
+   {
+    "amount": 3.09,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "You could pay from £3.09 per month*",
+    "why": "C-plan-vs-product: on a comparison page product is the company or tool priced; none is named (pet insurance is the page's category): attribution none."
+   },
+   {
+    "amount": 3.09,
+    "field": "product",
+    "a": "Pet insurance",
+    "b": null,
+    "final": null,
+    "evidence_text": "customers reported paying as little as £3.09 a month*",
+    "why": "C-plan-vs-product: on a comparison page product is the company or tool priced; none is named (pet insurance is the page's category): attribution none."
+   },
+   {
+    "amount": 3.09,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "customers reported paying as little as £3.09 a month*",
+    "why": "C-plan-vs-product: on a comparison page product is the company or tool priced; none is named (pet insurance is the page's category): attribution none."
+   },
+   {
+    "amount": null,
+    "field": "only_a",
+    "a": {
+     "amount": null,
+     "currency": null,
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "quote",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Pet insurance",
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": null,
+     "evidence_text": "It’s best to get personalised quotes to find out how much a pet policy will cost you.",
+     "layout": "inline",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "b": null,
+    "final": "dropped",
+    "evidence_text": "It’s best to get personalised quotes to find out how much a pet policy will cost you.",
+    "why": "General advice to get quotes on a comparison page, not an offer whose price is a quote."
+   },
+   {
+    "amount": 286.2,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 286.2,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "1. Bullmastiff 286.20",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "1. Bullmastiff 286.20",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 271.2,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 271.2,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "2. Great Dane 271.20",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "2. Great Dane 271.20",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 205.42,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 205.42,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "3. Irish Setter 205.42",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "3. Irish Setter 205.42",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 204.25,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 204.25,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "4. Rhodesian Ridgeback 204.25",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "4. Rhodesian Ridgeback 204.25",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 194.88,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 194.88,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "5. Weimaraner 194.88",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "5. Weimaraner 194.88",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 174.26,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 174.26,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "6. Boxer 174.26",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "6. Boxer 174.26",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 172.31,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 172.31,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "7. Basset Hound 172.31",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "7. Basset Hound 172.31",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 170.77,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 170.77,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "8. German Shepherd Dog Cross 170.77",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "8. German Shepherd Dog Cross 170.77",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 165.08,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 165.08,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "9. Shetland Sheepdog 165.08",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "9. Shetland Sheepdog 165.08",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 161.4,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 161.4,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "10. Hungarian Vizsla 161.40",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "10. Hungarian Vizsla 161.40",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 159.72,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 159.72,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "11. Dorset Old Tyme Bulldog 159.72",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "11. Dorset Old Tyme Bulldog 159.72",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 157.08,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 157.08,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "12. Dogue de Bordeaux 157.08",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "12. Dogue de Bordeaux 157.08",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 154.63,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 154.63,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "13. Flat Coated Retriever 154.63",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "13. Flat Coated Retriever 154.63",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 153.98,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 153.98,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "14. Collie (Rough) 153.98",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "14. Collie (Rough) 153.98",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 153.12,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 153.12,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "15. Siberian Husky 153.12",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "15. Siberian Husky 153.12",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 151.63,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 151.63,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "16. Bearded Collie 151.63",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "16. Bearded Collie 151.63",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 150.26,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 150.26,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "17. Bernese Mountain Dog 150.26",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "17. Bernese Mountain Dog 150.26",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 150.26,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 150.26,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "18. Greyhound 150.26",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "18. Greyhound 150.26",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 149.16,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 149.16,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "19. Alaskan Malamute 149.16",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "19. Alaskan Malamute 149.16",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 147.78,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 147.78,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "20. Bernese Mountain Dog Cross 147.78",
+     "layout": "table",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "20. Bernese Mountain Dog Cross 147.78",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 286.2,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 286.2,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "1.Bullmastiff286.20",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "1.Bullmastiff286.20",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 271.2,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 271.2,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "2.Great Dane271.20",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "2.Great Dane271.20",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 205.42,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 205.42,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "3.Irish Setter205.42",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "3.Irish Setter205.42",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 204.25,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 204.25,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "4.Rhodesian Ridgeback204.25",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "4.Rhodesian Ridgeback204.25",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 194.88,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 194.88,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "5.Weimaraner194.88",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "5.Weimaraner194.88",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 174.26,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 174.26,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "6.Boxer174.26",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "6.Boxer174.26",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 172.31,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 172.31,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "7.Basset Hound172.31",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "7.Basset Hound172.31",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 170.77,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 170.77,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "8.German Shepherd Dog Cross170.77",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "8.German Shepherd Dog Cross170.77",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 165.08,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 165.08,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "9.Shetland Sheepdog165.08",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "9.Shetland Sheepdog165.08",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 161.4,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 161.4,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "10.Hungarian Vizsla161.40",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "10.Hungarian Vizsla161.40",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 159.72,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 159.72,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "11.Dorset Old Tyme Bulldog159.72",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "11.Dorset Old Tyme Bulldog159.72",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 157.08,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 157.08,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "12.Dogue de Bordeaux157.08",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "12.Dogue de Bordeaux157.08",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 154.63,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 154.63,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "13.Flat Coated Retriever154.63",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "13.Flat Coated Retriever154.63",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 153.98,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 153.98,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "14.Collie (Rough)153.98",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "14.Collie (Rough)153.98",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 153.12,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 153.12,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "15.Siberian Husky153.12",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "15.Siberian Husky153.12",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 151.63,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 151.63,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "16.Bearded Collie151.63",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "16.Bearded Collie151.63",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 150.26,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 150.26,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "17.Bernese Mountain Dog150.26",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "17.Bernese Mountain Dog150.26",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 150.26,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 150.26,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "18.Greyhound150.26",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "18.Greyhound150.26",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 149.16,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 149.16,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "19.Alaskan Malamute149.16",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "19.Alaskan Malamute149.16",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   },
+   {
+    "amount": 147.78,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 147.78,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "subscription",
+     "period": "year",
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": null,
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": "January to October 2024",
+     "evidence_text": "20.Bernese Mountain Dog Cross147.78",
+     "layout": "json_ld",
+     "attribution": "none",
+     "unjudgeable": []
+    },
+    "final": "dropped",
+    "evidence_text": "20.Bernese Mountain Dog Cross147.78",
+    "why": "C-market-average: the breed table's average annual premiums (and their FAQPage JSON-LD copy) are averages of insurers' quotes, not an offer: not-price (competitor_average)."
+   }
+  ],
+  "dorsetmeat": [
+   {
+    "amount": 50.0,
+    "field": "only_a",
+    "a": {
+     "amount": 50.0,
+     "currency": "GBP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "unit",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Christmas Meat Gift Card - £50",
+     "promotional": false,
+     "tax": null,
+     "included": null,
+     "effective": null,
+     "evidence_text": "Christmas Meat Gift Card - £50 £50.00",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "b": null,
+    "final": "dropped",
+    "evidence_text": "Christmas Meat Gift Card - £50 £50.00",
+    "why": "C-gift-card: the guide lists gift cards as not-prices; a gift card's price is its stored value."
+   }
+  ],
+  "zapier_sched": [
+   {
+    "amount": 10,
+    "field": "included",
+    "a": null,
+    "b": "unlimited scheduling pages",
+    "final": "unlimited scheduling pages",
+    "evidence_text": "Professional plan at $10/user/month (billed yearly)",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. 'unlimited scheduling pages' is a quantity allowance."
+   }
+  ],
+  "holded": [
+   {
+    "amount": 14.5,
+    "field": "included",
+    "a": null,
+    "b": "2 users+ your accountant",
+    "final": "2 users+ your accountant",
+    "evidence_text": "Basic For businesses that invoice every day and want to move faster. 14,50 €/mo 29,00 €excl. VAT",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The card states '2 users + your accountant' etc."
+   },
+   {
+    "amount": 29.0,
+    "field": "included",
+    "a": null,
+    "b": "2 users+ your accountant",
+    "final": "2 users+ your accountant",
+    "evidence_text": "Basic For businesses that invoice every day and want to move faster. 14,50 €/mo 29,00 €excl. VAT",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The card states '2 users + your accountant' etc."
+   },
+   {
+    "amount": 29.5,
+    "field": "included",
+    "a": null,
+    "b": "4 users+ your accountant",
+    "final": "4 users+ your accountant",
+    "evidence_text": "so you grow with order. 29,50 €/mo 59,00 €excl. VAT",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The card states '2 users + your accountant' etc."
+   },
+   {
+    "amount": 59.0,
+    "field": "included",
+    "a": null,
+    "b": "4 users+ your accountant",
+    "final": "4 users+ your accountant",
+    "evidence_text": "so you grow with order. 29,50 €/mo 59,00 €excl. VAT",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The card states '2 users + your accountant' etc."
+   },
+   {
+    "amount": 49.5,
+    "field": "included",
+    "a": null,
+    "b": "7 users+ your accountant",
+    "final": "7 users+ your accountant",
+    "evidence_text": "custom fields and priority support. 49,50 €/mo 99,00 €excl. VAT",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The card states '2 users + your accountant' etc."
+   },
+   {
+    "amount": 99.0,
+    "field": "included",
+    "a": null,
+    "b": "7 users+ your accountant",
+    "final": "7 users+ your accountant",
+    "evidence_text": "custom fields and priority support. 49,50 €/mo 99,00 €excl. VAT",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The card states '2 users + your accountant' etc."
+   },
+   {
+    "amount": 15,
+    "field": "plan",
+    "a": "Plus",
+    "b": "Holded Plus",
+    "final": "Holded Plus",
+    "evidence_text": "Price: 15 €/month (VAT not included)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 7.5,
+    "field": "plan",
+    "a": "Plus",
+    "b": "Holded Plus",
+    "final": "Holded Plus",
+    "evidence_text": "first 3 months (7,50 €/month)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 15,
+    "field": "period",
+    "a": null,
+    "b": "month",
+    "final": "month",
+    "evidence_text": "\"price\":15,\"priceCurrency\":\"EUR\"",
+    "why": "C-period: the Offer's own description states 'Price: N EUR/month'."
+   },
+   {
+    "amount": 15,
+    "field": "plan",
+    "a": "Plus",
+    "b": "Holded Plus",
+    "final": "Holded Plus",
+    "evidence_text": "\"price\":15,\"priceCurrency\":\"EUR\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 29,
+    "field": "plan",
+    "a": "Basic",
+    "b": "Holded Basic",
+    "final": "Holded Basic",
+    "evidence_text": "Price: 29 €/month (VAT not included)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 14.5,
+    "field": "plan",
+    "a": "Basic",
+    "b": "Holded Basic",
+    "final": "Holded Basic",
+    "evidence_text": "first 3 months (14,50 €/month)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 29,
+    "field": "period",
+    "a": null,
+    "b": "month",
+    "final": "month",
+    "evidence_text": "\"price\":29,\"priceCurrency\":\"EUR\"",
+    "why": "C-period: the Offer's own description states 'Price: N EUR/month'."
+   },
+   {
+    "amount": 29,
+    "field": "plan",
+    "a": "Basic",
+    "b": "Holded Basic",
+    "final": "Holded Basic",
+    "evidence_text": "\"price\":29,\"priceCurrency\":\"EUR\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 59,
+    "field": "plan",
+    "a": "Standard",
+    "b": "Holded Standard",
+    "final": "Holded Standard",
+    "evidence_text": "Price: 59 €/month (VAT not included)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 29.5,
+    "field": "plan",
+    "a": "Standard",
+    "b": "Holded Standard",
+    "final": "Holded Standard",
+    "evidence_text": "first 3 months (29,50 €/month)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 59,
+    "field": "period",
+    "a": null,
+    "b": "month",
+    "final": "month",
+    "evidence_text": "\"price\":59,\"priceCurrency\":\"EUR\"",
+    "why": "C-period: the Offer's own description states 'Price: N EUR/month'."
+   },
+   {
+    "amount": 59,
+    "field": "plan",
+    "a": "Standard",
+    "b": "Holded Standard",
+    "final": "Holded Standard",
+    "evidence_text": "\"price\":59,\"priceCurrency\":\"EUR\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 99,
+    "field": "plan",
+    "a": "Advanced",
+    "b": "Holded Advanced",
+    "final": "Holded Advanced",
+    "evidence_text": "Price: 99 €/month (VAT not included)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 49.5,
+    "field": "plan",
+    "a": "Advanced",
+    "b": "Holded Advanced",
+    "final": "Holded Advanced",
+    "evidence_text": "first 3 months (49,50 €/month)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 99,
+    "field": "period",
+    "a": null,
+    "b": "month",
+    "final": "month",
+    "evidence_text": "\"price\":99,\"priceCurrency\":\"EUR\"",
+    "why": "C-period: the Offer's own description states 'Price: N EUR/month'."
+   },
+   {
+    "amount": 99,
+    "field": "plan",
+    "a": "Advanced",
+    "b": "Holded Advanced",
+    "final": "Holded Advanced",
+    "evidence_text": "\"price\":99,\"priceCurrency\":\"EUR\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 199,
+    "field": "plan",
+    "a": "Premium",
+    "b": "Holded Premium",
+    "final": "Holded Premium",
+    "evidence_text": "Price: 199 €/month (VAT not included)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 99.5,
+    "field": "plan",
+    "a": "Premium",
+    "b": "Holded Premium",
+    "final": "Holded Premium",
+    "evidence_text": "first 3 months (99,50 €/month)",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   },
+   {
+    "amount": 199,
+    "field": "period",
+    "a": null,
+    "b": "month",
+    "final": "month",
+    "evidence_text": "\"price\":199,\"priceCurrency\":\"EUR\"",
+    "why": "C-period: the Offer's own description states 'Price: N EUR/month'."
+   },
+   {
+    "amount": 199,
+    "field": "plan",
+    "a": "Premium",
+    "b": "Holded Premium",
+    "final": "Holded Premium",
+    "evidence_text": "\"price\":199,\"priceCurrency\":\"EUR\"",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The JSON-LD Offer names are 'Holded Plus' etc."
+   }
+  ],
+  "smartfit_mx": [
+   {
+    "amount": 0,
+    "field": "period",
+    "a": "month",
+    "b": null,
+    "final": "month",
+    "evidence_text": "DESDE $ 599.00 $ 0.00* 100% OFF en el 1er mes, después $ 599.00/mes 12 meses de fidelidad",
+    "why": "C-period: '$ 0.00* ... en el 1er mes' states the amount for the first month: period month."
+   },
+   {
+    "amount": 0,
+    "field": "period",
+    "a": "month",
+    "b": null,
+    "final": "month",
+    "evidence_text": "DESDE $ 299.00 $ 0.00* 100% OFF en el 1er mes, después $ 299.00/mes 12 meses de fidelidad",
+    "why": "C-period: '$ 0.00* ... en el 1er mes' states the amount for the first month: period month."
+   },
+   {
+    "amount": 0,
+    "field": "period",
+    "a": "month",
+    "b": null,
+    "final": "month",
+    "evidence_text": "DESDE $ 399.00 $ 0.00* 100% OFF en el 1er mes, después $ 399.00/mes Sin fidelidad",
+    "why": "C-period: '$ 0.00* ... en el 1er mes' states the amount for the first month: period month."
+   }
+  ],
+  "somenergia": [
+   {
+    "amount": 0.025,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": "excluded",
+    "evidence_text": "Servicios de Ajuste: 0,025 euros/kWh (valor medio del último mes)",
+    "why": "C-tax-scope: the 'Desglose precios Sin impuestos' block covers its 'A estos precios hay que anadir' list, which adds IVA and the electricity tax on top."
+   },
+   {
+    "amount": 0.024688,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": "excluded",
+    "evidence_text": "Bono social: 0,024688 euros/día",
+    "why": "C-tax-scope: the 'Desglose precios Sin impuestos' block covers its 'A estos precios hay que anadir' list, which adds IVA and the electricity tax on top."
+   },
+   {
+    "amount": 0.025,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": "excluded",
+    "evidence_text": "Servicios de Ajuste: 0,025 euros/kWh (valor medio del último mes)",
+    "why": "C-tax-scope: the 'Desglose precios Sin impuestos' block covers its 'A estos precios hay que anadir' list, which adds IVA and the electricity tax on top."
+   },
+   {
+    "amount": 0.024688,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": "excluded",
+    "evidence_text": "Bono social: 0,024688 euros/día",
+    "why": "C-tax-scope: the 'Desglose precios Sin impuestos' block covers its 'A estos precios hay que anadir' list, which adds IVA and the electricity tax on top."
+   }
+  ],
+  "johnreed_zurich": [
+   {
+    "amount": 65,
+    "field": "plan",
+    "a": "Flex Silver",
+    "b": "Silver Flex",
+    "final": "Silver Flex",
+    "evidence_text": "FALL SPECIAL Train for only 65 CHF/month!",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The Fall Special banners name 'Silver Flex'; 'Flex Silver' is the footnote's wording."
+   }
+  ],
+  "vox_zurich": [
+   {
+    "amount": 660,
+    "field": "pricing_type",
+    "a": "unknown",
+    "b": "one_time",
+    "final": "one_time",
+    "evidence_text": "CHF 660.- x 3 per month",
+    "why": "Instalments of a one-off course price are one_time (v2 convention); only the course is unattributable (attribution ambiguous)."
+   },
+   {
+    "amount": 495,
+    "field": "pricing_type",
+    "a": "unknown",
+    "b": "one_time",
+    "final": "one_time",
+    "evidence_text": "CHF 495.- x 4 per month",
+    "why": "Instalments of a one-off course price are one_time (v2 convention); only the course is unattributable (attribution ambiguous)."
+   },
+   {
+    "amount": 330,
+    "field": "pricing_type",
+    "a": "unknown",
+    "b": "one_time",
+    "final": "one_time",
+    "evidence_text": "CHF 330.- x 6 per month",
+    "why": "Instalments of a one-off course price are one_time (v2 convention); only the course is unattributable (attribution ambiguous)."
+   },
+   {
+    "amount": 165,
+    "field": "pricing_type",
+    "a": "unknown",
+    "b": "one_time",
+    "final": "one_time",
+    "evidence_text": "CHF 165.- x 12 per month",
+    "why": "Instalments of a one-off course price are one_time (v2 convention); only the course is unattributable (attribution ambiguous)."
+   }
+  ],
+  "tlw_wills": [
+   {
+    "amount": 3,
+    "field": "basis",
+    "a": "estate value",
+    "b": null,
+    "final": null,
+    "evidence_text": "Estates with a gross value of up to £500,000 3% of the estate value (+VAT & disbursements)",
+    "why": "C-basis-stated: the base of a percentage ('of the estate value', 'of your credit') is not a per-unit basis."
+   },
+   {
+    "amount": 3,
+    "field": "included",
+    "a": "gross value of up to £500,000",
+    "b": "Estates with a gross value of up to £500,000",
+    "final": "Estates with a gross value of up to £500,000",
+    "evidence_text": "Estates with a gross value of up to £500,000 3% of the estate value (+VAT & disbursements)",
+    "why": "C-included-conditions: a value band tied to a rate is kept in included as written (row label)."
+   },
+   {
+    "amount": 2,
+    "field": "basis",
+    "a": "estate value",
+    "b": null,
+    "final": null,
+    "evidence_text": "Estates with a gross value exceeding £500,000 2% of the estate value (+VAT & disbursements)",
+    "why": "C-basis-stated: the base of a percentage ('of the estate value', 'of your credit') is not a per-unit basis."
+   },
+   {
+    "amount": 2,
+    "field": "included",
+    "a": "gross value exceeding £500,000",
+    "b": "Estates with a gross value exceeding £500,000",
+    "final": "Estates with a gross value exceeding £500,000",
+    "evidence_text": "Estates with a gross value exceeding £500,000 2% of the estate value (+VAT & disbursements)",
+    "why": "C-included-conditions: a value band tied to a rate is kept in included as written (row label)."
+   }
+  ],
+  "syn2_insurance_de": [
+   {
+    "amount": 3.49,
+    "field": "included",
+    "a": null,
+    "b": "Versicherungssumme bis 65.000 €, Fahrraddiebstahl bis 500 €",
+    "final": "Versicherungssumme bis 65.000 €, Fahrraddiebstahl bis 500 €",
+    "evidence_text": "Basis 3,49 € / Monat",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. Sum insured and bike-theft limit are the cover the premium buys."
+   },
+   {
+    "amount": 5.99,
+    "field": "included",
+    "a": null,
+    "b": "Versicherungssumme bis 100.000 €, Fahrraddiebstahl bis 1.500 €",
+    "final": "Versicherungssumme bis 100.000 €, Fahrraddiebstahl bis 1.500 €",
+    "evidence_text": "Komfort 5,99 € / Monat",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. Sum insured and bike-theft limit are the cover the premium buys."
+   },
+   {
+    "amount": 8.99,
+    "field": "included",
+    "a": null,
+    "b": "Unbegrenzte Versicherungssumme, Fahrraddiebstahl bis 5.000 €",
+    "final": "Unbegrenzte Versicherungssumme, Fahrraddiebstahl bis 5.000 €",
+    "evidence_text": "Premium 8,99 € / Monat",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. Sum insured and bike-theft limit are the cover the premium buys."
+   }
+  ],
+  "syn2_events_es": [
+   {
+    "amount": 3.5,
+    "field": "product",
+    "a": null,
+    "b": "Gastos de gestión",
+    "final": "Gastos de gestión",
+    "evidence_text": "Gastos de gestión: 3,50 € por entrada",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 3.5,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "Gastos de gestión: 3,50 € por entrada",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 320,
+    "field": "included",
+    "a": "2 personas",
+    "b": "Tienda equipada para 2 personas",
+    "final": "Tienda equipada para 2 personas",
+    "evidence_text": "Glamping desde 320€ Tienda equipada para 2 personas",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written."
+   },
+   {
+    "amount": 12,
+    "field": "included",
+    "a": null,
+    "b": "carga de móvil",
+    "final": "carga de móvil",
+    "evidence_text": "Taquilla 12€/día",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written."
+   },
+   {
+    "amount": 5,
+    "field": "product",
+    "a": "Cambio de nombre",
+    "b": "cambio de nombre",
+    "final": "cambio de nombre",
+    "evidence_text": "El cambio de nombre cuesta 5 € por entrada.",
+    "why": "C-names: plan/product as the page writes them at that occurrence."
+   },
+   {
+    "amount": 45,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "\"lowPrice\": \"45\"",
+    "why": "C-aggregate-offer: AggregateOffer low/high is a range over all offers, not one unattributable price; no product is named: attribution none."
+   },
+   {
+    "amount": 210,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "\"highPrice\": \"210\"",
+    "why": "C-aggregate-offer: AggregateOffer low/high is a range over all offers, not one unattributable price; no product is named: attribution none."
+   },
+   {
+    "amount": 2,
+    "field": "not_price_why",
+    "a": "other",
+    "b": "refund",
+    "final": "other",
+    "evidence_text": "La activación lleva un depósito reembolsable de 2 €",
+    "why": "C-np-why: a refundable deposit is a deposit, not a refund amount (other)."
+   }
+  ],
+  "syn2_shipping_se": [
+   {
+    "amount": 69,
+    "field": "plan",
+    "a": "Till ombud",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 1 kg 69 kr 99 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 69,
+    "field": "product",
+    "a": null,
+    "b": "Till ombud",
+    "final": "Till ombud",
+    "evidence_text": "Upp till 1 kg 69 kr 99 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 99,
+    "field": "plan",
+    "a": "Hemleverans",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 1 kg 69 kr 99 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 99,
+    "field": "product",
+    "a": null,
+    "b": "Hemleverans",
+    "final": "Hemleverans",
+    "evidence_text": "Upp till 1 kg 69 kr 99 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 89,
+    "field": "plan",
+    "a": "Till ombud",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 2 kg 89 kr 119 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 89,
+    "field": "product",
+    "a": null,
+    "b": "Till ombud",
+    "final": "Till ombud",
+    "evidence_text": "Upp till 2 kg 89 kr 119 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 119,
+    "field": "plan",
+    "a": "Hemleverans",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 2 kg 89 kr 119 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 119,
+    "field": "product",
+    "a": null,
+    "b": "Hemleverans",
+    "final": "Hemleverans",
+    "evidence_text": "Upp till 2 kg 89 kr 119 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 119,
+    "field": "plan",
+    "a": "Till ombud",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 5 kg 119 kr 159 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 119,
+    "field": "product",
+    "a": null,
+    "b": "Till ombud",
+    "final": "Till ombud",
+    "evidence_text": "Upp till 5 kg 119 kr 159 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 159,
+    "field": "plan",
+    "a": "Hemleverans",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 5 kg 119 kr 159 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 159,
+    "field": "product",
+    "a": null,
+    "b": "Hemleverans",
+    "final": "Hemleverans",
+    "evidence_text": "Upp till 5 kg 119 kr 159 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 159,
+    "field": "plan",
+    "a": "Till ombud",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 10 kg 159 kr 209 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 159,
+    "field": "product",
+    "a": null,
+    "b": "Till ombud",
+    "final": "Till ombud",
+    "evidence_text": "Upp till 10 kg 159 kr 209 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 209,
+    "field": "plan",
+    "a": "Hemleverans",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 10 kg 159 kr 209 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 209,
+    "field": "product",
+    "a": null,
+    "b": "Hemleverans",
+    "final": "Hemleverans",
+    "evidence_text": "Upp till 10 kg 159 kr 209 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 229,
+    "field": "plan",
+    "a": "Till ombud",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 20 kg 229 kr 289 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 229,
+    "field": "product",
+    "a": null,
+    "b": "Till ombud",
+    "final": "Till ombud",
+    "evidence_text": "Upp till 20 kg 229 kr 289 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 289,
+    "field": "plan",
+    "a": "Hemleverans",
+    "b": null,
+    "final": null,
+    "evidence_text": "Upp till 20 kg 229 kr 289 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 289,
+    "field": "product",
+    "a": null,
+    "b": "Hemleverans",
+    "final": "Hemleverans",
+    "evidence_text": "Upp till 20 kg 229 kr 289 kr",
+    "why": "C-plan-vs-product: pickup-point and home delivery are separate services: product."
+   },
+   {
+    "amount": 29,
+    "field": "included",
+    "a": null,
+    "b": "ersätter värden upp till 10 000 kr",
+    "final": "ersätter värden upp till 10 000 kr",
+    "evidence_text": "Tilläggsförsäkring 29 kr",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The insurance cover 'ersatter varden upp till 10 000 kr'."
+   },
+   {
+    "amount": 8,
+    "field": "basis",
+    "a": "shipment",
+    "b": null,
+    "final": null,
+    "evidence_text": "Drivmedelstillägg: 8 % på fraktpriset tillkommer för alla försändelser",
+    "why": "C-basis-stated: the base of a percentage ('of the estate value', 'of your credit') is not a per-unit basis. 'for alla forsandelser' says where it applies, not a per-unit."
+   },
+   {
+    "amount": 8,
+    "field": "tax",
+    "a": "included",
+    "b": null,
+    "final": "included",
+    "evidence_text": "Drivmedelstillägg: 8 % på fraktpriset tillkommer för alla försändelser",
+    "why": "C-tax-scope: 'Alla priser inkl. moms' is page-wide."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "included",
+    "b": null,
+    "final": null,
+    "evidence_text": "Kontakta vår säljavdelning för en offert.",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   },
+   {
+    "amount": null,
+    "field": "included",
+    "a": null,
+    "b": "fler än 200 paket i månaden",
+    "final": null,
+    "evidence_text": "Kontakta vår säljavdelning för en offert.",
+    "why": "C-included-conditions: an eligibility or volume threshold for a quote or free tier is a purchase condition, included null."
+   }
+  ],
+  "syn2_coworking_mx": [
+   {
+    "amount": 11500,
+    "field": "included",
+    "a": "equipos de 2 a 4 personas",
+    "b": "Para equipos de 2 a 4 personas",
+    "final": "Para equipos de 2 a 4 personas",
+    "evidence_text": "Oficina privada Desde $11,500MXN/mes",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": null,
+    "evidence_text": "Empresas Cotiza con nosotros",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   },
+   {
+    "amount": 1000,
+    "field": "product",
+    "a": null,
+    "b": "Cuota de inscripción",
+    "final": "Cuota de inscripción",
+    "evidence_text": "Cuota de inscripción única: $1,000 MXN",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 1000,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "Cuota de inscripción única: $1,000 MXN",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 2,
+    "field": "pricing_type",
+    "a": "usage",
+    "b": "add_on",
+    "final": "usage",
+    "evidence_text": "Impresiones blanco y negro $2 MXN por hoja",
+    "why": "Printing per sheet is a metered charge: usage."
+   }
+  ],
+  "syn2_accounting_pl": [
+   {
+    "amount": 2500,
+    "field": "included",
+    "a": null,
+    "b": "do 20 dokumentów miesięcznie",
+    "final": "do 20 dokumentów miesięcznie",
+    "evidence_text": "lub 2 500 zł netto rocznie przy płatności z góry",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written. The annual line sits on the Ryczalt card with its document allowance."
+   },
+   {
+    "amount": 900,
+    "field": "product",
+    "a": "Rejestracja spółki z o.o.",
+    "b": "Rejestracja spółki z o.o. w systemie S24",
+    "final": "Rejestracja spółki z o.o.",
+    "evidence_text": "Rejestracja spółki z o.o. w systemie S24 kosztuje 900 zł netto",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product. 'w systemie S24' is the filing method."
+   },
+   {
+    "amount": null,
+    "field": "product",
+    "a": "Reprezentacja przed urzędem skarbowym",
+    "b": "Reprezentację przed urzędem skarbowym",
+    "final": "Reprezentację przed urzędem skarbowym",
+    "evidence_text": "Reprezentację przed urzędem skarbowym wyceniamy indywidualnie.",
+    "why": "C-names: plan/product as the page writes them at that occurrence."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": null,
+    "evidence_text": "Reprezentację przed urzędem skarbowym wyceniamy indywidualnie.",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   }
+  ],
+  "syn2_api_usage_us": [
+   {
+    "amount": 49,
+    "field": "billed",
+    "a": null,
+    "b": "monthly",
+    "final": "monthly",
+    "evidence_text": "Growth $49/month",
+    "why": "The billing switch's state is in the HTML (Monthly is 'switch__opt--on'): billed monthly."
+   },
+   {
+    "amount": 399,
+    "field": "billed",
+    "a": null,
+    "b": "monthly",
+    "final": "monthly",
+    "evidence_text": "Scale $399/month",
+    "why": "The billing switch's state is in the HTML (Monthly is 'switch__opt--on'): billed monthly."
+   },
+   {
+    "amount": null,
+    "field": "currency_assumed",
+    "a": true,
+    "b": false,
+    "final": false,
+    "evidence_text": "Enterprise Custom",
+    "why": "C-currency-null: a quote or a percentage has no currency, so currency_assumed is false."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": null,
+    "evidence_text": "Enterprise Custom",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   }
+  ],
+  "syn2_farmshop_nz": [
+   {
+    "amount": 189.0,
+    "field": "included",
+    "a": "approx. 8kg of mixed cuts",
+    "b": "Approx. 8kg of mixed cuts",
+    "final": "Approx. 8kg of mixed cuts",
+    "evidence_text": "Feeds a family of 4 for about 2 weeks. $189.00",
+    "why": "C-included: an allowance stated with the occurrence (users, cover sum, capacity, included items) goes to included, as written."
+   },
+   {
+    "amount": 12,
+    "field": "basis",
+    "a": "delivery",
+    "b": null,
+    "final": null,
+    "evidence_text": "Delivery is $12 within Hamilton",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 12,
+    "field": "product",
+    "a": null,
+    "b": "Delivery",
+    "final": "Delivery",
+    "evidence_text": "Delivery is $12 within Hamilton",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 12,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "Delivery is $12 within Hamilton",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 18,
+    "field": "basis",
+    "a": "delivery",
+    "b": null,
+    "final": null,
+    "evidence_text": "$18 to the rest of the Waikato",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it."
+   },
+   {
+    "amount": 18,
+    "field": "product",
+    "a": null,
+    "b": "Delivery",
+    "final": "Delivery",
+    "evidence_text": "$18 to the rest of the Waikato",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 18,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "$18 to the rest of the Waikato",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   }
+  ],
+  "syn2_review_berlin_cowork": [
+   {
+    "amount": 230,
+    "field": "product",
+    "a": null,
+    "b": "Hafenwerk",
+    "final": "Hafenwerk",
+    "evidence_text": "It recently raised its prices to around €230",
+    "why": "'It recently raised its prices' refers to Hafenwerk: product clear, the role unknown (C-attribution)."
+   },
+   {
+    "amount": 230,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "It recently raised its prices to around €230",
+    "why": "'It recently raised its prices' refers to Hafenwerk: product clear, the role unknown (C-attribution)."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": null,
+    "evidence_text": "desks are priced on request",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   },
+   {
+    "amount": 179,
+    "field": "plan",
+    "a": "Flex desk",
+    "b": "Flex desk / month",
+    "final": "Flex desk",
+    "evidence_text": "Kiezdesk €15 €179 €259",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 259,
+    "field": "plan",
+    "a": "Fixed desk",
+    "b": "Fixed desk / month",
+    "final": "Fixed desk",
+    "evidence_text": "Kiezdesk €15 €179 €259",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 229,
+    "field": "plan",
+    "a": "Flex desk",
+    "b": "Flex desk / month",
+    "final": "Flex desk",
+    "evidence_text": "Hafenwerk €25 €229 €329",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 329,
+    "field": "plan",
+    "a": "Fixed desk",
+    "b": "Fixed desk / month",
+    "final": "Fixed desk",
+    "evidence_text": "Hafenwerk €25 €229 €329",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 140,
+    "field": "plan",
+    "a": "Flex desk",
+    "b": "Flex desk / month",
+    "final": "Flex desk",
+    "evidence_text": "Werkhalle Nord €18 from €140 €240",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 240,
+    "field": "plan",
+    "a": "Fixed desk",
+    "b": "Fixed desk / month",
+    "final": "Fixed desk",
+    "evidence_text": "Werkhalle Nord €18 from €140 €240",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 199,
+    "field": "plan",
+    "a": "Flex desk",
+    "b": "Flex desk / month",
+    "final": "Flex desk",
+    "evidence_text": "Spreeloft €22 €199 –",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 165,
+    "field": "plan",
+    "a": "Flex desk",
+    "b": "Flex desk / month",
+    "final": "Flex desk",
+    "evidence_text": "Treptow Hub – €165 €275",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": 275,
+    "field": "plan",
+    "a": "Fixed desk",
+    "b": "Fixed desk / month",
+    "final": "Fixed desk",
+    "evidence_text": "Treptow Hub – €165 €275",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": null,
+    "field": "plan",
+    "a": "Flex desk",
+    "b": "Flex desk / month",
+    "final": "Flex desk",
+    "evidence_text": "Atelier Mitte €29* On request On request",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": null,
+    "evidence_text": "Atelier Mitte €29* On request On request",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   },
+   {
+    "amount": null,
+    "field": "plan",
+    "a": "Fixed desk",
+    "b": "Fixed desk / month",
+    "final": "Fixed desk",
+    "evidence_text": "Atelier Mitte €29* On request On request",
+    "why": "C-names: plan/product as the page writes them at that occurrence. The '/ month' in the column header is the period, not part of the plan name."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": null,
+    "evidence_text": "Atelier Mitte €29* On request On request",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   }
+  ],
+  "syn2_payments_co": [
+   {
+    "amount": 1.99,
+    "field": "attribution",
+    "a": "ambiguous",
+    "b": "none",
+    "final": "ambiguous",
+    "evidence_text": "Cobra en línea con tarifas desde 1,99%",
+    "why": "Payment methods are named on the page but none shows 1,99%: ambiguous."
+   },
+   {
+    "amount": 2.99,
+    "field": "product",
+    "a": "Tarjetas crédito y débito",
+    "b": null,
+    "final": null,
+    "evidence_text": "Tarjetas crédito y débito 2,99% + $900",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 2.99,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Tarjetas crédito y débito 2,99% + $900",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 900,
+    "field": "product",
+    "a": "Tarjetas crédito y débito",
+    "b": null,
+    "final": null,
+    "evidence_text": "Tarjetas crédito y débito 2,99% + $900",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 900,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Tarjetas crédito y débito 2,99% + $900",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 2500,
+    "field": "product",
+    "a": "PSE",
+    "b": null,
+    "final": null,
+    "evidence_text": "PSE $2.500 por transacción",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 2500,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "PSE $2.500 por transacción",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 1.5,
+    "field": "product",
+    "a": "Nequi",
+    "b": null,
+    "final": null,
+    "evidence_text": "Nequi 1,5% + $700",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 1.5,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Nequi 1,5% + $700",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 700,
+    "field": "product",
+    "a": "Nequi",
+    "b": null,
+    "final": null,
+    "evidence_text": "Nequi 1,5% + $700",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 700,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Nequi 1,5% + $700",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 3.2,
+    "field": "product",
+    "a": "Efectivo en puntos Efecty",
+    "b": null,
+    "final": null,
+    "evidence_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 3.2,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 3800,
+    "field": "product",
+    "a": "Efectivo en puntos Efecty",
+    "b": null,
+    "final": null,
+    "evidence_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 3800,
+    "field": "attribution",
+    "a": "clear",
+    "b": "none",
+    "final": "none",
+    "evidence_text": "Efectivo en puntos Efecty 3,2% (mínimo $3.800)",
+    "why": "C-product-qualifier: a card type / payment method / age group / application channel is a qualifier kept in the evidence, not plan or product."
+   },
+   {
+    "amount": 0,
+    "field": "product",
+    "a": null,
+    "b": "Afiliación",
+    "final": "Afiliación",
+    "evidence_text": "Afiliación $0",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 0,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "Afiliación $0",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 45000,
+    "field": "basis",
+    "a": "chargeback",
+    "b": "case",
+    "final": "case",
+    "evidence_text": "Contracargo $45.000 por caso",
+    "why": "C-basis-stated: basis only when the page writes what the amount is per ('per ticket', 'por caso', '/stamp'); a fee label or the pricing_type alone does not set it. 'por caso' gives basis case."
+   },
+   {
+    "amount": 45000,
+    "field": "product",
+    "a": null,
+    "b": "Contracargo",
+    "final": "Contracargo",
+    "evidence_text": "Contracargo $45.000 por caso",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 45000,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "Contracargo $45.000 por caso",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 3500,
+    "field": "product",
+    "a": null,
+    "b": "Retiros a cuenta bancaria",
+    "final": "Retiros a cuenta bancaria",
+    "evidence_text": "retiros adicionales $3.500",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": 3500,
+    "field": "attribution",
+    "a": "none",
+    "b": "clear",
+    "final": "clear",
+    "evidence_text": "retiros adicionales $3.500",
+    "why": "C-fee-label: a separately listed fee or service line on the vendor's own page takes its own label as product, as written (booking fee, Gastos de gestion, Cuota de inscripcion, Afiliacion, Contracargo, Delivery, Egress & API fees), attribution clear; the 'Transaction fee' caption of a plan card's headline rate is not a product."
+   },
+   {
+    "amount": null,
+    "field": "tax",
+    "a": "excluded",
+    "b": null,
+    "final": null,
+    "evidence_text": "te ofrecemos una tarifa negociada",
+    "why": "C-quote-fields: a quote has no amount; a page-wide tax statement is not applied to it (tax null)."
+   },
+   {
+    "amount": null,
+    "field": "included",
+    "a": null,
+    "b": "más de $200 millones al mes",
+    "final": null,
+    "evidence_text": "te ofrecemos una tarifa negociada",
+    "why": "C-included-conditions: an eligibility or volume threshold for a quote or free tier is a purchase condition, included null."
+   },
+   {
+    "amount": 0,
+    "field": "only_b",
+    "a": null,
+    "b": {
+     "amount": 0,
+     "currency": "COP",
+     "currency_assumed": false,
+     "percent": false,
+     "pricing_type": "transaction",
+     "period": null,
+     "billed": null,
+     "basis": null,
+     "basis_quantity": null,
+     "bound": "exact",
+     "plan": null,
+     "product": "Retiros a cuenta bancaria",
+     "promotional": false,
+     "tax": "excluded",
+     "included": "una vez por semana",
+     "effective": null,
+     "evidence_text": "Retiros a cuenta bancaria Gratis una vez por semana",
+     "layout": "list",
+     "attribution": "clear",
+     "unjudgeable": []
+    },
+    "final": "kept",
+    "evidence_text": "Retiros a cuenta bancaria Gratis una vez por semana",
+    "why": "'Gratis' in the withdrawals price slot is amount 0 (v2 'Free' convention), with the weekly allowance."
+   }
+  ]
+ }
+}

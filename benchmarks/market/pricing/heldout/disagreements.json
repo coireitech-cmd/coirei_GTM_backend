@@ -1,0 +1,5133 @@
+{
+ "basecamp": {
+  "field_disagreements": [
+   {
+    "amount": 29,
+    "a_text": "Freelancer, $29/mo",
+    "b_text": "Freelancer, $29/mo",
+    "fields": {
+     "included": [
+      "Up to 3 active projects, 10 GB storage, 5 users max",
+      "3 active projects, 10 GB storage"
+     ]
+    }
+   },
+   {
+    "amount": 79,
+    "a_text": "Pro, $79/mo",
+    "b_text": "Pro, $79/mo",
+    "fields": {
+     "included": [
+      "Up to 8 active projects, 25 GB storage, up to 10 users",
+      "8 active projects, 25 GB storage"
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "Pro Plus, $99/mo",
+    "b_text": "Pro Plus, $99/mo",
+    "fields": {
+     "included": [
+      "Up to 12 active projects, 100 GB storage, up to 15 users",
+      "12 active projects, 100 GB storage"
+     ]
+    }
+   },
+   {
+    "amount": 50,
+    "a_text": "You can buy an additional 1 TB for $50/month",
+    "b_text": "You can buy an additional 1 TB for $50/month if you ever need it.",
+    "fields": {
+     "included": [
+      null,
+      "1 TB"
+     ]
+    }
+   },
+   {
+    "amount": 50,
+    "a_text": "add an additional 1 terabyte (that’s 1000 gigabytes) of storage for an extra $50/month",
+    "b_text": "storage for an extra $50/month",
+    "fields": {
+     "product": [
+      "additional 1 terabyte storage",
+      "additional 1 TB storage"
+     ],
+     "included": [
+      null,
+      "1 TB"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "cf_r2": {
+  "field_disagreements": [
+   {
+    "amount": 0.015,
+    "a_text": "$0.015 / GB-month",
+    "b_text": "$0.015 / GB-month",
+    "fields": {
+     "product": [
+      "R2 storage",
+      "Storage"
+     ]
+    }
+   },
+   {
+    "amount": 0.01,
+    "a_text": "$0.01 / GB-month",
+    "b_text": "$0.01 / GB-month",
+    "fields": {
+     "product": [
+      "R2 storage",
+      "Storage"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "fast2sms_compare": {
+  "field_disagreements": [
+   {
+    "amount": 0.11,
+    "a_text": "send bulk messages for as low as 11 paise per SMS",
+    "b_text": "you can send bulk messages for as low as 11 paise per SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "add ₹60,000 or more to the account"
+     ]
+    }
+   },
+   {
+    "amount": 0.2,
+    "a_text": "Textlocal offers a rate of 20 paise per SMS",
+    "b_text": "Textlocal offers a rate of 20 paise per SMS when you purchase an SMS bundle of 10,00,000 messages",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 200000,
+    "a_text": "which amounts to approximately 2 Lakh rupees",
+    "b_text": "which amounts to approximately 2 Lakh rupees",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "10,00,000 messages"
+     ]
+    }
+   },
+   {
+    "amount": 0.16,
+    "a_text": "Msg91’s lowest price is 16 paisa per SMS",
+    "b_text": "962500 SMS at the rate of ₹0.16/SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      "9,62,500 SMS bundle",
+      "962500 SMS"
+     ]
+    }
+   },
+   {
+    "amount": 154000,
+    "a_text": "when you buy 9,62,500 SMS for ₹1,54,000",
+    "b_text": "when you buy 9,62,500 SMS for ₹1,54,000",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "9,62,500 SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.295,
+    "a_text": "can go up to 29.5 paise per SMS for a quantity of 5000-10,000 SMS",
+    "b_text": "their pricing for bulk SMS can go up to 29.5 paise per SMS for a quantity of 5000-10,000 SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "5000-10,000 SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.25,
+    "a_text": "5000 messages at a maximum rate of 0.25 paisa per SMS",
+    "b_text": "if you want to send 5000 SMS, you can do it at the rate of ₹0.25/SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "bound": [
+      "up_to",
+      "exact"
+     ],
+     "included": [
+      "5000 messages",
+      "5000 SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.25,
+    "a_text": "Fast2SMS offers a rate of 0.25 paisa per SMS",
+    "b_text": "you can send SMS at the rate of ₹ 0.25 with unlimited validity",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "wallet top-up ₹100 to 3999, unlimited validity"
+     ]
+    }
+   },
+   {
+    "amount": 0.21,
+    "a_text": "If you add Rupees 4000 to 7999, you can send SMS at the rate of ₹ 0.21",
+    "b_text": "you can send SMS at the rate of ₹ 0.21, which is valid for six months",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "wallet top-up ₹4000 to 7999, six months validity"
+     ]
+    }
+   },
+   {
+    "amount": 0.19,
+    "a_text": "If you add Rupees 8000 to 13999, you can send SMS at the rate of ₹ 0.19",
+    "b_text": "you can send SMS at the rate of ₹ 0.19, which is valid for six months",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "wallet top-up ₹8000 to 13999, six months validity"
+     ]
+    }
+   },
+   {
+    "amount": 0.17,
+    "a_text": "If you add Rupees 14000 to 59999, you can send SMS at the rate of ₹ 0.17",
+    "b_text": "you can send SMS at the rate of ₹ 0.17, which is valid for 12 months",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "wallet top-up ₹14000 to 59999, 12 months validity"
+     ]
+    }
+   },
+   {
+    "amount": 0.15,
+    "a_text": "you can send SMS at the rate of ₹ 0.15, which is valid for 12 months",
+    "b_text": "you can send SMS at the rate of ₹ 0.15, which is valid for 12 months",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "wallet top-up ₹60000 to 1,29,999, 12 months validity"
+     ]
+    }
+   },
+   {
+    "amount": 0.13,
+    "a_text": "If you make a transaction of 130000 to 599999 ₹ 0.13",
+    "b_text": "If you make a transaction of 130000 to 599999 ₹ 0.13 with a validity of 12 months",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "transaction of 130000 to 599999, 12 months validity"
+     ]
+    }
+   },
+   {
+    "amount": 0.11,
+    "a_text": "you will get per SMS at the rate of ₹ 0.11 for 24 months",
+    "b_text": "you will get per SMS at the rate of ₹ 0.11 for 24 months",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      null,
+      "600000 INR or more, 24 months"
+     ]
+    }
+   },
+   {
+    "amount": 0.2,
+    "a_text": "16500 SMS at the rate of ₹0.2/SMS",
+    "b_text": "16500 SMS at the rate of ₹0.2/SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.18,
+    "a_text": "30000 SMS at the rate of ₹0.18/SMS",
+    "b_text": "30000 SMS at the rate of ₹0.18/SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.17,
+    "a_text": "60000 SMS to 450000 SMS at the rate ₹0.17/SMS",
+    "b_text": "60000 SMS to 450000 SMS at the rate ₹0.17/SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "included": [
+      "60000 to 450000 SMS",
+      "60000 SMS to 450000 SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.16,
+    "a_text": "962500 SMS at the rate of ₹0.16/SMS",
+    "b_text": "Msg91’s lowest price is 16 paisa per SMS when you buy 9,62,500 SMS for ₹1,54,000",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "bound": [
+      "exact",
+      "from"
+     ],
+     "included": [
+      "962500 SMS",
+      "9,62,500 SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.295,
+    "a_text": "5,000 to 10,000 messages at the rate of 29.5 paisa",
+    "b_text": "5,000 to 10,000 messages at the rate of 29.5 paisa",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Textlocal",
+      "Text Local"
+     ]
+    }
+   },
+   {
+    "amount": 0.28,
+    "a_text": "25,000 messages at the rate of 28.0 paisa",
+    "b_text": "25,000 messages at the rate of 28.0 paisa",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Textlocal",
+      "Text Local"
+     ]
+    }
+   },
+   {
+    "amount": 0.245,
+    "a_text": "50,000 messages at the rate of 24.5 paisa",
+    "b_text": "50,000 messages at the rate of 24.5 paisa",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Textlocal",
+      "Text Local"
+     ]
+    }
+   },
+   {
+    "amount": 0.225,
+    "a_text": "1,00,000 messages at the rate of 22.5 paisa",
+    "b_text": "1,00,000 messages at the rate of 22.5 paisa",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Textlocal",
+      "Text Local"
+     ]
+    }
+   },
+   {
+    "amount": 0.215,
+    "a_text": "2,50,000 messages at the rate of 21.5 paisa",
+    "b_text": "2,50,000 messages at the rate of 21.5 paisa",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Textlocal",
+      "Text Local"
+     ]
+    }
+   },
+   {
+    "amount": 0.205,
+    "a_text": "5,00,000 messages at the rate of 20.5 paisa",
+    "b_text": "5,00,000 messages at the rate of 20.5 paisa",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Textlocal",
+      "Text Local"
+     ]
+    }
+   },
+   {
+    "amount": 0.2,
+    "a_text": "10,00,000 messages at the rate of 20 paisa",
+    "b_text": "10,00,000 messages at the rate of 20 paisa",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Textlocal",
+      "Text Local"
+     ]
+    }
+   }
+  ],
+  "only_a": [
+   {
+    "amount": 0.25,
+    "currency": "INR",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "usage",
+    "period": null,
+    "billed": null,
+    "basis": "message",
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Fast2SMS",
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "If you add Rupees 100 to 3999, you can send SMS at the rate of ₹ 0.25",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": []
+   },
+   {
+    "amount": 0.25,
+    "currency": "INR",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "usage",
+    "period": null,
+    "billed": null,
+    "basis": "message",
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Msg91",
+    "promotional": false,
+    "tax": null,
+    "included": "5000 SMS",
+    "effective": null,
+    "evidence_text": "if you want to send 5000 SMS, you can do it at the rate of ₹0.25/SMS",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": [
+   {
+    "amount": 0.0025,
+    "currency": "INR",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "usage",
+    "period": null,
+    "billed": null,
+    "basis": "SMS",
+    "basis_quantity": null,
+    "bound": "up_to",
+    "plan": null,
+    "product": "Msg91",
+    "promotional": false,
+    "tax": null,
+    "included": "5000 messages",
+    "effective": null,
+    "evidence_text": "a higher quantity of 5000 messages at a maximum rate of 0.25 paisa per SMS",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": [
+     "amount"
+    ]
+   },
+   {
+    "amount": 0.0025,
+    "currency": "INR",
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "usage",
+    "period": null,
+    "billed": null,
+    "basis": "SMS",
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": "Fast2SMS",
+    "promotional": false,
+    "tax": null,
+    "included": "wallet top-up ₹100-3999",
+    "effective": null,
+    "evidence_text": "Fast2SMS offers a rate of 0.25 paisa per SMS when you add an amount of rupees 100-3999",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": [
+     "amount"
+    ]
+   }
+  ]
+ },
+ "fastmail": {
+  "field_disagreements": [
+   {
+    "amount": 480,
+    "a_text": "₹480 per month Pay yearly and save ₹960",
+    "b_text": "₹480 per month",
+    "fields": {
+     "included": [
+      null,
+      "1 user"
+     ]
+    }
+   },
+   {
+    "amount": 400,
+    "a_text": "₹400 per month ₹4,800 for 12 months",
+    "b_text": "₹400 per month",
+    "fields": {
+     "included": [
+      null,
+      "1 user"
+     ]
+    }
+   },
+   {
+    "amount": 4800,
+    "a_text": "₹4,800 for 12 months",
+    "b_text": "₹4,800 for 12 months",
+    "fields": {
+     "included": [
+      null,
+      "1 user"
+     ]
+    }
+   },
+   {
+    "amount": 380,
+    "a_text": "₹380 per month ₹9,120 for 24 months",
+    "b_text": "₹380 per month",
+    "fields": {
+     "included": [
+      null,
+      "1 user"
+     ]
+    }
+   },
+   {
+    "amount": 9120,
+    "a_text": "₹9,120 for 24 months",
+    "b_text": "₹9,120 for 24 months",
+    "fields": {
+     "included": [
+      null,
+      "1 user"
+     ]
+    }
+   },
+   {
+    "amount": 373.33,
+    "a_text": "₹373.33 per month ₹13,440 for 36 months",
+    "b_text": "₹373.33 per month",
+    "fields": {
+     "included": [
+      null,
+      "1 user"
+     ]
+    }
+   },
+   {
+    "amount": 13440,
+    "a_text": "₹13,440 for 36 months",
+    "b_text": "₹13,440 for 36 months",
+    "fields": {
+     "included": [
+      null,
+      "1 user"
+     ]
+    }
+   },
+   {
+    "amount": 800,
+    "a_text": "₹800 per month Pay yearly and save ₹1,920",
+    "b_text": "₹800 per month",
+    "fields": {
+     "included": [
+      null,
+      "2 users"
+     ]
+    }
+   },
+   {
+    "amount": 640,
+    "a_text": "₹640 per month ₹7,680 for 12 months",
+    "b_text": "₹640 per month",
+    "fields": {
+     "included": [
+      null,
+      "2 users"
+     ]
+    }
+   },
+   {
+    "amount": 7680,
+    "a_text": "₹7,680 for 12 months",
+    "b_text": "₹7,680 for 12 months",
+    "fields": {
+     "included": [
+      null,
+      "2 users"
+     ]
+    }
+   },
+   {
+    "amount": 608,
+    "a_text": "₹608 per month ₹14,592 for 24 months",
+    "b_text": "₹608 per month",
+    "fields": {
+     "included": [
+      null,
+      "2 users"
+     ]
+    }
+   },
+   {
+    "amount": 14592,
+    "a_text": "₹14,592 for 24 months",
+    "b_text": "₹14,592 for 24 months",
+    "fields": {
+     "included": [
+      null,
+      "2 users"
+     ]
+    }
+   },
+   {
+    "amount": 597.33,
+    "a_text": "₹597.33 per month ₹21,504 for 36 months",
+    "b_text": "₹597.33 per month",
+    "fields": {
+     "included": [
+      null,
+      "2 users"
+     ]
+    }
+   },
+   {
+    "amount": 21504,
+    "a_text": "₹21,504 for 36 months",
+    "b_text": "₹21,504 for 36 months",
+    "fields": {
+     "included": [
+      null,
+      "2 users"
+     ]
+    }
+   },
+   {
+    "amount": 1120,
+    "a_text": "₹1,120 per month Pay yearly and save ₹2,880",
+    "b_text": "₹1,120 per month",
+    "fields": {
+     "included": [
+      null,
+      "up to 6 users"
+     ]
+    }
+   },
+   {
+    "amount": 880,
+    "a_text": "₹880 per month ₹10,560 for 12 months",
+    "b_text": "₹880 per month",
+    "fields": {
+     "included": [
+      null,
+      "up to 6 users"
+     ]
+    }
+   },
+   {
+    "amount": 10560,
+    "a_text": "₹10,560 for 12 months",
+    "b_text": "₹10,560 for 12 months",
+    "fields": {
+     "included": [
+      null,
+      "up to 6 users"
+     ]
+    }
+   },
+   {
+    "amount": 835.33,
+    "a_text": "₹835.33 per month ₹20,048 for 24 months",
+    "b_text": "₹835.33 per month",
+    "fields": {
+     "included": [
+      null,
+      "up to 6 users"
+     ]
+    }
+   },
+   {
+    "amount": 20048,
+    "a_text": "₹20,048 for 24 months",
+    "b_text": "₹20,048 for 24 months",
+    "fields": {
+     "included": [
+      null,
+      "up to 6 users"
+     ]
+    }
+   },
+   {
+    "amount": 821.33,
+    "a_text": "₹821.33 per month ₹29,568 for 36 months",
+    "b_text": "₹821.33 per month",
+    "fields": {
+     "included": [
+      null,
+      "up to 6 users"
+     ]
+    }
+   },
+   {
+    "amount": 29568,
+    "a_text": "₹29,568 for 36 months",
+    "b_text": "₹29,568 for 36 months",
+    "fields": {
+     "included": [
+      null,
+      "up to 6 users"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "hey": {
+  "field_disagreements": [
+   {
+    "amount": 10,
+    "a_text": "The first user — you — is only $10/month",
+    "b_text": "The first user — you — is only $10/month, the rest are $12/month",
+    "fields": {
+     "promotional": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "amount": 999,
+    "a_text": "Ultra-short 2-character addresses like ab@hey.com are $999/year",
+    "b_text": "Ultra-short 2-character addresses like ab@hey.com are $999/year",
+    "fields": {
+     "billed": [
+      null,
+      "annually"
+     ],
+     "plan": [
+      null,
+      "HEY for You"
+     ],
+     "product": [
+      "2-character @hey.com address",
+      "2-character address"
+     ]
+    }
+   },
+   {
+    "amount": 349,
+    "a_text": "3-character addresses like abc@hey.com are $349/year",
+    "b_text": "3-character addresses like abc@hey.com are $349/year",
+    "fields": {
+     "billed": [
+      null,
+      "annually"
+     ],
+     "plan": [
+      null,
+      "HEY for You"
+     ],
+     "product": [
+      "3-character @hey.com address",
+      "3-character address"
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "4-characters or more, are just $99/year",
+    "b_text": "We will bill you $99 once-per-year",
+    "fields": {
+     "billed": [
+      null,
+      "annually"
+     ],
+     "plan": [
+      null,
+      "HEY for You"
+     ],
+     "product": [
+      "4+ character @hey.com address",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "We will bill you $99 once-per-year",
+    "b_text": "$99 per year",
+    "fields": {
+     "included": [
+      null,
+      "100GB storage space"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "instamojo": {
+  "field_disagreements": [
+   {
+    "amount": 10,
+    "a_text": "Premium online store plans starting at just ₹10/day.",
+    "b_text": "Premium online store plans starting at just ₹10/day.",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "just starting out. Get Started 5% + ₹3 transaction fee",
+    "b_text": "5% + ₹3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "just starting out. Get Started 5% + ₹3 transaction fee",
+    "b_text": "5% + ₹3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "Everything in Lite, plus 5% + ₹3 transaction fee",
+    "b_text": "5% + ₹3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Everything in Lite, plus 5% + ₹3 transaction fee",
+    "b_text": "5% + ₹3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Everything in Starter, plus 2% + ₹3 transaction fee",
+    "b_text": "2% + ₹3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Everything in Starter, plus 2% + ₹3 transaction fee",
+    "b_text": "2% + ₹3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "Transaction Fee A fee is levied on each successful transaction on your store 5% + ₹3 5% + ₹3 2% + ₹3",
+    "b_text": "5% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction Fee A fee is levied on each successful transaction on your store 5% + ₹3 5% + ₹3 2% + ₹3",
+    "b_text": "5% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 10,
+    "a_text": "Transaction Fee (Digital Products) 10% + ₹3 10% + ₹3 5% + ₹3",
+    "b_text": "Transaction Fee (Digital Products) 10% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction Fee (Digital Products) 10% + ₹3 10% + ₹3 5% + ₹3",
+    "b_text": "Transaction Fee (Digital Products) 10% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "Transaction Fee A fee is levied on each successful transaction on your store 5% + ₹3 5% + ₹3 2% + ₹3",
+    "b_text": "5% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction Fee A fee is levied on each successful transaction on your store 5% + ₹3 5% + ₹3 2% + ₹3",
+    "b_text": "5% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 10,
+    "a_text": "Transaction Fee (Digital Products) 10% + ₹3 10% + ₹3 5% + ₹3",
+    "b_text": "10% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction Fee (Digital Products) 10% + ₹3 10% + ₹3 5% + ₹3",
+    "b_text": "10% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Transaction Fee A fee is levied on each successful transaction on your store 5% + ₹3 5% + ₹3 2% + ₹3",
+    "b_text": "2% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction Fee A fee is levied on each successful transaction on your store 5% + ₹3 5% + ₹3 2% + ₹3",
+    "b_text": "2% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "Transaction Fee (Digital Products) 10% + ₹3 10% + ₹3 5% + ₹3",
+    "b_text": "5% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction Fee (Digital Products) 10% + ₹3 10% + ₹3 5% + ₹3",
+    "b_text": "5% + ₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Shipyaari Credits worth ₹1000 Ship your orders in one click with Shipyaari ₹0/yr",
+    "b_text": "₹0/yr",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3999,
+    "a_text": "₹3,999/yr",
+    "b_text": "₹3,999/yr",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 9999,
+    "a_text": "₹9,999/yr ₹1,999/mo Get Started Check Lite Plan",
+    "b_text": "₹9,999/yr",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1999,
+    "a_text": "₹9,999/yr ₹1,999/mo Get Started Check Lite Plan",
+    "b_text": "₹1,999/mo",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "Integrated Payments at 5%+₹3",
+    "b_text": "Integrated Payments at 5%+₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Integrated Payments at 5%+₹3",
+    "b_text": "Integrated Payments at 5%+₹3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Everything in Basic plan, plus 2% + ₹ 3 transaction fee",
+    "b_text": "2% + ₹ 3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Everything in Basic plan, plus 2% + ₹ 3 transaction fee",
+    "b_text": "2% + ₹ 3 transaction fee",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "5%+3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "5%+3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "2%+3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "2%+3",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Advanced analytics Get mission-critical page and customer insights ₹0/yr",
+    "b_text": "₹0/yr",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 9999,
+    "a_text": "₹0/yr Get Started ₹9,999/yr ₹1,999/mo",
+    "b_text": "₹9,999/yr",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1999,
+    "a_text": "₹0/yr Get Started ₹9,999/yr ₹1,999/mo",
+    "b_text": "₹1,999/mo",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "5%+3",
+    "fields": {
+     "product": [
+      "Smart Page",
+      "Payment Link"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "5%+3",
+    "fields": {
+     "product": [
+      "Smart Page",
+      "Payment Link"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "2%+3",
+    "fields": {
+     "product": [
+      "Smart Page",
+      "Payment Link"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Transaction fee A fee is levied on each successful transaction on your store 5%+3 2%+3",
+    "b_text": "2%+3",
+    "fields": {
+     "product": [
+      "Smart Page",
+      "Payment Link"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "Advanced analytics Get mission-critical page and customer insights ₹0/yr",
+    "b_text": "₹0/yr",
+    "fields": {
+     "product": [
+      "Smart Page",
+      "Payment Link"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 9999,
+    "a_text": "₹0/yr Get Started ₹9,999/yr ₹1,999/mo",
+    "b_text": "₹9,999/yr",
+    "fields": {
+     "product": [
+      "Smart Page",
+      "Payment Link"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1999,
+    "a_text": "₹0/yr Get Started ₹9,999/yr ₹1,999/mo",
+    "b_text": "₹1,999/mo",
+    "fields": {
+     "product": [
+      "Smart Page",
+      "Payment Link"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Charges 2%+ ₹3/txn",
+    "b_text": "Charges 2%+ ₹3/txn",
+    "fields": {
+     "product": [
+      "UPI / domestic cards / Pay Later / netbanking / wallets",
+      "Payment modes supported"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Charges 2%+ ₹3/txn",
+    "b_text": "Your customer pays 3% + ₹3 + GST",
+    "fields": {
+     "product": [
+      "UPI / domestic cards / Pay Later / netbanking / wallets",
+      "Instamojo convenience fee"
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "3% + Rs3/txn",
+    "b_text": "3% + Rs3/txn",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "3% + Rs3/txn",
+    "b_text": "3% + Rs3/txn",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Payment Links 2% + ₹3/txn",
+    "b_text": "2% + ₹3/txn",
+    "fields": {
+     "product": [
+      "Payment Link",
+      "Payment Links"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Payment Links 2% + ₹3/txn",
+    "b_text": "Charges 2%+ ₹3/txn",
+    "fields": {
+     "product": [
+      "Payment Link",
+      "Payment modes supported"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Charges 2%+ ₹3/txn",
+    "b_text": "Charges 2%+ ₹3/txn",
+    "fields": {
+     "product": [
+      "UPI / domestic cards / Pay Later / netbanking / wallets",
+      "Payment modes supported"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Charges 2%+ ₹3/txn",
+    "b_text": "2% + ₹3/txn",
+    "fields": {
+     "product": [
+      "UPI / domestic cards / Pay Later / netbanking / wallets",
+      "Payment Links"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "3% + ₹3/txn",
+    "b_text": "3% + ₹3/txn",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "3% + ₹3/txn",
+    "b_text": "3% + ₹3/txn",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Payment Links 2% + ₹3/txn",
+    "b_text": "2% + ₹ 3 transaction fee",
+    "fields": {
+     "plan": [
+      null,
+      "QUICK"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Payment Links 2% + ₹3/txn",
+    "b_text": "2% + ₹ 3 transaction fee",
+    "fields": {
+     "plan": [
+      null,
+      "QUICK"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "QUICK ₹0/yr",
+    "b_text": "₹0/yr",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Zapier integration 2% + ₹ 3 transaction fee",
+    "b_text": "2% + ₹ 3 transaction fee",
+    "fields": {
+     "plan": [
+      "QUICK",
+      "SMART"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Zapier integration 2% + ₹ 3 transaction fee",
+    "b_text": "2% + ₹ 3 transaction fee",
+    "fields": {
+     "plan": [
+      "QUICK",
+      "SMART"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 4999,
+    "a_text": "SMART ₹4,999/yr",
+    "b_text": "₹4,999/yr",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1499,
+    "a_text": "₹4,999/yr ₹1,499/mo",
+    "b_text": "₹1,499/mo",
+    "fields": {
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2,
+    "a_text": "Custom colour 2% + ₹ 3 transaction fee",
+    "b_text": "2% + ₹3/txn",
+    "fields": {
+     "plan": [
+      "SMART",
+      null
+     ],
+     "product": [
+      "Payment Link",
+      "Payment Links"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Custom colour 2% + ₹ 3 transaction fee",
+    "b_text": "Charges 2%+ ₹3/txn",
+    "fields": {
+     "plan": [
+      "SMART",
+      null
+     ],
+     "product": [
+      "Payment Link",
+      "Payment modes supported"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "Your customer pays 3% + ₹3 + GST",
+    "b_text": "2% + ₹3/txn",
+    "fields": {
+     "product": [
+      "Instamojo convenience fee",
+      "Payment Links"
+     ],
+     "tax": [
+      "excluded",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": [
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": "Enterprise plan",
+    "product": "online payments",
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "Enterprise plan or custom pricing for online payments is available at request.",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ]
+ },
+ "kbs_fees": {
+  "field_disagreements": [
+   {
+    "amount": 260,
+    "a_text": "Late Enrolment Fee* $260",
+    "b_text": "Late Enrolment Fee* $260",
+    "fields": {
+     "product": [
+      "Late Enrolment Fee",
+      "Late Enrolment Fee*"
+     ]
+    }
+   },
+   {
+    "amount": 260,
+    "a_text": "Recognition of Prior Learning Fee (after enrolment finalised)** $260",
+    "b_text": "Recognition of Prior Learning Fee (after enrolment finalised)** $260",
+    "fields": {
+     "product": [
+      "Recognition of Prior Learning Fee (after enrolment finalised)",
+      "Recognition of Prior Learning Fee (after enrolment finalised)**"
+     ]
+    }
+   },
+   {
+    "amount": 10,
+    "a_text": "Photocopying Credits $10/100 pages",
+    "b_text": "Photocopying Credits $10/100 pages",
+    "fields": {
+     "pricing_type": [
+      "usage",
+      "unit"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "lemonsqueezy": {
+  "field_disagreements": [
+   {
+    "amount": 5,
+    "a_text": "ecommerce 5% + 50¢ * There are no monthly charges",
+    "b_text": "5% + 50¢",
+    "fields": {
+     "plan": [
+      "ecommerce",
+      null
+     ],
+     "product": [
+      null,
+      "ecommerce"
+     ]
+    }
+   },
+   {
+    "amount": 0.5,
+    "a_text": "ecommerce 5% + 50¢ * There are no monthly charges",
+    "b_text": "5% + 50¢",
+    "fields": {
+     "plan": [
+      "ecommerce",
+      null
+     ],
+     "product": [
+      null,
+      "ecommerce"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Contact us for volume-based pricing",
+    "b_text": "Large payments volume or unique business model?",
+    "fields": {
+     "plan": [
+      "ecommerce",
+      "custom pricing"
+     ]
+    }
+   },
+   {
+    "amount": 0,
+    "a_text": "email marketing $0/m",
+    "b_text": "$0/m",
+    "fields": {
+     "plan": [
+      "email marketing",
+      null
+     ],
+     "product": [
+      null,
+      "email marketing"
+     ],
+     "included": [
+      "up to 500 subscribers",
+      "500 subscribers"
+     ]
+    }
+   }
+  ],
+  "only_a": [
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": "custom pricing",
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "custom pricing Large payments volume or unique business model?",
+    "layout": "other",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": []
+ },
+ "lewis_beef": {
+  "field_disagreements": [
+   {
+    "amount": 88.0,
+    "a_text": "Out - Ground Beef Box - 8 lbs $88.00",
+    "b_text": "Out - Ground Beef Box - 8 lbs $88.00",
+    "fields": {
+     "basis": [
+      "box",
+      null
+     ],
+     "included": [
+      null,
+      "8 lbs"
+     ]
+    }
+   },
+   {
+    "amount": 240.0,
+    "a_text": "Out - Ground Beef Box - 24 lbs $240.00",
+    "b_text": "Out - Ground Beef Box - 24 lbs $240.00",
+    "fields": {
+     "basis": [
+      "box",
+      null
+     ],
+     "included": [
+      null,
+      "24 lbs"
+     ]
+    }
+   },
+   {
+    "amount": 12.0,
+    "a_text": "Save $1.50 /lb. $12.00 /lb.",
+    "b_text": "Save $1.50 /lb. $12.00 /lb. $13.50 /lb.",
+    "fields": {
+     "included": [
+      "Avg. 160 lb.",
+      "160 pounds"
+     ]
+    }
+   },
+   {
+    "amount": 13.5,
+    "a_text": "$12.00 /lb. $13.50 /lb.",
+    "b_text": "Save $1.50 /lb. $12.00 /lb. $13.50 /lb.",
+    "fields": {
+     "included": [
+      "Avg. 160 lb.",
+      "160 pounds"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "magecomp_sms": {
+  "field_disagreements": [
+   {
+    "amount": 17000,
+    "a_text": "17,000 INR + GST",
+    "b_text": "17,000 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 15000,
+    "a_text": "15,000 INR",
+    "b_text": "15,000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 19500,
+    "a_text": "19,500 INR",
+    "b_text": "19,500 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 17700,
+    "a_text": "17,700 INR",
+    "b_text": "17,700 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 14000,
+    "a_text": "14000 INR",
+    "b_text": "14000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 9000,
+    "a_text": "9000 INR",
+    "b_text": "9000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 17000,
+    "a_text": "17000 INR + GST",
+    "b_text": "Digimiles Free SMS trials, reliable and secure 17000 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 17000,
+    "a_text": "17000 INR + GST",
+    "b_text": "Wegus Infotech Compose, schedule, and send personalized SMS 17000 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.16,
+    "a_text": "0.16 INR (per SMS)",
+    "b_text": "0.16 INR (per SMS)",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 1250,
+    "a_text": "Transactional SMS – 1250 INR + GST for 5,000 SMS Units",
+    "b_text": "Transactional SMS – 1250 INR + GST for 5,000 SMS Units",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "Transactional SMS"
+     ],
+     "product": [
+      "MSG91 Transactional SMS",
+      "MSG91"
+     ]
+    }
+   },
+   {
+    "amount": 1250,
+    "a_text": "SendOTP SMS – 1250 INR + GST for 5,000 SMS Units",
+    "b_text": "SendOTP SMS – 1250 INR + GST for 5,000 SMS Units",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "SendOTP SMS"
+     ],
+     "product": [
+      "MSG91 SendOTP SMS",
+      "MSG91"
+     ]
+    }
+   },
+   {
+    "amount": 1751,
+    "a_text": "Transactional Email API – 1751 INR + GST for 5,000 SMS Units",
+    "b_text": "Transactional Email API – 1751 INR + GST for 5,000 SMS Units",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "Transactional Email API"
+     ],
+     "product": [
+      "MSG91 Transactional Email API",
+      "MSG91"
+     ]
+    }
+   },
+   {
+    "amount": 2000,
+    "a_text": "Outbound Voice Call – 2000 INR + GST for 2,000 SMS Units",
+    "b_text": "Outbound Voice Call – 2000 INR + GST for 2,000 SMS Units",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "Outbound Voice Call"
+     ],
+     "product": [
+      "MSG91 Outbound Voice Call",
+      "MSG91"
+     ]
+    }
+   },
+   {
+    "amount": 8000,
+    "a_text": "Outbound Text Messaging – 8000 INR for 50,000 SMS Units",
+    "b_text": "50000 Messages – 8000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "product": [
+      "Spring Edge Outbound Text Messaging",
+      "GupShup"
+     ]
+    }
+   },
+   {
+    "amount": 295,
+    "a_text": "1,000 Messages – 295 INR",
+    "b_text": "1,000 Messages – 295 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 590,
+    "a_text": "2,000 Messages – 590 INR",
+    "b_text": "2,000 Messages – 590 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 1375,
+    "a_text": "5,000 Messages – 1,375 INR",
+    "b_text": "5,000 Messages – 1,375 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 2750,
+    "a_text": "10,000 Messages – 2,750 INR",
+    "b_text": "10,000 Messages – 2,750 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 6250,
+    "a_text": "25,000 Messages – 6,250 INR",
+    "b_text": "25,000 Messages – 6,250 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 10750,
+    "a_text": "50,000 Messages – 10,750 INR",
+    "b_text": "50,000 Messages – 10,750 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 19500,
+    "a_text": "1,00,000 Messages – 19,500 INR",
+    "b_text": "1,00,000 Messages – 19,500 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 46250,
+    "a_text": "2,50,000 Messages – 46,250 INR",
+    "b_text": "2,50,000 Messages – 46,250 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 87500,
+    "a_text": "5,00,000 Messages – 87,500 INR",
+    "b_text": "5,00,000 Messages – 87,500 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 170000,
+    "a_text": "10,00,000 Messages – 1,70,000 INR",
+    "b_text": "10,00,000 Messages – 1,70,000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 1475,
+    "a_text": "5,000 SMS – 1475 INR",
+    "b_text": "5,000 SMS – 1475 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 2360,
+    "a_text": "10,000 SMS – 2360 INR",
+    "b_text": "10,000 SMS – 2360 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 5310,
+    "a_text": "25,000 SMS – 5310 INR",
+    "b_text": "25,000 SMS – 5310 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 17700,
+    "a_text": "1,00,000 SMS – 17,700 INR",
+    "b_text": "1,00,000 SMS – 17,700 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 4750,
+    "a_text": "25000 Messages – 4750 INR",
+    "b_text": "25000 Messages – 4750 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 8000,
+    "a_text": "50000 Messages – 8000 INR",
+    "b_text": "Outbound Text Messaging – 8000 INR for 50,000 SMS Units",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "Outbound Text Messaging"
+     ],
+     "product": [
+      "GupShup",
+      "Spring Edge"
+     ]
+    }
+   },
+   {
+    "amount": 14000,
+    "a_text": "100000 Messages – 14000 INR",
+    "b_text": "100000 Messages – 14000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 67500,
+    "a_text": "500000 Messages – 67500 INR",
+    "b_text": "500000 Messages – 67500 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 1500,
+    "a_text": "10000 Messages – 1500 INR",
+    "b_text": "10000 Messages – 1500 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 9000,
+    "a_text": "100000 Messages – 9000 INR",
+    "b_text": "100000 Messages – 9000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 40000,
+    "a_text": "500000 Messages – 40000 INR",
+    "b_text": "500000 Messages – 40000 INR",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 300,
+    "a_text": "1000 Messages – 300 INR + GST",
+    "b_text": "1000 Messages – 300 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 1375,
+    "a_text": "5000 Messages – 1375 INR + GST",
+    "b_text": "5000 Messages – 1375 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 2750,
+    "a_text": "10000 Messages – 2750 INR + GST",
+    "b_text": "10000 Messages – 2750 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 5625,
+    "a_text": "25000 Messages – 5625 INR + GST",
+    "b_text": "25000 Messages – 5625 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 9250,
+    "a_text": "50000 Messages – 9250 INR + GST",
+    "b_text": "50000 Messages – 9250 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 17000,
+    "a_text": "100000 Messages – 17000 INR + GST",
+    "b_text": "100000 Messages – 17000 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 200,
+    "a_text": "1000 Messages – 200 INR + GST",
+    "b_text": "1000 Messages – 200 INR + GST",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.165,
+    "a_text": "SMS OTP Service – 0.165 INR per SMS",
+    "b_text": "SMS OTP Service – 0.165 INR per SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "SMS OTP Service"
+     ],
+     "product": [
+      "2Factor SMS OTP Service",
+      "2Factor"
+     ]
+    }
+   },
+   {
+    "amount": 0.34,
+    "a_text": "Voice OTP Service – 0.34 INR per SMS",
+    "b_text": "Voice OTP Service – 0.34 INR per SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "Voice OTP Service"
+     ],
+     "product": [
+      "2Factor Voice OTP Service",
+      "2Factor"
+     ]
+    }
+   },
+   {
+    "amount": 0.16,
+    "a_text": "Transactional SMS – 0.16 INR per SMS",
+    "b_text": "Transactional SMS – 0.16 INR per SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "Transactional SMS"
+     ],
+     "product": [
+      "2Factor Transactional SMS",
+      "2Factor"
+     ]
+    }
+   },
+   {
+    "amount": 0.13,
+    "a_text": "Promotional SMS – 0.13 INR per SMS",
+    "b_text": "Promotional SMS – 0.13 INR per SMS",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ],
+     "plan": [
+      null,
+      "Promotional SMS"
+     ],
+     "product": [
+      "2Factor Promotional SMS",
+      "2Factor"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "markntel_icecream": {
+  "field_disagreements": [
+   {
+    "amount": 2400,
+    "a_text": "Single User Pack USD 2400",
+    "b_text": "USD 2400 USD 2040",
+    "fields": {
+     "included": [
+      "Report in pdf without printing rights (one device)",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2040,
+    "a_text": "USD 2400 USD 2040",
+    "b_text": "USD 2400 USD 2040",
+    "fields": {
+     "included": [
+      "Report in pdf without printing rights (one device)",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3300,
+    "a_text": "Multiple Users Pack USD 3300",
+    "b_text": "USD 3300 USD 2805",
+    "fields": {
+     "included": [
+      "up to five devices + printing rights (pdf)",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2805,
+    "a_text": "USD 3300 USD 2805",
+    "b_text": "USD 3300 USD 2805",
+    "fields": {
+     "included": [
+      "up to five devices + printing rights (pdf)",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 4200,
+    "a_text": "Enterprise Users Pack USD 4200",
+    "b_text": "USD 4200 USD 3570",
+    "fields": {
+     "included": [
+      "unlimited device access + printing rights (pdf) + Excel",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 3570,
+    "a_text": "USD 4200 USD 3570",
+    "b_text": "USD 4200 USD 3570",
+    "fields": {
+     "included": [
+      "unlimited device access + printing rights (pdf) + Excel",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1600,
+    "a_text": "Excel Data Pack USD 1600",
+    "b_text": "USD 1600 USD 1360",
+    "fields": {
+     "included": [
+      "market data in Excel spreadsheet only",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1360,
+    "a_text": "USD 1600 USD 1360",
+    "b_text": "USD 1600 USD 1360",
+    "fields": {
+     "included": [
+      "market data in Excel spreadsheet only",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "neworg": {
+  "field_disagreements": [
+   {
+    "amount": 250.0,
+    "a_text": "\"name\": \"Base Plan – 2 Users\", \"price\": \"250.00\"",
+    "b_text": "\"name\": \"Base Plan – 2 Users\", \"price\": \"250.00\", \"priceCurrency\": \"USD\"",
+    "fields": {
+     "period": [
+      "month",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 400.0,
+    "a_text": "\"name\": \"Standard Plan – 5 Users\", \"price\": \"400.00\"",
+    "b_text": "\"name\": \"Standard Plan – 5 Users\", \"price\": \"400.00\", \"priceCurrency\": \"USD\"",
+    "fields": {
+     "period": [
+      "month",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 900.0,
+    "a_text": "\"name\": \"Large Plan – 20 Users\", \"price\": \"900.00\"",
+    "b_text": "\"name\": \"Large Plan – 20 Users\", \"price\": \"900.00\", \"priceCurrency\": \"USD\"",
+    "fields": {
+     "period": [
+      "month",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 175,
+    "a_text": "$25/Month per endpoint $175/hour",
+    "b_text": "$25/Month per endpoint $175/hour",
+    "fields": {
+     "product": [
+      "API Integration Set Up Assistance",
+      "Set Up Assistance"
+     ]
+    }
+   },
+   {
+    "amount": 0.03,
+    "a_text": "additional SMS – $0.03 each",
+    "b_text": "additional SMS – $0.03 each",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   },
+   {
+    "amount": 0.04,
+    "a_text": "additional SMS – $0.04 CAD each",
+    "b_text": "additional SMS – $0.04 CAD each",
+    "fields": {
+     "basis": [
+      "message",
+      "SMS"
+     ]
+    }
+   }
+  ],
+  "only_a": [
+   {
+    "amount": null,
+    "currency": null,
+    "currency_assumed": false,
+    "percent": false,
+    "pricing_type": "quote",
+    "period": null,
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "exact",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "Request Pricing *final pricing is based on your organization's size",
+    "layout": "card",
+    "attribution": "none",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": []
+ },
+ "psmr_license": {
+  "field_disagreements": [
+   {
+    "amount": 4900,
+    "a_text": "Single User License USD 4900",
+    "b_text": "Single User License USD 4900",
+    "fields": {
+     "included": [
+      "PDF with restricted printing rights; single user",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 6400,
+    "a_text": "Group License USD 6400",
+    "b_text": "Group License USD 6400",
+    "fields": {
+     "included": [
+      "PDF with printing rights + Excel; up to five users",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 8400,
+    "a_text": "Enterprise License USD 8400",
+    "b_text": "Enterprise License USD 8400",
+    "fields": {
+     "included": [
+      "PDF with printing rights + Excel; multiple users",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "publicmobile": {
+  "field_disagreements": [
+   {
+    "amount": 24,
+    "a_text": "4G 5GB Canada-wide phone plan for only $24/month",
+    "b_text": "$24 / mo. 5GB",
+    "fields": {
+     "plan": [
+      "4G 5GB Canada-wide",
+      null
+     ],
+     "included": [
+      null,
+      "5GB Data, Canada-wide"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 35,
+    "a_text": "Shop 5G Canada-wide phone plans starting at $35/month",
+    "b_text": "Shop 5G Canada-wide phone plans starting at $35/month¹²",
+    "fields": {
+     "plan": [
+      "5G Canada-wide",
+      null
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 22,
+    "a_text": "Canada-wide $22 / mo. 1GB",
+    "b_text": "$22 / mo. 1GB",
+    "fields": {
+     "plan": [
+      "Canada-wide 1GB",
+      null
+     ],
+     "included": [
+      "1GB Data, Unlimited Talk & Text",
+      "1GB Data, Canada-wide"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 24,
+    "a_text": "Canada-wide $24 / mo. 5GB",
+    "b_text": "Save when you subscribe to a 4G 5GB Canada-wide phone plan for only $24/month¹².",
+    "fields": {
+     "plan": [
+      "Canada-wide 5GB",
+      null
+     ],
+     "included": [
+      "5GB Data, Unlimited Talk & Text",
+      "5GB, Canada-wide"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 28,
+    "a_text": "Canada-wide $28 / mo. 10GB",
+    "b_text": "$28 / mo. 10GB",
+    "fields": {
+     "plan": [
+      "Canada-wide 10GB",
+      null
+     ],
+     "included": [
+      "10GB Data, Unlimited Talk & Text",
+      "10GB Data, Canada-wide"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 30,
+    "a_text": "Canada-wide $30 / mo. 35GB",
+    "b_text": "$30 / mo. 35GB",
+    "fields": {
+     "plan": [
+      "Canada-wide 35GB",
+      null
+     ],
+     "included": [
+      "35GB Data, Unlimited Talk & Text",
+      "35GB Data, Canada-wide"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 35,
+    "a_text": "Canada-wide $35 / mo. 50GB",
+    "b_text": "$35 / mo. 50GB",
+    "fields": {
+     "plan": [
+      "Canada-wide 50GB",
+      null
+     ],
+     "included": [
+      "50GB Data, Unlimited Talk & Text",
+      "50GB Data, Canada-wide"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 40,
+    "a_text": "Canada-US-Mexico $40 / mo. 70GB",
+    "b_text": "$40 / mo. 70GB",
+    "fields": {
+     "plan": [
+      "Canada-US-Mexico 70GB",
+      null
+     ],
+     "included": [
+      "70GB Data, Unlimited Talk & Text, 1000 International minutes",
+      "70GB Data, Canada-US-Mexico"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 45,
+    "a_text": "Canada-US-Mexico $45 / mo. 125GB",
+    "b_text": "$45 / mo. 125GB",
+    "fields": {
+     "plan": [
+      "Canada-US-Mexico 125GB",
+      null
+     ],
+     "included": [
+      "125GB Data, Unlimited Talk & Text, 1000 International minutes",
+      "125GB Data, Canada-US-Mexico"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 50,
+    "a_text": "Canada-US-Mexico $50 / mo. 175GB",
+    "b_text": "$50 / mo. 175GB",
+    "fields": {
+     "plan": [
+      "Canada-US-Mexico 175GB",
+      null
+     ],
+     "included": [
+      "175GB Data, Unlimited Talk & Text, 1000 International minutes",
+      "175GB Data, Canada-US-Mexico"
+     ],
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "quicksprout_hosting": {
+  "field_disagreements": [
+   {
+    "amount": 1.99,
+    "a_text": "iPage — $1.99/month (36-month plan)",
+    "b_text": "iPage — $1.99/month (36-month plan)",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 3.75,
+    "a_text": "HostGator — $3.75/month (36-month plan)",
+    "b_text": "HostGator — $3.75/month (36-month plan)",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 2.95,
+    "a_text": "GreenGeeks — $2.95/month (36-month plan)",
+    "b_text": "GreenGeeks — $2.95/month (36-month plan)",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 3.29,
+    "a_text": "Hostinger — $3.29/month (48-month plan)",
+    "b_text": "Hostinger — $3.29/month (48-month plan)",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 2.95,
+    "a_text": "Bluehost — $2.95/month (12-month plan)",
+    "b_text": "Bluehost — $2.95/month (12-month plan)",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 2.99,
+    "a_text": "SiteGround – $2.99/month (12-month plan)",
+    "b_text": "SiteGround – $2.99/month (12-month plan)",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 2.95,
+    "a_text": "Entry promos often start at $2.95/month on a 36-month term",
+    "b_text": "Entry promos often start at $2.95/month on a 36-month term for one site",
+    "fields": {
+     "included": [
+      null,
+      "one site"
+     ]
+    }
+   },
+   {
+    "amount": 3.29,
+    "a_text": "Premium Shared Hosting often starts around $3.29/month",
+    "b_text": "On a 48-month commitment, Premium Shared Hosting often starts around $3.29/month",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ]
+    }
+   },
+   {
+    "amount": 3,
+    "a_text": "a plan advertised around $3/month for a multi-year term",
+    "b_text": "Promotional long-term pricing for shared tiers commonly starts around the low-$3s per month on 3-year terms.",
+    "fields": {
+     "product": [
+      null,
+      "hosting.com"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   }
+  ],
+  "only_a": [
+   {
+    "amount": 10,
+    "currency": "USD",
+    "currency_assumed": true,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "month",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "from",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "may renew at $10–$18/month afterward",
+    "layout": "inline",
+    "attribution": "ambiguous",
+    "unjudgeable": []
+   },
+   {
+    "amount": 18,
+    "currency": "USD",
+    "currency_assumed": true,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "month",
+    "billed": null,
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "up_to",
+    "plan": null,
+    "product": null,
+    "promotional": false,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "may renew at $10–$18/month afterward",
+    "layout": "inline",
+    "attribution": "ambiguous",
+    "unjudgeable": []
+   }
+  ],
+  "only_b": [
+   {
+    "amount": 3,
+    "currency": "USD",
+    "currency_assumed": true,
+    "percent": false,
+    "pricing_type": "subscription",
+    "period": "month",
+    "billed": "annually",
+    "basis": null,
+    "basis_quantity": null,
+    "bound": "about",
+    "plan": null,
+    "product": "InMotion",
+    "promotional": true,
+    "tax": null,
+    "included": null,
+    "effective": null,
+    "evidence_text": "Annual first-term promos often start near the low-$3s per month on entry tiers",
+    "layout": "inline",
+    "attribution": "clear",
+    "unjudgeable": []
+   }
+  ]
+ },
+ "seat61_eurostar": {
+  "field_disagreements": [
+   {
+    "amount": 52,
+    "a_text": "London to Paris, Lille or Brussels starts at £52 one-way",
+    "b_text": "London to Paris, Lille or Brussels starts at £52 one-way or £78 return.",
+    "fields": {
+     "product": [
+      "London to Paris/Lille/Brussels one-way fare",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 78,
+    "a_text": "or £78 return.",
+    "b_text": "London to Paris, Lille or Brussels starts at £52 one-way or £78 return.",
+    "fields": {
+     "product": [
+      "London to Paris/Lille/Brussels return fare",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 98,
+    "a_text": "(1st class) fares start at £98 one-way",
+    "b_text": "Eurostar Plus (1st class) fares start at £98 one-way, £140 return.",
+    "fields": {
+     "product": [
+      "one-way fare",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 140,
+    "a_text": "fares start at £98 one-way, £140 return.",
+    "b_text": "Eurostar Plus (1st class) fares start at £98 one-way, £140 return.",
+    "fields": {
+     "product": [
+      "return fare",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 25,
+    "a_text": "minus a €25/£25 fee",
+    "b_text": "minus a €25/£25 fee",
+    "fields": {
+     "plan": [
+      null,
+      "Eurostar Standard & Eurostar Plus"
+     ],
+     "product": [
+      "refund fee (Standard & Plus tickets)",
+      "refund fee"
+     ]
+    }
+   },
+   {
+    "amount": 25,
+    "a_text": "minus a €25/£25 fee",
+    "b_text": "minus a €25/£25 fee",
+    "fields": {
+     "plan": [
+      null,
+      "Eurostar Standard & Eurostar Plus"
+     ],
+     "product": [
+      "refund fee (Standard & Plus tickets)",
+      "refund fee"
+     ]
+    }
+   },
+   {
+    "amount": 51,
+    "a_text": "Adult From £51",
+    "b_text": "From £51",
+    "fields": {
+     "product": [
+      "Adult one-way",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 78,
+    "a_text": "From £51 From £78",
+    "b_text": "From £78",
+    "fields": {
+     "product": [
+      "Adult return",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 98,
+    "a_text": "From £78 From £98",
+    "b_text": "From £98",
+    "fields": {
+     "product": [
+      "Adult one-way",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 140,
+    "a_text": "From £98 From £140",
+    "b_text": "From £140",
+    "fields": {
+     "product": [
+      "Adult return",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 325,
+    "a_text": "From £140 £325",
+    "b_text": "£325",
+    "fields": {
+     "product": [
+      "Adult one-way",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 490,
+    "a_text": "£325 £490",
+    "b_text": "£490",
+    "fields": {
+     "product": [
+      "Adult return",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 26.5,
+    "a_text": "Railpass holder £26.50",
+    "b_text": "£26.50",
+    "fields": {
+     "plan": [
+      "Eurostar Standard",
+      "Eurostar Standard (Railpass holder)"
+     ],
+     "product": [
+      "Railpass holder one-way",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 53,
+    "a_text": "£26.50 £53",
+    "b_text": "£53",
+    "fields": {
+     "plan": [
+      "Eurostar Standard",
+      "Eurostar Standard (Railpass holder)"
+     ],
+     "product": [
+      "Railpass holder return",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 33,
+    "a_text": "£53 £33",
+    "b_text": "£33",
+    "fields": {
+     "plan": [
+      "Eurostar Plus",
+      "Eurostar Plus (Railpass holder)"
+     ],
+     "product": [
+      "Railpass holder one-way",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 66,
+    "a_text": "£33 £66",
+    "b_text": "£66",
+    "fields": {
+     "plan": [
+      "Eurostar Plus",
+      "Eurostar Plus (Railpass holder)"
+     ],
+     "product": [
+      "Railpass holder return",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 52,
+    "a_text": "Wheelchair user - - From £52",
+    "b_text": "From £52",
+    "fields": {
+     "plan": [
+      "Eurostar Plus",
+      "Eurostar Plus (Wheelchair user)"
+     ],
+     "product": [
+      "Wheelchair user one-way",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 78,
+    "a_text": "From £52 From £78",
+    "b_text": "From £78",
+    "fields": {
+     "plan": [
+      "Eurostar Plus",
+      "Eurostar Plus (Wheelchair user)"
+     ],
+     "product": [
+      "Wheelchair user return",
+      "Eurostar"
+     ]
+    }
+   },
+   {
+    "amount": 250,
+    "a_text": "these start at around £250 a night",
+    "b_text": "Barlow rooms are in the newly-built Barlow House wing at the side, these start at around £250 a night.",
+    "fields": {
+     "plan": [
+      null,
+      "Barlow rooms"
+     ],
+     "product": [
+      "St Pancras Renaissance Hotel Barlow rooms",
+      "St Pancras Renaissance Hotel"
+     ]
+    }
+   },
+   {
+    "amount": 500,
+    "a_text": "rooms start at around £500 a night",
+    "b_text": "Chambers rooms are in the original St Pancras Midland Hotel building, rooms start at around £500 a night",
+    "fields": {
+     "plan": [
+      null,
+      "Chambers rooms"
+     ],
+     "product": [
+      "St Pancras Renaissance Hotel Chambers rooms",
+      "St Pancras Renaissance Hotel"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "superbutcher_premium": {
+  "field_disagreements": [
+   {
+    "amount": 9.99,
+    "a_text": "\"price\" : 9.99, \"priceCurrency\" : \"AUD\"",
+    "b_text": "\"price\" : 9.99, \"priceCurrency\" : \"AUD\"",
+    "fields": {
+     "basis": [
+      "g",
+      null
+     ],
+     "basis_quantity": [
+      500,
+      null
+     ],
+     "product": [
+      "Beef Mince | $19.99kg",
+      "Beef Mince"
+     ],
+     "included": [
+      null,
+      "500g"
+     ]
+    }
+   },
+   {
+    "amount": 19.99,
+    "a_text": "Beef Mince | $19.99kg Beef Mince | $19.99kg Rated 4.7",
+    "b_text": "Beef Mince | $19.99kg",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ]
+    }
+   },
+   {
+    "amount": 19.99,
+    "a_text": "Beef Mince | $19.99kg Rated 4.7 out of 5",
+    "b_text": "Beef Mince | $19.99kg",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ]
+    }
+   },
+   {
+    "amount": 9.99,
+    "a_text": "Regular price$9.99 / Tax included.",
+    "b_text": "Regular price$9.99",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ],
+     "basis": [
+      "g",
+      null
+     ],
+     "basis_quantity": [
+      500,
+      null
+     ],
+     "included": [
+      null,
+      "500g"
+     ]
+    }
+   },
+   {
+    "amount": 9.99,
+    "a_text": "500g - $9.99 AUD",
+    "b_text": "500g - $9.99 AUD",
+    "fields": {
+     "basis": [
+      "g",
+      null
+     ],
+     "basis_quantity": [
+      500,
+      null
+     ],
+     "tax": [
+      null,
+      "included"
+     ],
+     "included": [
+      null,
+      "500g"
+     ]
+    }
+   },
+   {
+    "amount": 19,
+    "a_text": "or $19 under",
+    "b_text": "free GPS tracked & refrigerated local delivery on orders over $200, or $19 under",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ],
+     "product": [
+      "refrigerated local delivery",
+      "delivery"
+     ]
+    }
+   },
+   {
+    "amount": 55,
+    "a_text": "This Week's Specials 5 Meals For $55 Pack Gold Gourmet",
+    "b_text": "5 Meals For $55 Pack",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ],
+     "basis": [
+      "pack",
+      null
+     ],
+     "included": [
+      "5 meals",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 55,
+    "a_text": "This Week's Specials 5 Meals For $55 Pack Gold Gourmet",
+    "b_text": "5 Meals For $55 Pack",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ],
+     "basis": [
+      "pack",
+      null
+     ],
+     "included": [
+      "5 meals",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 55,
+    "a_text": "Value Packs 5 Meals For $55 Pack Protein Pack",
+    "b_text": "5 Meals For $55 Pack",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ],
+     "basis": [
+      "pack",
+      null
+     ],
+     "included": [
+      "5 meals",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 55,
+    "a_text": "Value Packs 5 Meals For $55 Pack Protein Pack",
+    "b_text": "5 Meals For $55 Pack",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ],
+     "basis": [
+      "pack",
+      null
+     ],
+     "included": [
+      "5 meals",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 20,
+    "a_text": "Gold Gourmet 2 For $20 Sale",
+    "b_text": "Gold Gourmet 2 For $20 Sale",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ]
+    }
+   },
+   {
+    "amount": 20,
+    "a_text": "Gold Gourmet 2 For $20 Sale",
+    "b_text": "Gold Gourmet 2 For $20 Sale",
+    "fields": {
+     "currency": [
+      null,
+      "AUD"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_crm_compare": {
+  "field_disagreements": [
+   {
+    "amount": 0,
+    "a_text": "Pipewise Yes ($0, up to 2 users)",
+    "b_text": "Yes ($0, up to 2 users)",
+    "fields": {
+     "plan": [
+      null,
+      "Free plan"
+     ]
+    }
+   },
+   {
+    "amount": 18,
+    "a_text": "Billed annually; $18 month-to-month",
+    "b_text": "Billed annually; $18 month-to-month",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "basis": [
+      null,
+      "user"
+     ],
+     "bound": [
+      "exact",
+      "from"
+     ]
+    }
+   },
+   {
+    "amount": 39,
+    "a_text": "Pipewise's Growth tier costs $39 per user per month",
+    "b_text": "Pipewise's Growth tier costs $39 per user per month",
+    "fields": {
+     "effective": [
+      null,
+      "March 2026"
+     ]
+    }
+   },
+   {
+    "amount": 10,
+    "a_text": "its AI assistant is an extra $10",
+    "b_text": "its AI assistant is an extra $10",
+    "fields": {
+     "product": [
+      "Pipewise AI assistant",
+      "AI assistant"
+     ],
+     "effective": [
+      null,
+      "March 2026"
+     ]
+    }
+   },
+   {
+    "amount": 299,
+    "a_text": "Clientory charges a $299 onboarding fee",
+    "b_text": "Clientory charges a $299 onboarding fee",
+    "fields": {
+     "effective": [
+      null,
+      "March 2026"
+     ]
+    }
+   },
+   {
+    "amount": 29,
+    "a_text": "they paid $29 a month during the trial period",
+    "b_text": "they paid $29 a month during the trial period",
+    "fields": {
+     "effective": [
+      null,
+      "March 2026"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_grocery_in": {
+  "field_disagreements": [
+   {
+    "amount": 399.0,
+    "a_text": "\"name\":\"Sona Masoori Rice 5 kg\",\"offers\":{\"@type\":\"Offer\",\"price\":\"399.00\"",
+    "b_text": "₹399 MRP ₹475",
+    "fields": {
+     "basis": [
+      "pack",
+      null
+     ],
+     "promotional": [
+      false,
+      true
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 168.0,
+    "a_text": "\"name\":\"Toor Dal 1 kg\",\"offers\":{\"@type\":\"Offer\",\"price\":\"168.00\"",
+    "b_text": "₹168 MRP ₹190",
+    "fields": {
+     "basis": [
+      "pack",
+      null
+     ],
+     "promotional": [
+      false,
+      true
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 899.0,
+    "a_text": "\"name\":\"Alphonso Mango (Box of 12)\",\"offers\":{\"@type\":\"Offer\",\"price\":\"899.00\"",
+    "b_text": "₹899",
+    "fields": {
+     "basis": [
+      "box",
+      null
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 399,
+    "a_text": "Sona Masoori Rice 5 kg ₹399 MRP ₹475",
+    "b_text": "\"name\":\"Sona Masoori Rice 5 kg\",\"offers\":{\"@type\":\"Offer\",\"price\":\"399.00\",\"priceCurrency\":\"INR\"",
+    "fields": {
+     "basis": [
+      "pack",
+      null
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 475,
+    "a_text": "₹399 MRP ₹475",
+    "b_text": "₹399 MRP ₹475",
+    "fields": {
+     "basis": [
+      "pack",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 79.8,
+    "a_text": "(₹79.80/kg)",
+    "b_text": "(₹79.80/kg)",
+    "fields": {
+     "promotional": [
+      false,
+      true
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 168,
+    "a_text": "Toor Dal 1 kg ₹168 MRP ₹190",
+    "b_text": "(₹168/kg)",
+    "fields": {
+     "basis": [
+      "pack",
+      "kg"
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 190,
+    "a_text": "₹168 MRP ₹190",
+    "b_text": "₹168 MRP ₹190",
+    "fields": {
+     "basis": [
+      "pack",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 168,
+    "a_text": "(₹168/kg)",
+    "b_text": "\"name\":\"Toor Dal 1 kg\",\"offers\":{\"@type\":\"Offer\",\"price\":\"168.00\",\"priceCurrency\":\"INR\"",
+    "fields": {
+     "basis": [
+      "kg",
+      null
+     ],
+     "promotional": [
+      false,
+      true
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 22,
+    "a_text": "Tomato – Hybrid, 500 g ₹22",
+    "b_text": "₹22",
+    "fields": {
+     "basis": [
+      "g",
+      null
+     ],
+     "basis_quantity": [
+      500,
+      null
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 44,
+    "a_text": "(₹44/kg)",
+    "b_text": "(₹44/kg)",
+    "fields": {
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 899,
+    "a_text": "Alphonso Mango (Box of 12) ₹899",
+    "b_text": "\"name\":\"Alphonso Mango (Box of 12)\",\"offers\":{\"@type\":\"Offer\",\"price\":\"899.00\",\"priceCurrency\":\"INR\"",
+    "fields": {
+     "basis": [
+      "box",
+      null
+     ],
+     "tax": [
+      null,
+      "included"
+     ],
+     "included": [
+      "12 mangoes",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 74.92,
+    "a_text": "(₹74.92/pc)",
+    "b_text": "(₹74.92/pc)",
+    "fields": {
+     "basis": [
+      "item",
+      "piece"
+     ],
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   },
+   {
+    "amount": 10,
+    "a_text": "Coriander Leaves ₹10 / bunch",
+    "b_text": "₹10 / bunch",
+    "fields": {
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_marketplace_uk": {
+  "field_disagreements": [
+   {
+    "amount": 29.5,
+    "a_text": "\"lowPrice\":\"29.50\"",
+    "b_text": "\"lowPrice\":\"29.50\"",
+    "fields": {
+     "pricing_type": [
+      "unit",
+      "one_time"
+     ],
+     "basis": [
+      "item",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 34.0,
+    "a_text": "\"highPrice\":\"34.00\"",
+    "b_text": "\"highPrice\":\"34.00\"",
+    "fields": {
+     "pricing_type": [
+      "unit",
+      "one_time"
+     ],
+     "basis": [
+      "item",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 22,
+    "a_text": "Other sizes from £22",
+    "b_text": "Other sizes from £22",
+    "fields": {
+     "pricing_type": [
+      "unit",
+      "one_time"
+     ],
+     "basis": [
+      "item",
+      null
+     ],
+     "product": [
+      null,
+      "Handmade Oak Chopping Board (other sizes)"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 29.5,
+    "a_text": "Ashwood Crafts £29.50 was £36.00",
+    "b_text": "£29.50 was £36.00",
+    "fields": {
+     "pricing_type": [
+      "unit",
+      "one_time"
+     ],
+     "basis": [
+      "item",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 36.0,
+    "a_text": "£29.50 was £36.00",
+    "b_text": "£29.50 was £36.00",
+    "fields": {
+     "pricing_type": [
+      "unit",
+      "one_time"
+     ],
+     "basis": [
+      "item",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 31.0,
+    "a_text": "GreenGrain Workshop £31.00",
+    "b_text": "£31.00",
+    "fields": {
+     "pricing_type": [
+      "unit",
+      "one_time"
+     ],
+     "basis": [
+      "item",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 34.0,
+    "a_text": "TimberNook £34.00",
+    "b_text": "£34.00",
+    "fields": {
+     "pricing_type": [
+      "unit",
+      "one_time"
+     ],
+     "basis": [
+      "item",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_mobile_au": {
+  "field_disagreements": [
+   {
+    "amount": 10,
+    "a_text": "International calling pack (300 mins to 40 countries) $10/mth",
+    "b_text": "$10/mth",
+    "fields": {
+     "product": [
+      "International calling pack",
+      "International calling pack (300 mins to 40 countries)"
+     ]
+    }
+   },
+   {
+    "amount": 10,
+    "a_text": "5GB data top-up $10 each",
+    "b_text": "$10 each",
+    "fields": {
+     "included": [
+      null,
+      "5GB"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_payments_uk": {
+  "field_disagreements": [
+   {
+    "amount": 0,
+    "a_text": "New merchants: 0% fees on your first £1,000 of card transactions.",
+    "b_text": "New merchants: 0% fees on your first £1,000 of card transactions.",
+    "fields": {
+     "attribution": [
+      "clear",
+      "none"
+     ]
+    }
+   },
+   {
+    "amount": 1.4,
+    "a_text": "1.4% + 20p",
+    "b_text": "UK cards1.4% + 20p",
+    "fields": {
+     "product": [
+      "UK cards",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.2,
+    "a_text": "1.4% + 20p",
+    "b_text": "UK cards1.4% + 20p",
+    "fields": {
+     "product": [
+      "UK cards",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2.9,
+    "a_text": "2.9% + 20p",
+    "b_text": "Non-UK cards2.9% + 20p",
+    "fields": {
+     "product": [
+      "Non-UK cards",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.2,
+    "a_text": "2.9% + 20p",
+    "b_text": "Non-UK cards2.9% + 20p",
+    "fields": {
+     "product": [
+      "Non-UK cards",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 1.1,
+    "a_text": "1.1% + 15p",
+    "b_text": "UK cards1.1% + 15p",
+    "fields": {
+     "product": [
+      "UK cards",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.15,
+    "a_text": "1.1% + 15p",
+    "b_text": "UK cards1.1% + 15p",
+    "fields": {
+     "product": [
+      "UK cards",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2.5,
+    "a_text": "2.5% + 15p",
+    "b_text": "Non-UK cards2.5% + 15p",
+    "fields": {
+     "product": [
+      "Non-UK cards",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 0.15,
+    "a_text": "2.5% + 15p",
+    "b_text": "Non-UK cards2.5% + 15p",
+    "fields": {
+     "product": [
+      "Non-UK cards",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_report_eur": {
+  "field_disagreements": [
+   {
+    "amount": 5450,
+    "a_text": "Team Licence (up to 5 users) €5,450",
+    "b_text": "Team Licence (up to 5 users) €5,450",
+    "fields": {
+     "plan": [
+      "Team Licence (up to 5 users)",
+      "Team Licence"
+     ],
+     "included": [
+      null,
+      "up to 5 users"
+     ]
+    }
+   },
+   {
+    "amount": 5920,
+    "a_text": "Team Licence (up to 5 users) USD 5,920",
+    "b_text": "Team Licence (up to 5 users) USD 5,920",
+    "fields": {
+     "plan": [
+      "Team Licence (up to 5 users)",
+      "Team Licence"
+     ],
+     "included": [
+      null,
+      "up to 5 users"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_saas_cards": {
+  "field_disagreements": [
+   {
+    "amount": 0,
+    "a_text": "Starter For individuals $0/mo",
+    "b_text": "$0/mo",
+    "fields": {
+     "included": [
+      "Up to 3 projects, 1 GB storage",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 10,
+    "a_text": "Extra storage (100 GB) $10 / month",
+    "b_text": "$10 / month",
+    "fields": {
+     "included": [
+      null,
+      "100 GB"
+     ]
+    }
+   },
+   {
+    "amount": 1500,
+    "a_text": "Business workspaces pay a one-time implementation fee of $1,500",
+    "b_text": "Business workspaces pay a one-time implementation fee of $1,500",
+    "fields": {
+     "product": [
+      "implementation fee",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_startup_news": {
+  "field_disagreements": [
+   {
+    "amount": 19,
+    "a_text": "Kontora's plans range from €19 to €99 per month",
+    "b_text": "Kontora's plans range from €19 to €99 per month",
+    "fields": {
+     "product": [
+      null,
+      "Kontora"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 99,
+    "a_text": "Kontora's plans range from €19 to €99 per month",
+    "b_text": "Kontora's plans range from €19 to €99 per month",
+    "fields": {
+     "product": [
+      null,
+      "Kontora"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": 15,
+    "a_text": "Customers who signed up on the older tariff paid €15",
+    "b_text": "Customers who signed up on the older tariff paid €15",
+    "fields": {
+     "plan": [
+      null,
+      "older tariff"
+     ],
+     "product": [
+      null,
+      "Kontora"
+     ],
+     "attribution": [
+      "ambiguous",
+      "clear"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "An enterprise tier for multi-site firms is priced individually.",
+    "b_text": "An enterprise tier for multi-site firms is priced individually.",
+    "fields": {
+     "product": [
+      null,
+      "Kontora"
+     ]
+    }
+   },
+   {
+    "amount": 49,
+    "a_text": "Kontora Pro: €49/Monat zzgl. MwSt.",
+    "b_text": "Kontora Pro: €49/Monat zzgl. MwSt.",
+    "fields": {
+     "product": [
+      null,
+      "Kontora"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_tours_nz": {
+  "field_disagreements": [
+   {
+    "amount": 189,
+    "a_text": "Adult NZ$189",
+    "b_text": "Adult NZ$189 · Child (5–14) NZ$95",
+    "fields": {
+     "included": [
+      null,
+      "cruise included"
+     ]
+    }
+   },
+   {
+    "amount": 95,
+    "a_text": "Child (5–14) NZ$95",
+    "b_text": "Adult NZ$189 · Child (5–14) NZ$95",
+    "fields": {
+     "included": [
+      null,
+      "cruise included"
+     ]
+    }
+   },
+   {
+    "amount": 1290,
+    "a_text": "From $1,290 pp",
+    "b_text": "From $1,290 pp",
+    "fields": {
+     "included": [
+      null,
+      "2 nights lodge accommodation"
+     ]
+    }
+   },
+   {
+    "amount": 320,
+    "a_text": "Single supplement $320.",
+    "b_text": "Single supplement $320.",
+    "fields": {
+     "product": [
+      "3-Day Abel Tasman Kayak & Walk single supplement",
+      "Single supplement"
+     ]
+    }
+   },
+   {
+    "amount": 45,
+    "a_text": "Airport transfers can be added for $45 per person each way.",
+    "b_text": "Airport transfers can be added for $45 per person each way.",
+    "fields": {
+     "product": [
+      "Airport transfer (each way)",
+      "Airport transfers"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "syn_vps_jp": {
+  "field_disagreements": [
+   {
+    "amount": 1.1,
+    "a_text": "¥1.1/hour ¥682/month",
+    "b_text": "¥1.1/hour",
+    "fields": {
+     "included": [
+      null,
+      "1 vCPU, 1 GB memory, 25 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 682,
+    "a_text": "¥1.1/hour ¥682/month",
+    "b_text": "¥682/month",
+    "fields": {
+     "included": [
+      null,
+      "1 vCPU, 1 GB memory, 25 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 2.2,
+    "a_text": "¥2.2/hour ¥1,364/month",
+    "b_text": "¥2.2/hour",
+    "fields": {
+     "included": [
+      null,
+      "2 vCPU, 2 GB memory, 50 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 1364,
+    "a_text": "¥2.2/hour ¥1,364/month",
+    "b_text": "¥1,364/month",
+    "fields": {
+     "included": [
+      null,
+      "2 vCPU, 2 GB memory, 50 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 4.4,
+    "a_text": "¥4.4/hour ¥2,728/month",
+    "b_text": "¥4.4/hour",
+    "fields": {
+     "included": [
+      null,
+      "3 vCPU, 4 GB memory, 100 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 2728,
+    "a_text": "¥4.4/hour ¥2,728/month",
+    "b_text": "¥2,728/month",
+    "fields": {
+     "included": [
+      null,
+      "3 vCPU, 4 GB memory, 100 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 8.8,
+    "a_text": "¥8.8/hour ¥5,456/month",
+    "b_text": "¥8.8/hour",
+    "fields": {
+     "included": [
+      null,
+      "4 vCPU, 8 GB memory, 200 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 5456,
+    "a_text": "¥8.8/hour ¥5,456/month",
+    "b_text": "¥5,456/month",
+    "fields": {
+     "included": [
+      null,
+      "4 vCPU, 8 GB memory, 200 GB SSD"
+     ]
+    }
+   },
+   {
+    "amount": 1.1,
+    "a_text": "beyond that ¥1.1 per GB",
+    "b_text": "1 TB/month included per server; beyond that ¥1.1 per GB.",
+    "fields": {
+     "included": [
+      "1 TB/month per server",
+      "1 TB/month"
+     ]
+    }
+   },
+   {
+    "amount": 20,
+    "a_text": "Automatic backups +20% of the server price.",
+    "b_text": "+20% of the server price.",
+    "fields": {
+     "tax": [
+      null,
+      "included"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "talenox_sg": {
+  "field_disagreements": [
+   {
+    "amount": 43.6,
+    "a_text": "First 5 active employee will be SGD43.60 w/GST (SGD40.00) per month",
+    "b_text": "First 5 active employee will be SGD43.60 w/GST (SGD40.00) per month.",
+    "fields": {
+     "plan": [
+      "Talenox SUITE (Payroll + Leave)",
+      "Talenox SUITE"
+     ]
+    }
+   },
+   {
+    "amount": 40.0,
+    "a_text": "First 5 active employee will be SGD43.60 w/GST (SGD40.00) per month",
+    "b_text": "First 5 active employee will be SGD43.60 w/GST (SGD40.00) per month.",
+    "fields": {
+     "plan": [
+      "Talenox SUITE (Payroll + Leave)",
+      "Talenox SUITE"
+     ]
+    }
+   },
+   {
+    "amount": 8.72,
+    "a_text": "Full-timers - SGD8.72 w/GST (SGD8.00) per active employee/ month",
+    "b_text": "Full-timers - SGD8.72 w/GST (SGD8.00) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Talenox SUITE (Payroll + Leave)",
+      "Talenox SUITE"
+     ],
+     "product": [
+      "Full-timers",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 8.0,
+    "a_text": "Full-timers - SGD8.72 w/GST (SGD8.00) per active employee/ month",
+    "b_text": "Full-timers - SGD8.72 w/GST (SGD8.00) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Talenox SUITE (Payroll + Leave)",
+      "Talenox SUITE"
+     ],
+     "product": [
+      "Full-timers",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 4.36,
+    "a_text": "SGD4.36 w/GST (SGD4.00) per active employee/ month",
+    "b_text": "Part-Timers (daily/hour rated) - SGD4.36 w/GST (SGD4.00) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Talenox SUITE (Payroll + Leave)",
+      "Talenox SUITE"
+     ],
+     "product": [
+      "Part-Timers (daily/hour rated)",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 4.0,
+    "a_text": "SGD4.36 w/GST (SGD4.00) per active employee/ month",
+    "b_text": "Part-Timers (daily/hour rated) - SGD4.36 w/GST (SGD4.00) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Talenox SUITE (Payroll + Leave)",
+      "Talenox SUITE"
+     ],
+     "product": [
+      "Part-Timers (daily/hour rated)",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 27.25,
+    "a_text": "First 5 active employees will be SGD27.25 w/GST (SGD25.00) per month",
+    "b_text": "First 5 active employees will be SGD27.25 w/GST (SGD25.00) per month (for the whole entity).",
+    "fields": {
+     "plan": [
+      "Single App (Payroll OR Leave)",
+      "Single App"
+     ]
+    }
+   },
+   {
+    "amount": 25.0,
+    "a_text": "First 5 active employees will be SGD27.25 w/GST (SGD25.00) per month",
+    "b_text": "First 5 active employees will be SGD27.25 w/GST (SGD25.00) per month (for the whole entity).",
+    "fields": {
+     "plan": [
+      "Single App (Payroll OR Leave)",
+      "Single App"
+     ]
+    }
+   },
+   {
+    "amount": 5.45,
+    "a_text": "Full-timers - SGD5.45 w/GST (SGD5.00) per active employee/ month",
+    "b_text": "Full-timers - SGD5.45 w/GST (SGD5.00) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Single App (Payroll OR Leave)",
+      "Single App"
+     ],
+     "product": [
+      "Full-timers",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 5.0,
+    "a_text": "Full-timers - SGD5.45 w/GST (SGD5.00) per active employee/ month",
+    "b_text": "Full-timers - SGD5.45 w/GST (SGD5.00) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Single App (Payroll OR Leave)",
+      "Single App"
+     ],
+     "product": [
+      "Full-timers",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2.73,
+    "a_text": "SGD2.73 w/GST (SGD2.50) per active employee/ month",
+    "b_text": "Part-Timers (daily/hour rated) - SGD2.73 w/GST (SGD2.50) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Single App (Payroll OR Leave)",
+      "Single App"
+     ],
+     "product": [
+      "Part-Timers (daily/hour rated)",
+      null
+     ]
+    }
+   },
+   {
+    "amount": 2.5,
+    "a_text": "SGD2.73 w/GST (SGD2.50) per active employee/ month",
+    "b_text": "Part-Timers (daily/hour rated) - SGD2.73 w/GST (SGD2.50) per active employee/ month",
+    "fields": {
+     "plan": [
+      "Single App (Payroll OR Leave)",
+      "Single App"
+     ],
+     "product": [
+      "Part-Timers (daily/hour rated)",
+      null
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ },
+ "wise_zoom_sg": {
+  "field_disagreements": [
+   {
+    "amount": 22.49,
+    "a_text": "Free S$22.49 per user¹",
+    "b_text": "S$22.49 per user¹",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 30.79,
+    "a_text": "S$30.79 per user (10 users minimum) From S$44.19",
+    "b_text": "S$30.79 per user (10 users minimum)",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 44.19,
+    "a_text": "From S$44.19 per user (10 users minimum) Contact sales",
+    "b_text": "From S$44.19 per user (10 users minimum)",
+    "fields": {
+     "period": [
+      null,
+      "month"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "Contact sales (250 users minimum) Annual billing",
+    "b_text": "Contact sales (250 users minimum)",
+    "fields": {
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 224.9,
+    "a_text": "Free S$224.90 per user",
+    "b_text": "S$224.90 per user",
+    "fields": {
+     "period": [
+      null,
+      "year"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 307.9,
+    "a_text": "S$307.90 per user (10 users minimum)",
+    "b_text": "S$307.90 per user (10 users minimum)",
+    "fields": {
+     "period": [
+      null,
+      "year"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 441.9,
+    "a_text": "From S$441.9 per user (10 users minimum)",
+    "b_text": "From S$441.9 per user (10 users minimum)",
+    "fields": {
+     "period": [
+      null,
+      "year"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "S$441.9 per user (10 users minimum) Contact sales (250 users minimum)",
+    "b_text": "Contact sales (250 users minimum)",
+    "fields": {
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 22.49,
+    "a_text": "Zoom Workplace Pro costs S$22.49 per user per month when billed monthly, excluding GST",
+    "b_text": "Zoom Workplace Pro costs S$22.49 per user per month when billed monthly, excluding GST.",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Pro",
+      "Pro"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 18.74,
+    "a_text": "the cost is reduced to S$18.74 per user per month",
+    "b_text": "the cost is reduced to S$18.74 per user per month",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Pro",
+      "Pro"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 224.9,
+    "a_text": "which totals S$224.90 per user per year, also excluding GST",
+    "b_text": "which totals S$224.90 per user per year, also excluding GST",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Pro",
+      "Pro"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 30.79,
+    "a_text": "Business plan is priced at S$30.79 per user per month when billed monthly, excluding GST",
+    "b_text": "priced at S$30.79 per user per month when billed monthly, excluding GST",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Business",
+      "Business"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 25.66,
+    "a_text": "the cost drops to S$25.66 per user per month",
+    "b_text": "the cost drops to S$25.66 per user per month",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Business",
+      "Business"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 307.9,
+    "a_text": "totalling S$307.90 per user per year, excluding GST",
+    "b_text": "totalling S$307.90 per user per year, excluding GST",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Business",
+      "Business"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 44.19,
+    "a_text": "costs S$44.19 per user per month when billed monthly, excluding GST²",
+    "b_text": "includes Zoom Phone and costs S$44.19 per user per month when billed monthly, excluding GST²",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Business Plus",
+      "Business Plus"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 441.9,
+    "a_text": "the total is S$441.90 per user per year",
+    "b_text": "If you select the annual plan, the total is S$441.90 per user per year",
+    "fields": {
+     "plan": [
+      "Zoom Workplace Business Plus",
+      "Business Plus"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": null,
+    "a_text": "The pricing for the Zoom Enterprise plan is not publicly listed.",
+    "b_text": "You need to contact Zoom Sales directly to get pricing information.",
+    "fields": {
+     "plan": [
+      "Zoom Enterprise",
+      "Enterprise"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 11.99,
+    "a_text": "Zoom Docs (S$11.99/month",
+    "b_text": "Zoom Docs (S$11.99/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 68.99,
+    "a_text": "Large Meeting (From S$68.99/month",
+    "b_text": "Large Meeting (From S$68.99/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 108.99,
+    "a_text": "Zoom Webinars (From S$108.99/month",
+    "b_text": "Zoom Webinars (From S$108.99/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 137,
+    "a_text": "Zoom Sessions (From S$137/month",
+    "b_text": "Zoom Sessions (From S$137/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 8.29,
+    "a_text": "Zoom Scheduler (S$8.29/month",
+    "b_text": "Zoom Scheduler (S$8.29/month after trial)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 9.37,
+    "a_text": "Zoom Clips Plus (S$9.37/month",
+    "b_text": "Zoom Clips Plus (S$9.37/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 13.99,
+    "a_text": "Cloud Storage (From S$13.99/month",
+    "b_text": "Cloud Storage (From S$13.99/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 9.99,
+    "a_text": "Whiteboard Plus (From S$9.99/month",
+    "b_text": "Whiteboard Plus (From S$9.99/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 6.9,
+    "a_text": "Translated Captions (S$6.90/month",
+    "b_text": "Translated Captions (S$6.90/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 100,
+    "a_text": "Audio Conferencing (From S$100/month",
+    "b_text": "Audio Conferencing (From S$100/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 67.99,
+    "a_text": "Conference Room Connector (S$67.99/month",
+    "b_text": "Conference Room Connector (S$67.99/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 8.04,
+    "a_text": "Zoom Compliance Manager (S$8.04/month",
+    "b_text": "Zoom Compliance Manager (S$8.04/month)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 13.33,
+    "a_text": "USD 13.33/month (billed annually)",
+    "b_text": "USD 13.33/month (billed annually)",
+    "fields": {
+     "plan": [
+      "Zoom Pro",
+      "Pro"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "included": [
+      null,
+      "30-hour meetings, 100 participants, 5 GB cloud storage"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 18.32,
+    "a_text": "USD 18.32/month (billed annually)",
+    "b_text": "USD 18.32/month (billed annually)",
+    "fields": {
+     "plan": [
+      "Zoom Business",
+      "Business"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "included": [
+      null,
+      "30-hour meetings, 300 participants, 5 GB cloud storage"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 26.66,
+    "a_text": "USD 26.66/month (billed annually)",
+    "b_text": "USD 26.66/month (billed annually)",
+    "fields": {
+     "plan": [
+      "Zoom Business Plus",
+      "Business Plus"
+     ],
+     "product": [
+      "Zoom",
+      "Zoom Workplace"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 4.0,
+    "a_text": "USD 4.00/user/month (billed annually)",
+    "b_text": "Microsoft Teams Essentials: 30-hour meetings, 300 participants, 10 GB cloud storage — USD 4.00/user/month",
+    "fields": {
+     "included": [
+      null,
+      "30-hour meetings, 300 participants, 10 GB cloud storage"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 6.0,
+    "a_text": "USD 6.00/user/month (billed annually)",
+    "b_text": "1 TB cloud storage — USD 6.00/user/month (billed annually)",
+    "fields": {
+     "included": [
+      null,
+      "30-hour meetings, 300 participants, 1 TB cloud storage"
+     ],
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   },
+   {
+    "amount": 22.0,
+    "a_text": "USD 22.00/user/month (billed annually)",
+    "b_text": "3,000 minutes of domestic outbound calling — USD 22.00/user/month (billed annually)",
+    "fields": {
+     "effective": [
+      null,
+      "21st April 2025"
+     ]
+    }
+   }
+  ],
+  "only_a": [],
+  "only_b": []
+ }
+}

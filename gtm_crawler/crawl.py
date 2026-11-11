@@ -43,7 +43,7 @@ import logging
 import time
 import uuid
 from collections import Counter
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -110,7 +110,7 @@ SEED_SCORE = 1_000.0
 PROFILE_FIELDS = frozenset(
     {"legal_name", "headquarters", "company_location", "company_country", "founded_year",
      "employee_count", "company_size", "ownership_type", "funding_round", "total_funding",
-     "investor"}
+     "investor", "founder"}
 )  # fmt: skip
 # (query, restricted to reference domains, fields it can fill). A query runs
 # only if one of its fields is a gap after the first-party pass.
@@ -184,12 +184,16 @@ async def crawl(
     resume: int | None = None,
     stop: asyncio.Event | None = None,
     owner: str | None = None,
+    progress: Callable[[int, int], Any] | None = None,
 ) -> CrawlSummary:
     """Crawl the site of ``seed_url`` and persist everything fetched.
 
     ``resume`` continues that crawl instead of starting a new one (a finished
     crawl is returned as it is). ``stop`` pauses the crawl when set. ``owner``
     names the lease holder of claimed URLs (default: a fresh id).
+    ``progress(crawl_id, organization_id)`` runs (in a thread, one at a time) every
+    ``crawl.progress_every_pages`` parsed pages while the site is crawled, so what was
+    found so far can be assessed.
 
     ``gaps(crawl_id, organization_id)`` runs (in a thread) after the site and
     before the external phase; it returns the fields the site left open. Without
@@ -210,6 +214,7 @@ async def crawl(
         )
         run = _Crawl(seed, settings, CrawlStore(engine), f, clock, search, gaps)
         run.known = known
+        run.progress = progress
         run.job_id, run.resume_id, run.stop = job_id, resume, stop
         run.owner = owner or f"crawl-{uuid.uuid4().hex[:12]}"
         try:
@@ -263,6 +268,20 @@ def _listed(domain: str, domains: tuple[str, ...]) -> bool:
     return any(domain == d or domain.endswith("." + d) for d in domains)
 
 
+async def fetch_until(
+    urls: list[str], limit: int, concurrency: int, fetch: Callable[[str], Awaitable[int]]
+) -> int:
+    """Fetch ``urls`` in order, ``concurrency`` at once, until ``limit`` of them were
+    stored (``fetch`` returns 1, or 0 for a page refused or failed); never more at once
+    than could still count. Returns how many were stored."""
+    got, i = 0, 0
+    while got < limit and i < len(urls):
+        batch = urls[i : i + min(max(1, concurrency), limit - got)]
+        i += len(batch)
+        got += sum(await asyncio.gather(*(fetch(u) for u in batch)))
+    return got
+
+
 class _Crawl:
     def __init__(
         self,
@@ -314,6 +333,10 @@ class _Crawl:
         self.search = search
         self.gaps = gaps
         self.known: Callable[[int, int], dict[str, list[str]]] | None = None
+        self.progress: Callable[[int, int], Any] | None = None
+        self.organization_id = 0
+        self.progress_task: asyncio.Task[Any] | None = None
+        self.progress_pages = 0
         # Names the site uses for itself, and reference profiles it links to.
         self.names: set[str] = set()
         self.reference_urls: dict[str, None] = {}
@@ -352,6 +375,7 @@ class _Crawl:
             return summary
 
     async def _run(self, org_id: int) -> CrawlSummary:
+        self.organization_id = org_id
         event = "crawl.resumed" if self.resume_id else "crawl.started"
         log.info(event, extra={"seed": self.seed})
         stop_reason: str | None
@@ -504,6 +528,7 @@ class _Crawl:
                 done, in_flight = await asyncio.wait(in_flight, return_when=asyncio.FIRST_COMPLETED)
                 for task in done:
                     task.result()  # re-raise failures (e.g. database errors)
+                self._maybe_progress()
                 if self.clock() - self.last_checkpoint >= s.checkpoint_seconds:
                     await self._save_checkpoint()
         finally:
@@ -511,6 +536,26 @@ class _Crawl:
                 task.cancel()
             if in_flight:
                 await asyncio.gather(*in_flight, return_exceptions=True)
+            if self.progress_task is not None:
+                await asyncio.gather(self.progress_task, return_exceptions=True)
+
+    def _maybe_progress(self) -> None:
+        """Start the progress callback when enough new pages were parsed and the last
+        one is done. It only reads what is stored: a failure is logged, never fatal."""
+        every = self.settings.crawl.progress_every_pages
+        if (self.progress is None or every <= 0
+                or self.stats.pages_parsed - self.progress_pages < every
+                or (self.progress_task is not None and not self.progress_task.done())):  # fmt: skip
+            return
+        self.progress_pages = self.stats.pages_parsed
+
+        async def call(progress: Callable[[int, int], Any] = self.progress) -> None:
+            try:
+                await asyncio.to_thread(progress, self.crawl_id, self.organization_id)
+            except Exception:
+                log.exception("crawl.progress_failed", extra={"crawl_id": self.crawl_id})
+
+        self.progress_task = asyncio.create_task(call())
 
     def _budget_exhausted(self, in_flight: int) -> str | None:
         s = self.settings.crawl
@@ -900,13 +945,17 @@ class _Crawl:
             stats["search_error"] = "disabled"
         elif plan:
             slug = slugify(subject)
-            for sent, (template, query, domains) in enumerate(plan):
-                if sent >= self.settings.search.max_queries_per_crawl:
-                    # Query budget (spec section 14): recorded, not sent.
-                    stats["queries_over_budget"] += 1
-                    await self._over_budget(template, query, domains)
-                    continue
-                for url, position in await self._search_one(template, query, domains, (), stats):
+            budget = self.settings.search.max_queries_per_crawl
+            sent = plan[:budget]
+            results = await self._search_all(
+                [(template, query, domains, ()) for template, query, domains in sent], stats
+            )
+            for template, query, domains in plan[budget:]:
+                # Query budget (spec section 14): recorded, not sent.
+                stats["queries_over_budget"] += 1
+                await self._over_budget(template, query, domains)
+            for (_, query, domains), found in zip(sent, results, strict=True):
+                for url, position in found:
                     if domains:
                         # A profile counts only if its URL names this exact company.
                         if slug and slug in url.lower():
@@ -915,15 +964,14 @@ class _Crawl:
                         hits.append((url, query, position))
 
         done: set[str] = set()
-        for url in list(dict.fromkeys(references))[: ext.max_reference_pages]:
-            done.add(url)
-            stats["reference_pages"] += await self._fetch_external(url, "link", None)
-        for url, query in rank_candidates(hits):
-            if stats["search_pages"] >= ext.max_search_pages:
-                break
-            if url not in done:
-                done.add(url)
-                stats["search_pages"] += await self._fetch_external(url, "search", query)
+        refs = list(dict.fromkeys(references))[: ext.max_reference_pages]
+        done.update(refs)
+        stats["reference_pages"] += await fetch_until(
+            refs, len(refs), ext.concurrency, lambda url: self._fetch_external(url, "link", None)
+        )
+        stats["search_pages"] += await self._fetch_results(
+            hits, ext.max_search_pages - stats["search_pages"], done
+        )
         if self.search is not None:
             await self._competitor_search(org_id, subject, stats, done)
         return stats
@@ -960,36 +1008,60 @@ class _Crawl:
         self, queries: list[tuple[str, str]], stats: dict[str, Any], done: set[str]
     ) -> None:
         ext, c = self.settings.external, stats["competitors"]
-        hits: list[tuple[str, str, int]] = []
-        for template, query in queries:
-            if c["queries"] >= ext.max_competitor_queries:
-                c["queries_over_budget"] += 1
-                await self._over_budget(template, query, ())
-                continue
-            c["queries"] += 1
-            # The company's own pages are crawled anyway: keep result slots for others.
-            for url, position in await self._search_one(template, query, (), (self.site,), stats):
-                hits.append((url, query, position))
-        for url, query in rank_candidates(hits):
-            if c["search_pages"] >= ext.max_competitor_search_pages:
-                break
-            if url not in done:
-                done.add(url)
-                c["search_pages"] += await self._fetch_external(url, "search", query)
+        room = max(0, ext.max_competitor_queries - c["queries"])
+        sent = queries[:room]
+        c["queries"] += len(sent)
+        # The company's own pages are crawled anyway: keep result slots for others.
+        results = await self._search_all(
+            [(template, query, (), (self.site,)) for template, query in sent], stats
+        )
+        for template, query in queries[room:]:
+            c["queries_over_budget"] += 1
+            await self._over_budget(template, query, ())
+        hits = [(url, query, position) for (_, query), found in zip(sent, results, strict=True)
+                for url, position in found]  # fmt: skip
+        c["search_pages"] += await self._fetch_results(
+            hits, ext.max_competitor_search_pages - c["search_pages"], done
+        )
+
+    async def _search_all(
+        self,
+        queries: list[tuple[str, str, tuple[str, ...], tuple[str, ...]]],
+        stats: dict[str, Any],
+    ) -> list[list[tuple[str, int]]]:
+        """Send queries (template, query, include, exclude), ``external.concurrency`` at
+        once, then record them in the order given; each one's results."""
+        gate = asyncio.Semaphore(max(1, self.settings.external.concurrency))
+
+        async def one(q: tuple[str, str, tuple[str, ...], tuple[str, ...]]) -> Any:
+            async with gate:
+                return await self._send(*q)
+
+        answers = await asyncio.gather(*(one(q) for q in queries))
+        return [await self._record(*q[:3], answer, stats)
+                for q, answer in zip(queries, answers, strict=True)]  # fmt: skip
+
+    async def _fetch_results(
+        self, hits: list[tuple[str, str, int]], limit: int, done: set[str]
+    ) -> int:
+        """Fetch the best-ranked result pages not fetched yet, until ``limit`` are stored."""
+        todo = [(url, query) for url, query in rank_candidates(hits) if url not in done]
+        queries = dict(todo)
+
+        def fetch(url: str) -> Awaitable[int]:
+            done.add(url)  # tried: no other round fetches it again
+            return self._fetch_external(url, "search", queries[url])
+
+        return await fetch_until(list(queries), limit, self.settings.external.concurrency, fetch)
 
     async def _over_budget(self, template: str, query: str, domains: tuple[str, ...]) -> None:
         await asyncio.to_thread(self.store.record_search, self.crawl_id, template, query,
                                 domains, "over_budget")  # fmt: skip
 
-    async def _search_one(
-        self,
-        template: str,
-        query: str,
-        include: tuple[str, ...],
-        exclude: tuple[str, ...],
-        stats: dict[str, Any],
-    ) -> list[tuple[str, int]]:
-        """Send and record one query: its off-site result URLs with their positions."""
+    async def _send(
+        self, template: str, query: str, include: tuple[str, ...], exclude: tuple[str, ...]
+    ) -> tuple[str | None, Any, SearchError | None, int]:
+        """One query sent: (provider, results, error, duration in ms)."""
         assert self.search is not None
         started = time.perf_counter()
         try:
@@ -999,12 +1071,25 @@ class _Crawl:
                 )
                 sp.update(provider=provider, results=len(results))
         except SearchError as exc:
+            return None, [], exc, round((time.perf_counter() - started) * 1000)
+        return provider, results, None, round((time.perf_counter() - started) * 1000)
+
+    async def _record(
+        self,
+        template: str,
+        query: str,
+        include: tuple[str, ...],
+        answer: tuple[str | None, Any, SearchError | None, int],
+        stats: dict[str, Any],
+    ) -> list[tuple[str, int]]:
+        """Record one sent query: its off-site result URLs with their positions."""
+        provider, results, exc, duration_ms = answer
+        if exc is not None or provider is None:
             stats["search_error"] = str(exc)
             log.warning("search.failed", extra={"query": query, "error": str(exc)})
             await asyncio.to_thread(
                 self.store.record_search, self.crawl_id, template, query, include,
-                "failed", error=str(exc)[:1000],
-                duration_ms=round((time.perf_counter() - started) * 1000),
+                "failed", error=str(exc)[:1000], duration_ms=duration_ms,
             )  # fmt: skip
             return []
         stats["queries"][query] = len(results)
@@ -1018,8 +1103,7 @@ class _Crawl:
                 continue
         await asyncio.to_thread(
             self.store.record_search, self.crawl_id, template, query, include, "ok",
-            provider=provider, results=normalized,
-            duration_ms=round((time.perf_counter() - started) * 1000),
+            provider=provider, results=normalized, duration_ms=duration_ms,
         )  # fmt: skip
         return [(url, pos) for url, _, _, pos in normalized if not self._in_site(url)]
 

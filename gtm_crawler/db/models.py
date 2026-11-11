@@ -51,6 +51,8 @@ EVIDENCE_ROLES = ("supports", "qualifies", "contradicts", "superseded")
 CRAWL_STATUSES = ("running", "paused", "completed", "partial", "failed")
 # Spec sections 5 and 8; see domain.py for their meaning and transitions.
 JOB_STATUSES = tuple(s.value for s in JobState)
+# A crawl fetches; a refresh re-reads stored evidence (new documents, new prompts).
+JOB_KINDS = ("crawl", "refresh")
 ACTIVE_JOB_STATUSES = tuple(s.value for s in JobState if s not in FINAL_JOB_STATES)
 CRAWL_URL_STATES = tuple(s.value for s in UrlState)
 CRAWL_EVENT_ENTITIES = ("job", "crawl", "url")
@@ -138,6 +140,7 @@ class CrawlJob(Base):
     __tablename__ = "crawl_job"
     __table_args__ = (
         CheckConstraint(_in("status", JOB_STATUSES), name="status"),
+        CheckConstraint(_in("kind", JOB_KINDS), name="kind"),
         # At most one unfinished job per company: starting a crawl is idempotent.
         Index(
             "uq_crawl_job_active_organization",
@@ -151,6 +154,9 @@ class CrawlJob(Base):
     organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"), index=True)
     root_url: Mapped[str] = mapped_column(Text)
     status: Mapped[str] = mapped_column(Text, server_default="created", index=True)
+    kind: Mapped[str] = mapped_column(Text, server_default="crawl")
+    # Where a running job is (pipeline.STAGES), for progress; 'done' once it is.
+    stage: Mapped[str | None] = mapped_column(Text)
     idempotency_key: Mapped[str | None] = mapped_column(Text, unique=True)
     lease_owner: Mapped[str | None] = mapped_column(Text)
     lease_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
@@ -908,22 +914,23 @@ class AdObservation(Base):
     created_at: Mapped[datetime] = _created_at()
 
 
-VERIFICATION_STATUSES = ("confirmed", "edited", "rejected")
+# dont_know and skipped: answers to a question (questions.py) that give no value.
+VERIFICATION_STATUSES = ("confirmed", "edited", "rejected", "dont_know", "skipped")
 
 
 class CompanyVerification(Base):
     """What the user confirmed, corrected or rejected at onboarding (``onboarding.py``).
 
     User input, never crawler evidence: assessments and the dossier ignore it;
-    the onboarding view shows it beside them. One row per company, field and
-    item (``item_key``: the product id for product fields, else ''); a later
-    answer replaces the earlier one.
+    the onboarding view shows it beside them. Append-only (migration 0024): every
+    answer for a company, field and item (``item_key``: the product id for product
+    fields, else '') is kept; the latest one is the answer, the rest its history.
     """
 
     __tablename__ = "company_verification"
     __table_args__ = (
         CheckConstraint(_in("status", VERIFICATION_STATUSES), name="status"),
-        UniqueConstraint("organization_id", "field", "item_key"),
+        Index("ix_company_verification_item", "organization_id", "field", "item_key", "id"),
     )
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
@@ -933,6 +940,7 @@ class CompanyVerification(Base):
     item_key: Mapped[str] = mapped_column(Text, server_default="")
     status: Mapped[str] = mapped_column(Text)
     value: Mapped[Any] = mapped_column(JSONB(none_as_null=True), nullable=True)
+    actor: Mapped[str | None] = mapped_column(Text, nullable=True)
     verified_at: Mapped[datetime] = _created_at()
 
 

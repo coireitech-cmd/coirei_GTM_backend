@@ -14,13 +14,14 @@ evidence: they are shown beside each item and do not change any assessment.
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import Engine, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
-from .db.models import CompanyVerification, CrawlJob
+from .db.models import ACTIVE_JOB_STATUSES, CompanyVerification, CrawlJob
 from .dossier import COMPETITOR_FIELDS, build_dossier
 
 MAX_CITATIONS = 5
@@ -83,11 +84,34 @@ class VerificationItem(BaseModel):
     item_key: str = Field("", max_length=64)
     status: Literal["confirmed", "edited", "rejected"]
     value: Any = None
+    actor: str | None = Field(None, max_length=200)  # who answered, when the caller knows
 
 
 class VerificationRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     items: list[VerificationItem] = Field(max_length=500)
+
+
+def field_status(
+    state: str, has_value: bool, active: bool, answer: str | None = None, access: str = "public"
+) -> str:
+    """A field's status for the user, from its evidence ``state``, whether it has a
+    value, whether research is still running (``active``), the user's ``answer``
+    (confirmed, edited, rejected) and where its value can come from (``access``)."""
+    if answer in ("confirmed", "edited"):
+        return "Verified"
+    if answer == "rejected" or not has_value:
+        # Only public research is still extracting; the user, a document or an
+        # integration must supply the rest.
+        return "Extracting" if active and access == "public" and answer is None else "Not found"
+    return {
+        "CORROBORATED": "Verified",
+        "MODEL_INFERRED": "Inferred",
+        "CONFLICTING": "Conflicting",
+        "UNSUPPORTED": "Needs confirmation",
+        "UNVERIFIED": "Needs confirmation",
+        "STALE": "Needs confirmation",
+    }.get(state, "Extracted")
 
 
 def _entries(v: Any) -> list[dict[str, Any]]:
@@ -127,6 +151,7 @@ def _item(
             "quote": c["quote"],
             "source_type": c["source_type"],
             "tier": c["source_tier"],
+            "retrieved_at": c.get("retrieved_at"),
         }
         for e in found
         for c in e.get("citations", [])
@@ -215,13 +240,6 @@ def onboarding_view(
 
     if profile and profile.get("profile"):
         fill_from_profile(sections, profile["profile"])
-    answers = verification(engine, organization_id)
-    by_key = {(a["field"], a["item_key"]): a for a in answers}
-    for section in sections:
-        for item in section["items"]:
-            item["verification"] = by_key.get((item["field"], item["item_key"]))
-    answered = {a["section"] for a in answers}
-
     with engine.connect() as conn:
         job = conn.execute(
             select(CrawlJob.id, CrawlJob.status, CrawlJob.root_url)
@@ -229,6 +247,18 @@ def onboarding_view(
             .order_by(CrawlJob.id.desc())
             .limit(1)
         ).first()
+    active = job is not None and job.status in ACTIVE_JOB_STATUSES
+    answers = verification(engine, organization_id)
+    by_key = {(a["field"], a["item_key"]): a for a in answers}
+    for section in sections:
+        for item in section["items"]:
+            answer = by_key.get((item["field"], item["item_key"]))
+            item["verification"] = answer
+            item["status"] = field_status(item["state"], item["value"] is not None, active,
+                                          answer["status"] if answer else None)  # fmt: skip
+            dates = [c["retrieved_at"] for c in item["citations"] if c.get("retrieved_at")]
+            item["extracted_at"] = max(dates, key=datetime.fromisoformat) if dates else None
+    answered = {a["section"] for a in answers}
     return {
         "company_id": organization_id,
         "domain": dossier["company"]["domain"],
@@ -363,50 +393,51 @@ def fill_from_profile(sections: list[dict[str, Any]], profile: dict[str, Any]) -
                 _inferred(item, leaves, scalar=field in _SCALAR, reasoning=reasoning)
 
 
-def verification(engine: Engine, organization_id: int) -> list[dict[str, Any]]:
+def verification(
+    engine: Engine, organization_id: int, history: bool = False
+) -> list[dict[str, Any]]:
+    """The user's answers, oldest first: the latest per item, or with ``history``
+    every answer ever given (the table is append-only; the latest one wins)."""
     with engine.connect() as conn:
         v = CompanyVerification
         rows = conn.execute(
-            select(v.section, v.field, v.item_key, v.status, v.value, v.verified_at)
+            select(v.section, v.field, v.item_key, v.status, v.value, v.actor, v.verified_at)
             .where(v.organization_id == organization_id)
             .order_by(v.id)
         ).all()
-    return [
+    answers = [
         {
             "section": r.section,
             "field": r.field,
             "item_key": r.item_key,
             "status": r.status,
             "value": r.value,
+            "actor": r.actor,
             "verified_at": r.verified_at.isoformat(),
         }
         for r in rows
     ]
+    if history:
+        return answers
+    latest = {(a["field"], a["item_key"]): a for a in answers}
+    return list(latest.values())  # in the order the items were first answered
 
 
 def save_verification(
     engine: Engine, organization_id: int, request: VerificationRequest
 ) -> list[dict[str, Any]]:
-    """Record the user's answers (a later answer for the same item replaces it).
+    """Record the user's answers; every one is kept and the latest per item wins.
 
-    Raises ValueError for a section or field the onboarding view does not have."""
+    Raises ValueError for a section and field neither the onboarding view nor the
+    Business Intelligence Profile (``business_profile.REGISTRY``) has."""
+    from .business_profile import EDITABLE  # it builds on this module
+
     for item in request.items:
-        if item.field not in SECTION_FIELDS.get(item.section, ()):
+        if (item.field not in SECTION_FIELDS.get(item.section, ())
+                and (item.section, item.field) not in EDITABLE):  # fmt: skip
             raise ValueError(f"no field {item.field!r} in section {item.section!r}")
-    # One row per item: the last answer for an item in the request wins.
-    latest = {(i.field, i.item_key): i for i in request.items}
-    if latest:
-        rows = [{"organization_id": organization_id, **i.model_dump()} for i in latest.values()]
-        stmt = pg_insert(CompanyVerification).values(rows)
-        stmt = stmt.on_conflict_do_update(
-            index_elements=["organization_id", "field", "item_key"],
-            set_={
-                "section": stmt.excluded.section,
-                "status": stmt.excluded.status,
-                "value": stmt.excluded.value,
-                "verified_at": stmt.excluded.verified_at,
-            },
-        )
+    if request.items:
+        rows = [{"organization_id": organization_id, **i.model_dump()} for i in request.items]
         with engine.begin() as conn:
-            conn.execute(stmt)
+            conn.execute(pg_insert(CompanyVerification).values(rows))
     return verification(engine, organization_id)

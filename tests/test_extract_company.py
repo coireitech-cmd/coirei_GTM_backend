@@ -245,6 +245,7 @@ def test_a_site_without_metadata_names_itself_in_its_title_and_footer() -> None:
         "website": {"https://acme.example/"},
         "legal_name": {"Acme Robotics Pvt Ltd"},
         "company_location": {"7th Floor, Spencer Plaza, Mount Road, Chennai, Tamil Nadu, India"},
+        "contact_email": {"info@acme.example"},
     }
 
 

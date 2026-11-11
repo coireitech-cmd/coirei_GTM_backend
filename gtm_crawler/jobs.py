@@ -119,8 +119,12 @@ class JobStore:
         actor: str = "api",
         max_queued: int | None = None,
         trace: str | None = None,
+        kind: str = "crawl",
     ) -> tuple[Any, bool]:
         """The job for ``root_url``: (row, created). A new job is queued.
+
+        ``kind`` 'refresh' re-reads the company's stored evidence without fetching. An
+        unfinished job of either kind is returned instead of a new one.
 
         ``trace`` (a W3C ``traceparent``) is kept on the ``created`` event, so
         the worker continues the requester's trace (``traceparent()``).
@@ -155,7 +159,7 @@ class JobStore:
                 with conn.begin_nested():
                     row = conn.execute(
                         insert(CrawlJob)
-                        .values(organization_id=org_id, root_url=root,
+                        .values(organization_id=org_id, root_url=root, kind=kind,
                                 idempotency_key=idempotency_key, status=JobState.CREATED)
                         .returning(CrawlJob)
                     ).one()  # fmt: skip
@@ -171,6 +175,11 @@ class JobStore:
             self._event(conn, row.id, "created", None, JobState.CREATED, actor, detail=detail)
             row = self._move(conn, row, JobState.QUEUED, event="queued", actor=actor)
         return row, True
+
+    def note_stage(self, job_id: int, stage: str) -> None:
+        """Record where the job is, for progress only (no state change, no lease check)."""
+        with self.engine.begin() as conn:
+            conn.execute(update(CrawlJob).where(CrawlJob.id == job_id).values(stage=stage))
 
     def get(self, job_id: int) -> Any:
         with self.engine.connect() as conn:

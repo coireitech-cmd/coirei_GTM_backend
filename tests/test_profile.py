@@ -207,8 +207,12 @@ def test_profile_reasons_from_pages_and_fills_onboarding(
     assert bm["reasoning"]["citations"][0]["url"] == f"{OWN}/"
     assert "differentiators" not in built["profile"]  # cited an id never sent
     assert built["dropped"]["uncited"] == 1
-    # The value proposition is its own call, on the pages' prose.
-    assert len(model.profile_calls) == 2
+    # One call per part (PARTS); the value proposition reads the pages' prose.
+    def calls(system: str) -> int:
+        return sum(c["messages"][0]["content"] == system for c in model.profile_calls)
+
+    assert calls(profile.SYSTEM) == calls(profile.VP_SYSTEM) == 1
+    assert len(model.profile_calls) == len(profile.PARTS)
     vp = built["profile"]["value_proposition"]
     assert vp["problem"]["value"] == "Graduates lack the skills IT jobs ask for"
     assert vp["basis"]["value"] == "inferred" and "statement" not in vp
@@ -216,7 +220,9 @@ def test_profile_reasons_from_pages_and_fills_onboarding(
 
     # Same evidence: the stored profile, no new call; the API reads it the same way.
     assert profile.build_profile(engine, settings, org, transport)["cached"]
-    assert len(model.profile_calls) == 2
+    assert calls(profile.SYSTEM) == calls(profile.VP_SYSTEM) == 1
+    # A part the fake answered with nothing usable was not stored: it is asked again.
+    assert calls(profile.BRAND_SYSTEM) == 2
     stored = profile.stored_profile(engine, settings, org)
     assert stored["status"] == "ready" and stored["basis"] == "model_generated"
     view = onboarding_view(engine, org, stored)

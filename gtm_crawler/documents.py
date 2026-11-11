@@ -1,9 +1,10 @@
 """Documents a company gives about itself (onboarding: "URL / docs") as evidence.
 
 A document is read to text (PDF in the isolated child process of
-``market/pdf.py``, DOCX from its ``word/document.xml``, plain text and Markdown
-as they are), wrapped in minimal HTML and stored like a fetched page in the
-company's *documents crawl*: one crawl per company with no job and the seed
+``market/pdf.py``, DOCX from its ``word/document.xml``, PPTX from its slides'
+``ppt/slides/slideN.xml`` in slide order, plain text and Markdown as they are),
+wrapped in minimal HTML and stored like a fetched page in the company's
+*documents crawl*: one crawl per company with no job and the seed
 ``upload://<domain>/``. Extraction is current per crawl (``models.is_current``),
 so re-extracting the documents crawl never touches the web crawls' evidence.
 Its pages are cited as ``upload://<domain>/documents/<sha>/<file name>`` with the
@@ -43,7 +44,9 @@ from .versions import current_versions
 
 UPLOAD_SCHEME = "upload"
 _W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
-# A DOCX's text part larger than this (uncompressed) is refused: a zip bomb guard.
+_A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
+_SLIDE = re.compile(r"^ppt/slides/slide(\d+)\.xml$")
+# A DOCX's or PPTX's text parts larger than this (uncompressed) are refused: a zip bomb guard.
 MAX_DOCX_XML_BYTES = 50_000_000
 _PARAGRAPH_BREAK = re.compile(r"\n\s*\n")
 
@@ -58,7 +61,7 @@ class DocumentError(ValueError):
 
 @dataclass(frozen=True)
 class DocumentText:
-    kind: str  # pdf | docx | text
+    kind: str  # pdf | docx | pptx | text
     paragraphs: list[str]
     pages: int  # PDF pages read; 1 for other kinds
     issues: list[str]
@@ -72,30 +75,40 @@ def document_url(domain: str, sha256: str, filename: str) -> str:
     return f"{UPLOAD_SCHEME}://{domain}/documents/{sha256[:16]}/{quote(filename, safe='')}"
 
 
-def _docx_paragraphs(data: bytes) -> list[str]:
+def _office_document(data: bytes) -> DocumentText:
+    """A DOCX's paragraphs, or a PPTX's paragraphs slide by slide."""
     try:
         archive = zipfile.ZipFile(io.BytesIO(data))
-        info = archive.getinfo("word/document.xml")
-    except (zipfile.BadZipFile, KeyError) as exc:
-        raise DocumentError("unsupported", "a ZIP file that is not a DOCX document") from exc
-    if info.file_size > MAX_DOCX_XML_BYTES:
-        raise DocumentError("too_large", "the DOCX text part is too large")
+    except zipfile.BadZipFile as exc:
+        raise DocumentError("unsupported", "a damaged ZIP file") from exc
+    names = archive.namelist()
+    slides = sorted((int(m.group(1)), n) for n in names if (m := _SLIDE.match(n)))
+    if "word/document.xml" in names:
+        kind, ns, parts = "docx", _W, ["word/document.xml"]
+    elif slides:
+        kind, ns, parts = "pptx", _A, [n for _, n in slides]
+    else:
+        raise DocumentError("unsupported", "a ZIP file that is not a DOCX or PPTX document")
+    infos = [archive.getinfo(n) for n in parts]
+    if sum(i.file_size for i in infos) > MAX_DOCX_XML_BYTES:  # a zip bomb guard
+        raise DocumentError("too_large", f"the {kind.upper()} text is too large")
     parser = etree.XMLParser(resolve_entities=False, no_network=True, huge_tree=False)
-    try:
-        root = etree.fromstring(archive.read(info), parser)
-    except etree.XMLSyntaxError as exc:
-        raise DocumentError("malformed", "the DOCX text part is not valid XML") from exc
     out = []
-    for p in root.iter(f"{_W}p"):
-        text = "".join(t.text or "" for t in p.iter(f"{_W}t")).strip()
-        if text:
-            out.append(text)
-    return out
+    for info in infos:
+        try:
+            root = etree.fromstring(archive.read(info), parser)
+        except etree.XMLSyntaxError as exc:
+            raise DocumentError("malformed", f"the {kind.upper()} text is not valid XML") from exc
+        for p in root.iter(f"{ns}p"):
+            text = "".join(t.text or "" for t in p.iter(f"{ns}t")).strip()
+            if text:
+                out.append(text)
+    return DocumentText(kind, out, len(infos) if kind == "pptx" else 1, [])
 
 
 def _text_paragraphs(data: bytes) -> list[str]:
     if b"\x00" in data:
-        raise DocumentError("unsupported", "binary data: send a PDF, DOCX, TXT or MD file")
+        raise DocumentError("unsupported", "binary data: send a PDF, DOCX, PPTX, TXT or MD file")
     try:
         text = data.decode("utf-8-sig")
     except UnicodeDecodeError as exc:
@@ -120,7 +133,7 @@ async def read_document(data: bytes, settings: Settings) -> DocumentText:
         ]
         return DocumentText("pdf", paragraphs, pdf.pages_read(result), list(result["issues"]))
     if data[:4] == b"PK\x03\x04":
-        return DocumentText("docx", _docx_paragraphs(data), 1, [])
+        return _office_document(data)
     return DocumentText("text", _text_paragraphs(data), 1, [])
 
 

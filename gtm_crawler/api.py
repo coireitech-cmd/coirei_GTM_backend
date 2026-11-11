@@ -56,12 +56,13 @@ from sqlalchemy import Engine, select, text
 from starlette.concurrency import run_in_threadpool
 
 from . import __version__
+from .business_profile import build_business_profile
 from .config import ConfigError, Settings, load_settings, secret_values
 from .cost import company_costs
 from .db import make_engine
 from .db.evidence import EvidenceStore
 from .db.migrate import known_revisions, migration_head
-from .db.models import Crawl, Organization, Product
+from .db.models import Crawl, CrawlJob, Organization, Product
 from .deadletter import DeadLetterError, DeadLetters
 from .documents import DocumentError, ingest_document
 from .domain import FINAL_JOB_STATES
@@ -73,6 +74,7 @@ from .metrics import instrument_engine
 from .onboarding import VerificationRequest, onboarding_view, save_verification, verification
 from .profile import stored_profile
 from .quality import quality_report
+from .questions import AnswerRequest, questions_view, save_answers
 from .rawstore import make_rawstore
 from .tracing import continue_trace, span, traceparent
 from .urls import InvalidUrl, normalize_url, registrable_domain, url_host
@@ -149,7 +151,9 @@ def job_view(job: Any, crawls: list[Any]) -> dict[str, Any]:
         "crawl_id": job.id,
         "company_id": job.organization_id,
         "root_url": job.root_url,
+        "kind": job.kind,
         "status": job.status.upper(),
+        "stage": job.stage,
         "pause_requested": job.pause_requested,
         "cancel_requested": job.cancel_requested,
         "versions": job.versions,
@@ -397,6 +401,34 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         if known is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, f"no company {company_id}")
 
+    def refresh(company_id: int) -> Any:
+        """Queue a refresh of the company's profile (or return its unfinished job)."""
+        with engine.connect() as conn:
+            root = conn.execute(
+                select(CrawlJob.root_url).where(CrawlJob.organization_id == company_id)
+                .order_by(CrawlJob.id.desc()).limit(1)
+            ).scalar() or "https://{}/".format(conn.execute(
+                select(Organization.registrable_domain).where(Organization.id == company_id)
+            ).scalar())  # fmt: skip
+        job, _ = jobs.create(root, settings.urls, kind="refresh", trace=traceparent())
+        return job
+
+    @app.post(
+        "/v1/companies/{company_id}/refresh",
+        dependencies=guarded,
+        tags=["Onboarding"],
+        summary="Refresh the company's profile",
+        status_code=status.HTTP_202_ACCEPTED,
+        responses=NO_COMPANY,
+    )
+    def post_refresh(company_id: int) -> dict[str, Any]:
+        """Queue a job that re-reads the company's stored evidence (pages and
+        documents) and rebuilds its profile and questions, fetching nothing. If the
+        company already has an unfinished job, that job is returned: it will. Follow it
+        with `GET /v1/crawls/{crawl_id}` (`kind`: `refresh`, `stage`)."""
+        company(company_id)
+        return view(refresh(company_id).id)
+
     @app.get("/v1/companies/{company_id}/dossier", dependencies=guarded, tags=["Companies"],
              summary="Get a company's dossier", responses=NO_COMPANY)  # fmt: skip
     def get_dossier(company_id: int, clean: bool = False) -> dict[str, Any]:
@@ -520,7 +552,7 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         responses={
             **NO_COMPANY,
             413: {"description": "Larger than `api.max_document_bytes`."},
-            415: {"description": "Not a PDF, DOCX or UTF-8 text/Markdown file."},
+            415: {"description": "Not a PDF, DOCX, PPTX or UTF-8 text/Markdown file."},
             422: {"description": "No readable text (e.g. a scanned PDF)."},
         },
     )
@@ -529,8 +561,9 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         request: Request,
         filename: Annotated[str, Query(min_length=1, max_length=200)],
     ) -> dict[str, Any]:
-        """Read a document the company gives about itself (PDF, DOCX, TXT, MD) and add
-        it to the company's evidence; the dossier is re-assessed before this returns.
+        """Read a document the company gives about itself (PDF, DOCX, PPTX, TXT, MD) and add
+        it to the company's evidence; the dossier is re-assessed before this returns,
+        and a refresh job (`refresh_job_id`) rebuilds the profile from it.
 
         Send the file's bytes as the request body (`Content-Type:
         application/octet-stream`), its name in `filename`. The kind is decided by the
@@ -547,7 +580,7 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
                 )
         name = filename.replace("\\", "/").rsplit("/", 1)[-1].strip() or "document"
         try:
-            return await ingest_document(engine, settings, company_id, name, bytes(body))
+            stored = await ingest_document(engine, settings, company_id, name, bytes(body))
         except DocumentError as exc:
             code = (
                 status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
@@ -557,6 +590,9 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
                 else status.HTTP_422_UNPROCESSABLE_ENTITY
             )
             raise HTTPException(code, f"{exc.code}: {exc.detail}") from exc
+        # The profile is rebuilt from the new evidence by a refresh job.
+        job = await run_in_threadpool(refresh, company_id)
+        return {**stored, "refresh_job_id": job.id}
 
     @app.get(
         "/v1/companies/{company_id}/onboarding",
@@ -574,6 +610,25 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         company(company_id)
         profile = stored_profile(engine, settings, company_id)
         return jsonable_encoder(onboarding_view(engine, company_id, profile))
+
+    @app.get(
+        "/v1/companies/{company_id}/business-profile",
+        dependencies=guarded,
+        tags=["Onboarding"],
+        summary="The company's Business Intelligence Profile",
+        responses=NO_COMPANY,
+    )
+    def get_business_profile(company_id: int) -> Any:
+        """Everything known about the company under fourteen headings, every field with
+        its `value`, `status` (Extracting, Extracted, Verified, Inferred, Needs
+        confirmation, Conflicting, Not found), `confidence`, `extracted_at`, `sources`,
+        `origin` (crawler, document, model, user) and `access` (public, document,
+        private, integration). Evidence first, the model's cited profile for what it
+        left empty (Inferred), the user's answers over both. `missing_information` lists
+        what is still open; `source_records` every field's sources. Available while the
+        crawl is still running."""
+        company(company_id)
+        return jsonable_encoder(build_business_profile(engine, settings, company_id))
 
     @app.get(
         "/v1/companies/{company_id}/profile",
@@ -614,12 +669,52 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
     )
     def put_verification(company_id: int, body: VerificationRequest) -> dict[str, Any]:
         """Record answers: `status` is `confirmed`, `edited` (with the corrected `value`)
-        or `rejected`. `item_key` is the product id for a product item, else empty. A
-        later answer for an item replaces the earlier one. User input only: no
+        or `rejected`. `section` and `field` are an onboarding section's field or any
+        Business Intelligence Profile field (its section key and field key);
+        `item_key` is the product id for a product item, else empty; `actor` (optional)
+        says who answered. Every answer is kept: the latest per item is the answer
+        (returned here), the rest its `history` in the profile. User input only: no
         assessment changes."""
         company(company_id)
         try:
             return {"items": save_verification(engine, company_id, body)}
+        except ValueError as exc:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
+
+    @app.get(
+        "/v1/companies/{company_id}/questions",
+        dependencies=guarded,
+        tags=["Onboarding"],
+        summary="What to ask the user",
+        responses=NO_COMPANY,
+    )
+    def get_questions(company_id: int) -> Any:
+        """Once research has found something (`ready`), the questions to ask: the
+        business fundamentals, commercial and sales-and-marketing questions not yet
+        answered, with choices from the profile where it has them, then gap questions
+        (`gap:<field>`) for public facts missing, unconfirmed or in conflict. Each has
+        `id`, `group`, `text` (the model's wording when it has worded it), `type`
+        (text, number, money, percent, choice, multi_choice, yes_no), `fills` (the
+        profile field), `choices`, `suggested` and `allow_dont_know`."""
+        company(company_id)
+        return jsonable_encoder(questions_view(engine, settings, company_id))
+
+    @app.put(
+        "/v1/companies/{company_id}/answers",
+        dependencies=guarded,
+        tags=["Onboarding"],
+        summary="Record the user's answers",
+        responses={**NO_COMPANY, 422: {"description": "Unknown question, or a value that is "
+                                                      "not of its type."}},
+    )
+    def put_answers(company_id: int, body: AnswerRequest) -> dict[str, Any]:
+        """Answers: `status` `answered` (with a `value` of the question's type: money
+        is `{"amount", "currency"}`, percent 0-100), `dont_know` or `skipped` (no
+        value). Each is the user's answer to the field it fills, kept with its history;
+        a field answered "I don't know" stays in the profile's missing information."""
+        company(company_id)
+        try:
+            return {"answers": save_answers(engine, company_id, body)}
         except ValueError as exc:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 

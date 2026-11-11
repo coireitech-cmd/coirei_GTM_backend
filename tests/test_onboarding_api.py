@@ -46,7 +46,12 @@ def crawled(engine: Engine, settings: Settings, name: str) -> tuple[TestClient, 
     api = TestClient(create_app(settings, engine))
     created = api.post("/v1/crawls", json={"root_url": f"{site}/"}).json()
     transport = httpx.MockTransport(FakeSite(routes))
-    assert asyncio.run(run_worker(settings, engine, once=True, transport=transport)) == 1
+    # Older queued jobs (a document upload's refresh) may be claimed first: run until
+    # this one is done.
+    for _ in range(10):
+        assert asyncio.run(run_worker(settings, engine, once=True, transport=transport)) == 1
+        if api.get(f"/v1/crawls/{created['crawl_id']}").json()["status"] != "QUEUED":
+            break
     return api, created["company_id"]
 
 
@@ -65,13 +70,18 @@ def docx(*paragraphs: str) -> bytes:
     return out.getvalue()
 
 
-def upload(api: TestClient, company: int, name: str, data: bytes) -> Any:
-    return api.post(
+def upload(api: TestClient, company: int, name: str, data: bytes, refresh: bool = False) -> Any:
+    """Upload a document. Its refresh job is cancelled unless ``refresh``: a queued job
+    would be claimed by the next test's worker instead of that test's own job."""
+    response = api.post(
         f"/v1/companies/{company}/documents",
         params={"filename": name},
         content=data,
         headers={"Content-Type": "application/octet-stream"},
     )
+    if response.status_code == 201 and not refresh:
+        api.post(f"/v1/crawls/{response.json()['refresh_job_id']}/cancel")
+    return response
 
 
 def test_onboarding_view_has_the_six_sections_and_invents_nothing(

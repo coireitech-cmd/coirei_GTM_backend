@@ -53,7 +53,7 @@ from .product import slugify
 log = logging.getLogger(__name__)
 
 EXTRACTOR = "llm"
-PROMPT_VERSION = "page-llm-2"
+PROMPT_VERSION = "page-llm-3"
 VERSION = PROMPT_VERSION
 PAGE_TYPES = ("home", "about", "product", "service", "pricing", "course", "blog", "docs",
               "careers", "legal", "contact", "other")  # fmt: skip
@@ -65,7 +65,9 @@ FACT_PAGES = frozenset({"home", "about", "product", "service", "pricing"})
 # No business model here: one page's wording is too little to classify it, and a
 # fixed list forced wrong picks ("100% free" -> freemium). profile.py decides it
 # from all of the evidence.
-FACT_FIELDS = ("market_domain", "offering")
+FACT_FIELDS = ("market_domain", "offering", "founder")
+# Facts that name something: the name must be in the quote, and it is stated, not derived.
+_NAMED = {"offering": "product_name", "founder": "founder"}
 MAX_FACTS = 20
 CERTAINTY = 0.5
 # Consecutive failed calls after which the endpoint is taken to be down.
@@ -83,8 +85,10 @@ that owns the website; on any other page, []. Each fact is
 {{"field": ..., "value": ..., "quote": ...}} with field one of:
 - market_domain: the market or industry the company serves, at most six words
 - offering: the name of a product, service or course the company sells, exactly as written
+- founder: the name of a person the page says founded or co-founded the company
 quote: one sentence or phrase copied character for character from the page that shows the
-fact; an offering's quote contains its name. No fact without such a quote. Never guess."""
+fact; an offering's or founder's quote contains the name. No fact without such a quote.
+Never guess."""
 
 
 class LlmError(Exception):
@@ -275,10 +279,10 @@ def page_drafts(
             continue  # not on the page: the model's words, not the page's
         field, value = f["field"], f["value"]
         slug = slugify(value, ctx.names) if field == "offering" else ""
-        if field == "offering":
-            if value not in quote.text or not slug:
+        if field in _NAMED:
+            if value not in quote.text or (field == "offering" and not slug):
                 continue
-            d = draft(EXTRACTOR, VERSION, "product_name", value, quote, CERTAINTY)
+            d = draft(EXTRACTOR, VERSION, _NAMED[field], value, quote, CERTAINTY)
         else:
             d = draft(EXTRACTOR, VERSION, field, value, quote, CERTAINTY, kind="derived")
         try:

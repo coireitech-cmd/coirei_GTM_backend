@@ -114,6 +114,8 @@ COMPANY_FIELDS = (
     # Production spec section 17 (extract/signals.py).
     "customer", "case_study", "integration", "job_opening", "open_roles", "office_location",
     "website_technology",
+    # Business Intelligence Profile (business_profile.py).
+    "contact_email", "contact_phone", "contact_page", "founder",
 )  # fmt: skip
 PRODUCT_FIELDS = (
     "product_description", "product_category", "product_positioning", "key_feature",

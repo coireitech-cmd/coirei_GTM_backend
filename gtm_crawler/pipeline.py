@@ -64,6 +64,7 @@ from .log import log_context
 from .metrics import CRAWL_JOBS, instrument_engine
 from .profile import build_profile
 from .quality import observe, quality_report
+from .questions import word_questions
 from .tracing import span
 from .urls import registrable_domain, url_host
 from .versions import current_versions
@@ -160,6 +161,11 @@ async def run_job(
     return out
 
 
+# Where a job is, in order (crawl_job.stage); a refresh only extracts, profiles and asks.
+STAGES = ("site_crawl", "external_research", "extract", "competitors", "profile",
+          "questions", "done")  # fmt: skip
+
+
 async def _run_job(
     engine: Engine,
     settings: Settings,
@@ -170,21 +176,36 @@ async def _run_job(
     transport: httpx.AsyncBaseTransport | None,
     search_transport: httpx.AsyncBaseTransport | None,
 ) -> dict[str, Any]:
+    store = JobStore(engine)
+
+    async def stage(name: str) -> None:
+        await asyncio.to_thread(store.note_stage, job.id, name)
+
+    if getattr(job, "kind", "crawl") == "refresh":
+        return await _refresh(engine, settings, job, owner, stage)
     first_party: dict[str, Any] = {}
 
     def gaps(crawl_id: int, organization_id: int) -> set[str]:
+        store.note_stage(job.id, "external_research")  # what is left open is searched next
         first_party.update(reextract(engine, settings, crawl_id, organization_id))
         return field_gaps(engine, organization_id)
+
+    def progress(crawl_id: int, organization_id: int) -> None:
+        """What the site has shown so far, assessed while it is still crawled."""
+        read_crawl(engine, settings, crawl_id)
+        extract_crawl(engine, settings, crawl_id, "crawl")
+        assess_organization(engine, organization_id, settings.assessment)
 
     def known(crawl_id: int, organization_id: int) -> dict[str, list[str]]:
         return field_values(engine, organization_id, SEED_FIELDS)
 
     previous = await asyncio.to_thread(_job_crawl, engine, job.id, job.organization_id)
+    await stage("site_crawl")
     with log_context(stage="crawl"):
         target = await crawl(
             job.root_url, settings, engine, transport=transport,
             search_transport=search_transport, gaps=gaps, known=known, job_id=job.id,
-            resume=previous, stop=stop, owner=owner,
+            resume=previous, stop=stop, owner=owner, progress=progress,
         )  # fmt: skip
     out: dict[str, Any] = {
         "job_id": job.id, "crawl_id": target.crawl_id,
@@ -200,24 +221,65 @@ async def _run_job(
     if first_party and not fetched:
         out.update(first_party)  # nothing new was fetched after the first-party pass
     else:
+        await stage("extract")
         with log_context(stage="extract"):
             out.update(await asyncio.to_thread(reextract, engine, settings, target.crawl_id))
 
     ext = settings.external
     if ext.enabled and ext.max_competitor_crawls > 0:
+        await stage("competitors")
         with log_context(stage="competitors"):
             out["competitors"] = await _competitors(
                 engine, settings, target.crawl_id, transport, job.id, stop, owner
             )
         if any(c.get("status") == "paused" for c in out["competitors"]):
             out["job_status"] = str(JobState.PAUSED)
-    if settings.llm.model:
-        with log_context(stage="profile"):
-            built = await asyncio.to_thread(build_profile, engine, settings, target.organization_id)
-        out["profile"] = {k: built[k] for k in ("status", "cached", "error") if k in built}
+    await _profile_and_questions(engine, settings, target.organization_id, out, stage)
     if out["job_status"] == JobState.COMPLETED:
         # Acquisition and interpretation are done: only the result is left.
-        await asyncio.to_thread(JobStore(engine).set_stage, job.id, owner, JobState.FINALIZING)
+        await stage("done")
+        await asyncio.to_thread(store.set_stage, job.id, owner, JobState.FINALIZING)
+    return await _with_quality(engine, job.id, out)
+
+
+async def _profile_and_questions(
+    engine: Engine, settings: Settings, organization_id: int, out: dict[str, Any], stage: Any
+) -> None:
+    """The model's profile of the company's current evidence, then its questions' wording."""
+    if not settings.llm.model:
+        return
+    await stage("profile")
+    with log_context(stage="profile"):
+        built = await asyncio.to_thread(build_profile, engine, settings, organization_id)
+    out["profile"] = {k: built[k] for k in ("status", "cached", "error") if k in built}
+    await stage("questions")
+    with log_context(stage="questions"):
+        out["questions"] = await asyncio.to_thread(word_questions, engine, settings,
+                                                   organization_id)  # fmt: skip
+
+
+async def _refresh(
+    engine: Engine, settings: Settings, job: Any, owner: str, stage: Any
+) -> dict[str, Any]:
+    """Re-read the company's stored evidence (its latest crawl, documents included in the
+    assessment) and rebuild its profile and questions; nothing is fetched."""
+    with engine.connect() as conn:
+        crawl_id = conn.execute(
+            select(Crawl.id).where(Crawl.organization_id == job.organization_id)
+            # The site crawl when there is one, else the documents crawl.
+            .order_by(Crawl.job_id.is_(None), Crawl.id.desc()).limit(1)
+        ).scalar()  # fmt: skip
+    out: dict[str, Any] = {"job_id": job.id, "crawl_id": crawl_id,
+                           "organization_id": job.organization_id, "status": "completed",
+                           "job_status": str(JobState.COMPLETED), "stats": {},
+                           "competitors": []}  # fmt: skip
+    if crawl_id is not None:
+        await stage("extract")
+        with log_context(stage="extract"):
+            out.update(await asyncio.to_thread(reextract, engine, settings, crawl_id))
+    await _profile_and_questions(engine, settings, job.organization_id, out, stage)
+    await stage("done")
+    await asyncio.to_thread(JobStore(engine).set_stage, job.id, owner, JobState.FINALIZING)
     return await _with_quality(engine, job.id, out)
 
 
@@ -271,6 +333,10 @@ def reextract(
     return {"extraction": extraction, "assessment": assessment, "profiles": profiles, "llm": llm}
 
 
+# Competitor sites crawled at once (each host stays throttled; one database each).
+COMPETITOR_CRAWLS_AT_ONCE = 2
+
+
 async def _competitors(
     engine: Engine,
     settings: Settings,
@@ -289,27 +355,30 @@ async def _competitors(
         crawl=replace(settings.crawl, max_pages=ext.competitor_max_pages),
         external=replace(ext, enabled=False),
     )
-    out: list[dict[str, Any]] = []
-    for competitor in resolved:
+    seeded = [c for c in resolved if c["seed"] is not None]
+    chosen = {id(c) for c in seeded[: ext.max_competitor_crawls]}
+    gate = asyncio.Semaphore(COMPETITOR_CRAWLS_AT_ONCE)
+
+    async def one(competitor: dict[str, Any]) -> dict[str, Any]:
         if competitor["seed"] is None:
-            out.append(competitor)
-            continue
-        if sum(1 for c in out if "crawl_id" in c) >= ext.max_competitor_crawls:
-            out.append({**competitor, "skipped": "max_competitor_crawls"})
-            continue
-        previous = await asyncio.to_thread(
-            _job_crawl, engine, job_id, competitor["organization_id"]
-        ) if job_id is not None else None  # fmt: skip
-        summary = await crawl(competitor["seed"], bounded, engine, transport=transport,
-                              job_id=job_id, resume=previous, stop=stop, owner=owner)  # fmt: skip
-        entry = {**competitor, "crawl_id": summary.crawl_id, "status": summary.status}
-        if summary.status == "paused":
-            out.append(entry)
-            break
-        if summary.status != "failed":
-            entry.update(await asyncio.to_thread(reextract, engine, bounded, summary.crawl_id))
-        out.append(entry)
-    return out
+            return competitor
+        if id(competitor) not in chosen:
+            return {**competitor, "skipped": "max_competitor_crawls"}
+        async with gate:
+            if stop is not None and stop.is_set():
+                return {**competitor, "skipped": "paused"}
+            previous = await asyncio.to_thread(
+                _job_crawl, engine, job_id, competitor["organization_id"]
+            ) if job_id is not None else None  # fmt: skip
+            summary = await crawl(competitor["seed"], bounded, engine, transport=transport,
+                                  job_id=job_id, resume=previous, stop=stop,
+                                  owner=owner)  # fmt: skip
+            entry = {**competitor, "crawl_id": summary.crawl_id, "status": summary.status}
+            if summary.status not in ("failed", "paused"):
+                entry.update(await asyncio.to_thread(reextract, engine, bounded, summary.crawl_id))
+            return entry
+
+    return list(await asyncio.gather(*(one(c) for c in resolved)))
 
 
 def resolve_competitor_domains(

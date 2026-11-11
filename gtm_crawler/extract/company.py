@@ -15,9 +15,15 @@ Sources, in order of reliability:
   founding year, headquarters, location, employee count and size band,
   ownership, business model and market.
 
+* Public contact details on the company's own pages: e-mail addresses at its
+  domain, phone numbers after a phone cue ("Phone:", "Call us"), JSON-LD
+  ``email`` / ``telephone``, and the contact page itself.
+* Founders named in JSON-LD (``founder``).
+
 Fields: company_name, legal_name, website, founded_year, employee_count,
 company_size, headquarters, company_location, company_country,
-ownership_type, business_model, market_domain, company_description.
+ownership_type, business_model, market_domain, company_description,
+contact_email, contact_phone, contact_page, founder.
 
 Not here: partnerships (traction extraction, as relationships), and the
 site's domain and subdomains, which come from the crawl's own fetch records
@@ -42,7 +48,7 @@ from .common import AMOUNT_QUALIFIERS, QUALIFIER, Context, Sentence, reported, s
 from .common import draft as _draft
 
 EXTRACTOR = "company"
-VERSION = "7"
+VERSION = "8"
 
 _ORG_TYPES = re.compile(r"Organization|Corporation|Business|Company|NGO")
 # A top-level JSON-LD node: a script's root or a direct member of its @graph.
@@ -55,6 +61,16 @@ _TOP_LEVEL = re.compile(r'^\$\.jsonld\[\d+\](?:\["@graph"\]\[\d+\])?$')
 _PLACE = r"[A-Z][\w'’-]*\.?(?:(?:,\s*|\s+)(?:[A-Z][\w'’-]*\.?))*"
 _YEAR = r"(?:19|20)\d{2}"
 _NUMBER = r"\d{1,3}(?:,\d{3})+|\d+"
+
+_EMAIL = re.compile(r"(?<![\w.+-])[\w.+-]+@((?:[\w-]+\.)+[a-z]{2,})(?![\w-])", re.I)
+_NOT_EMAIL = re.compile(r"\.(?:png|jpe?g|gif|svg|webp|avif)$", re.I)
+# A phone number after a cue: a bare digit run (an order number, a price) is not one.
+_PHONE = re.compile(
+    r"\b(?:phone|tel(?:ephone)?|call(?:\s+us)?|mobile|whatsapp|contact)\b[\s:.-]{0,3}(?:(?:at|on)\s+)?"
+    r"(\+?\d[\d\s().-]{6,18}\d)",
+    re.I,
+)
+_CONTACT_PATH = re.compile(r"/contact(?:[-_]?us)?/?$", re.I)
 
 _FOUNDED = re.compile(rf"\b(?:founded|established|incorporated|started)\s+in\s+({_YEAR})\b")
 _HEADQUARTERS = re.compile(
@@ -163,7 +179,7 @@ def extract_company(page: ParsedPage, ctx: Context) -> list[ObservationDraft]:
         # The page's own site name and description describe its publisher.
         return [*_from_json_ld(page, ctx), *_from_text(page, ctx), *_profile_lines(page)]
     return [*_from_json_ld(page, ctx), *_from_meta(page, ctx), *_from_text(page, ctx),
-            *_legal_address(page, ctx), *_branches(page, ctx)]  # fmt: skip
+            *_legal_address(page, ctx), *_branches(page, ctx), *_contact(page, ctx)]  # fmt: skip
 
 
 def draft(field_name: str, value: str, quote: Any, certainty: float, **kw: Any) -> ObservationDraft:
@@ -211,6 +227,18 @@ def _from_json_ld(page: ParsedPage, ctx: Context) -> Iterator[ObservationDraft]:
             yield draft("website", quote.text, quote, 1.0)
         if quote := q("description"):
             yield draft("company_description", quote.text, quote, 1.0)
+        for key, name in (("email", "contact_email"), ("telephone", "contact_phone")):
+            if quote := q(key):
+                yield draft(name, quote.text.removeprefix("mailto:"), quote, 1.0)
+        founders = node.data.get("founder")
+        listed = isinstance(founders, list)
+        named: list[Any] = founders if isinstance(founders, list) else [founders]
+        for i, founder in enumerate(named):
+            keys: tuple[str | int, ...] = ("founder", i) if listed else ("founder",)
+            if isinstance(founder, dict) and (quote := q(*keys, "name")):
+                yield draft("founder", quote.text, quote, 1.0)
+            elif isinstance(founder, str) and (quote := q(*keys)):
+                yield draft("founder", quote.text, quote, 1.0)
         if (quote := q("foundingDate")) and (year := re.match(rf"^\s*({_YEAR})\b", quote.text)):
             yield draft("founded_year", quote.text, quote, 1.0,
                         normalized={"qualifier": "eq", "value": int(year.group(1))})  # fmt: skip
@@ -303,6 +331,24 @@ def _branches(page: ParsedPage, ctx: Context) -> Iterator[ObservationDraft]:
                 yield draft("office_location", quote.text, quote, 0.9,
                             normalized={"qualifier": "eq", **parts})  # fmt: skip
                 break
+
+
+def _contact(page: ParsedPage, ctx: Context) -> Iterator[ObservationDraft]:
+    """E-mail addresses at the company's domain, cued phone numbers and the contact page."""
+    for block in page.blocks:
+        for m in _EMAIL.finditer(block.text):
+            host = m.group(1).lower()
+            if _NOT_EMAIL.search(m.group(0)) or not (
+                host == ctx.domain or host.endswith(f".{ctx.domain}")
+            ):
+                continue
+            yield draft("contact_email", m.group(0), quote_block(block, *m.span()), 0.9)
+        for m in _PHONE.finditer(block.text):
+            if 8 <= sum(c.isdigit() for c in m.group(1)) <= 15:
+                yield draft("contact_phone", m.group(1), quote_block(block, *m.span(1)), 0.8)
+    if _CONTACT_PATH.search(urlsplit(page.url).path):
+        quote = quote_page(page, "url")
+        yield draft("contact_page", quote.text, quote, 1.0)
 
 
 def _int(text: str) -> int | None:

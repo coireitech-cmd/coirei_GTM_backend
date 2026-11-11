@@ -58,7 +58,8 @@ COMPETITOR_FIELDS = (
 # Spec section 20 headings -> the fields reported under them. Every company
 # and product field (and product_name, stated per product) is in exactly one.
 SECTIONS: dict[str, tuple[str, ...]] = {
-    "identity": ("company_name", "legal_name", "website", "founded_year"),
+    "identity": ("company_name", "legal_name", "website", "founded_year", "founder"),
+    "contact": ("contact_email", "contact_phone", "contact_page"),
     "description_positioning": ("company_description", "product_description",
                                 "product_positioning"),
     "products_categories": ("number_of_products", "product_name", "product_category"),

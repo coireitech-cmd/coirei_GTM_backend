@@ -307,6 +307,9 @@ class CrawlSettings:
     max_duration_seconds: int = 3_600
     concurrency: int = 8
     per_host_concurrency: int = 2
+    # While the site is crawled, assess what was found so far every this many parsed
+    # pages, so the profile fills in progressively (0: only after the site).
+    progress_every_pages: int = 50
     # Minimum gap between requests to one host; robots.txt Crawl-delay raises it.
     min_delay_seconds: float = 0.5
     # Stop early if this share of fetches fail (after error_rate_min_fetches fetches).
@@ -344,6 +347,8 @@ class CrawlSettings:
         "linkedin.com", "crunchbase.com", "g2.com", "capterra.com", "x.com", "twitter.com",
         "youtube.com", "github.com", "producthunt.com", "facebook.com", "instagram.com",
         "glassdoor.com", "pitchbook.com", "angel.co", "wellfound.com",
+        # Company directories and databases (Business Intelligence Profile).
+        "theorg.com", "tracxn.com", "zaubacorp.com", "clutch.co", "ambitionbox.com",
     )  # fmt: skip
     # Retry policy by error class (spec section 23; fetch.http.retry_class):
     # "rate_limited" (429, 503) waits the server's Retry-After, else this long;
@@ -435,6 +440,8 @@ class ExternalSettings:
     enabled: bool = True
     max_search_pages: int = 20
     max_reference_pages: int = 10
+    # Searches sent, and external pages fetched, at once (each host stays throttled).
+    concurrency: int = 4
     # Competitor discovery (approved 2026-11-06), its own budget beside the
     # gap queries': queries sent and result pages fetched per crawl, and how
     # many known competitors the second round asks about (0 turns it off).

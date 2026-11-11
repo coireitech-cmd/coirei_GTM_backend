@@ -135,6 +135,8 @@ def test_self_referencing_statements(text: str, expected: dict[str, set[str]]) -
         "Stripe was founded in 2010 and is headquartered in San Francisco.",
         "Globex has more than 90,000 employees.",
         "Globex is a publicly traded company.",
+        # A blog post's aside: "our" comes after the claim (live crawl of agorapulse.com).
+        "Facebook is an evil publicly listed company that only wants our money.",
         # About customers, not the company's own model.
         "We help SaaS companies grow.",
         # Nonprofits as customers or a discount (live crawl of buffer.com's competitors).

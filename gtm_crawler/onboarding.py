@@ -14,6 +14,7 @@ evidence: they are shown beside each item and do not change any assessment.
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from typing import Any, Literal
 
@@ -317,7 +318,7 @@ PROFILE_FIELDS = {
     "product_positioning": ("value_proposition", "statement"),
     "market_domain": ("market", "category"),
     "product_category": ("market", "sub_category"),
-    "main_use_case": ("target_customers", "use_cases"),
+    "main_use_case": ("icp", "use_cases"),
     "customer": ("target_customers", "named_customers"),
     "price": ("business_model", "price_range"),
 }
@@ -347,6 +348,80 @@ def _inferred(item: dict[str, Any], leaves: list[dict[str, Any]], scalar: bool,
         item["reasoning"] = reasoning["value"]
 
 
+def offerings_of(profile: dict[str, Any]) -> list[dict[str, Any]]:
+    """The catalogue part's offerings (profile.OFFERINGS_SCHEMA) sold on their own: not a
+    module another offering lists among its components, nor a plan of the business
+    model ("Pro"). With a company selling one product, the other products the model
+    listed are that product's components. The model is told all this; this holds when
+    it slips."""
+    catalogue = profile.get("catalogue") or {}
+    offerings = [o for o in catalogue.get("offerings") or []
+                 if isinstance(o.get("name"), dict)]  # fmt: skip
+
+    def name(node: dict[str, Any]) -> str:
+        return str(node["value"]).casefold()
+
+    def product(o: dict[str, Any]) -> bool:
+        return (o.get("type") or {}).get("value") in (None, "product")
+
+    main = catalogue.get("main_offering")
+    # The main offering by name; else the first product, which the model lists first.
+    lead = next((o for o in offerings if main and name(o["name"]) == name(main)),
+                next((o for o in offerings if product(o)), None))  # fmt: skip
+    if catalogue.get("sold_as") == "one_product" and lead is not None:
+        folded = [o for o in offerings if o is not lead and product(o)]
+        have = {name(c) for c in _leaves(lead.get("components"))} | {name(lead["name"])}
+        extra: dict[str, dict[str, Any]] = {}
+        for o in folded:  # each once, as first written
+            if name(o["name"]) not in have:
+                extra.setdefault(name(o["name"]), o["name"])
+        rest = [o for o in offerings if o is not lead and all(o is not f for f in folded)]
+        lead = {**lead, "components": [*_leaves(lead.get("components")), *extra.values()]}
+        offerings = [lead, *rest]
+
+    # One platform (sold as one product, or the only offering, with modules beneath it) is
+    # sold under the company's own name: a model can head it with one of its modules
+    # ("Activation Ads" for Clay), which then becomes a component. A name that already
+    # carries the brand ("Coirei GTM") stays.
+    if catalogue.get("sold_as") == "one_product":
+        platform = lead
+    else:
+        platform = (offerings[0] if len(offerings) == 1
+                    and len(_leaves(offerings[0].get("components"))) >= 2 else None)  # fmt: skip
+    brand = (profile.get("company") or {}).get("name")
+    if platform is not None:
+        fixed = dict(platform)
+        if (
+            isinstance(brand, dict)
+            and brand.get("value")
+            and not re.search(rf"\b{re.escape(name(brand))}\b", name(platform["name"]))
+        ):
+            fixed.update(
+                name=brand, components=[platform["name"], *_leaves(platform.get("components"))]
+            )
+        # Sold by subscription or use, a platform is a product, not a service.
+        recurring = ((profile.get("business_model") or {}).get("revenue_model") or {}).get(
+            "value"
+        ) in ("subscription", "freemium", "usage_based")
+        kind = platform.get("type")
+        if (
+            isinstance(kind, dict)
+            and kind.get("value") == "service"
+            and (recurring or catalogue.get("sold_as") == "one_product")
+        ):
+            fixed["type"] = {**kind, "value": "product"}
+        offerings = [fixed if o is platform else o for o in offerings]  # fmt: skip
+
+    plans = {name(p) for p in _leaves((profile.get("business_model") or {}).get("plans"))}
+    out = []
+    for o in offerings:
+        others = {name(c) for x in offerings if x is not o
+                  for c in _leaves(x.get("components"))}  # fmt: skip
+        if name(o["name"]) not in others | plans:
+            out.append(o)
+    return out
+
+
 def fill_from_profile(sections: list[dict[str, Any]], profile: dict[str, Any]) -> None:
     """Fill the items the evidence left empty from the model's profile, marked
     ``MODEL_INFERRED`` with the evidence it cited. Found values are never replaced, except
@@ -356,7 +431,7 @@ def fill_from_profile(sections: list[dict[str, Any]], profile: dict[str, Any]) -
     for section in sections:
         items = section["items"]
         if section["key"] == "products_services" and not any(i["value"] for i in items):
-            offerings = [o for o in profile.get("offerings") or [] if "name" in o]
+            offerings = offerings_of(profile)
             section["items"] = items = []
             for o in offerings:
                 item: dict[str, Any] = {"field": "product", "label": "Product",

@@ -154,23 +154,29 @@ async def _process_job(
     stop = asyncio.Event()
     lost = cancelled = False
 
-    async def heartbeat() -> None:
+    async def beat() -> bool:
+        """Renew the lease and take in a pause or cancel; False once the lease is lost."""
         nonlocal lost, cancelled
+        try:
+            directive = await asyncio.to_thread(jobs.heartbeat, job.id, owner, w.lease_seconds)
+        except DBAPIError as exc:
+            log.warning("job.heartbeat_failed", extra={"job_id": job.id, "error": str(exc)})
+            return True
+        WORKER_LAST_SEEN.set_to_current_time()
+        if directive is None:
+            lost = True  # another worker took over: stop without writing
+            stop.set()
+            return False
+        if directive in ("pause", "cancel"):
+            cancelled = cancelled or directive == "cancel"
+            stop.set()
+        return True
+
+    async def heartbeat() -> None:
         while True:
             await asyncio.sleep(w.lease_seconds / 3)
-            try:
-                directive = await asyncio.to_thread(jobs.heartbeat, job.id, owner, w.lease_seconds)
-            except DBAPIError as exc:
-                log.warning("job.heartbeat_failed", extra={"job_id": job.id, "error": str(exc)})
-                continue
-            WORKER_LAST_SEEN.set_to_current_time()
-            if directive is None:
-                lost = True  # another worker took over: stop without writing
-                stop.set()
+            if not await beat():
                 return
-            if directive in ("pause", "cancel"):
-                cancelled = cancelled or directive == "cancel"
-                stop.set()
 
     async def watch_shutdown() -> None:
         if shutdown is not None:
@@ -193,7 +199,10 @@ async def _process_job(
         CRAWL_JOBS.labels(status).inc()
         return status
 
-    beat = asyncio.create_task(heartbeat())
+    # Once before the work: a job claimed with a cancel or pause pending (a reclaimed job
+    # whose worker died) stops at its first step, not after a long one.
+    await beat()
+    beating = asyncio.create_task(heartbeat())
     watcher = asyncio.create_task(watch_shutdown())
     try:
         out = await run_job(engine, settings, job, owner=owner, stop=stop, transport=transport,
@@ -210,7 +219,7 @@ async def _process_job(
         return await finish(JobState.FAILED, None, f"{type(exc).__name__}: {exc}",
                             type(exc).__name__)  # fmt: skip
     finally:
-        beat.cancel()
+        beating.cancel()
         watcher.cancel()
     if lost:
         log.warning("job.lease_lost", extra={"job_id": job.id, "owner": owner})

@@ -43,14 +43,14 @@ from urllib.parse import urlsplit
 
 from ..db.evidence import ObservationDraft, RelatedOrg
 from ..evidence import Quote, quote_block, quote_meta
-from ..parse import ParsedPage
+from ..parse import BOILERPLATE_REGIONS, ParsedPage
 from .common import Context, sentences
 from .common import draft as _draft
 from .product import slugify
 from .traction import _NAME, _NAME_LIST, _names
 
 EXTRACTOR = "competitor"
-VERSION = "3"
+VERSION = "4"
 CANDIDATE = "candidate_competitor"
 
 _COMPARE_PATH = re.compile(
@@ -188,7 +188,8 @@ def _list_items(page: ParsedPage) -> Iterator[tuple[str, Quote]]:
     """Names heading a list item (``<h2>``, ``<h3>``, ``<li>``), with their quote."""
     for block in page.blocks:
         is_item = block.heading_level in (2, 3) or block.tag == "li"
-        if not is_item or len(block.text) > 80:
+        # The article's list, not the site's menus and footer ("Affiliate", "Advertise").
+        if not is_item or len(block.text) > 80 or block.region in BOILERPLATE_REGIONS:
             continue
         im = _ITEM.match(block.text)
         if im is None:

@@ -96,3 +96,27 @@ def test_fields_are_assessed_while_the_site_is_crawled(engine: Engine, tmp_path:
 
     summary = run(engine, settings, FakeSite(), progress=progress)
     assert calls and all(c == (summary.crawl_id, summary.organization_id) for c in calls)
+
+
+@pytest.mark.db
+def test_a_cancelled_refresh_stops_before_the_model(engine: Engine, tmp_path: Path) -> None:
+    from types import SimpleNamespace
+
+    from gtm_crawler import pipeline
+
+    settings = settings_for(tmp_path)
+    api, company = crawled(engine, settings, "bip-refresh-stop")
+    job = api.post(f"/v1/companies/{company}/refresh").json()
+    stop = asyncio.Event()
+    stop.set()  # the heartbeat saw the cancel request
+    stages: list[str] = []
+
+    async def stage(name: str) -> None:
+        stages.append(name)
+
+    out = asyncio.run(pipeline._refresh(
+        engine, settings, SimpleNamespace(id=job["crawl_id"], organization_id=company),
+        "test-owner", stage, stop))  # fmt: skip
+    assert out["job_status"] == "paused" and stages == []
+    # Run by hand, not by a worker: cancel it, or the next test's worker would claim it.
+    assert api.post(f"/v1/crawls/{job['crawl_id']}/cancel").status_code == 202

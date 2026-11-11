@@ -48,8 +48,6 @@ def test_clean_keeps_only_cited_in_vocabulary_values() -> None:
             "reasoning": leaf("Students pay fees to train in Chennai.", "e1", "e2"),
         },
         "company": {"founded_year": leaf("2019", "e9")},  # unknown id
-        "offerings": [{"type": leaf("course", "e2")},  # no name: dropped
-                      {"name": leaf("Data Science", "e2")}],
         "market": "junk",
     }, REFS, s)  # fmt: skip
     model = out["business_model"]
@@ -58,10 +56,6 @@ def test_clean_keeps_only_cited_in_vocabulary_values() -> None:
     assert model["reasoning"]["citations"] == [
         {"observation_id": 11, "url": f"{SITE}/", "quote": "Fees from Rs 15,000."},
         {"url": f"{SITE}/about", "quote": "We train students in Chennai."},
-    ]
-    about = {"url": f"{SITE}/about", "quote": "We train students in Chennai."}
-    assert out["offerings"] == [
-        {"name": {"value": "Data Science", "evidence_confidence": None, "citations": [about]}}
     ]
     assert "company" not in out and "market" not in out
     assert s == {"uncited": 2, "invalid": 1, "number_not_in_evidence": 1}
@@ -102,8 +96,8 @@ def test_fill_from_profile_fills_only_empty_items() -> None:
         "business_model": {"customer_type": {"value": "b2c", **cite},
                            "revenue_model": {"value": "one_time_fee", **cite},
                            "reasoning": {"value": "Students pay once.", **cite}},
-        "offerings": [{"name": {"value": "Data Science", **cite},
-                       "type": {"value": "course", **cite}}],
+        "catalogue": {"offerings": [{"name": {"value": "Data Science", **cite},
+                                     "type": {"value": "course", **cite}}]},
     })  # fmt: skip
     info, model, products = (s["items"] for s in sections)
     assert info[0]["value"] == "Found" and info[0]["state"] == "SUPPORTED"
@@ -207,6 +201,7 @@ def test_profile_reasons_from_pages_and_fills_onboarding(
     assert bm["reasoning"]["citations"][0]["url"] == f"{OWN}/"
     assert "differentiators" not in built["profile"]  # cited an id never sent
     assert built["dropped"]["uncited"] == 1
+
     # One call per part (PARTS); the value proposition reads the pages' prose.
     def calls(system: str) -> int:
         return sum(c["messages"][0]["content"] == system for c in model.profile_calls)
@@ -254,10 +249,12 @@ def test_salary_figures_are_labelled_and_never_a_price() -> None:
     out = profile.clean(profile.SCHEMA, {"business_model": {
         "price_range": leaf("Rs 8-18 LPA", "e1"),
         "pricing_summary": leaf("Salary of Rs 8-18 lakhs", "e1"),
-        "delivery": leaf("offline", "e1")},
+        "delivery": leaf("offline", "e1")}}, refs, s)  # fmt: skip
+    catalogue = profile.clean(profile.OFFERINGS_SCHEMA, {
         "offerings": [{"name": leaf("Data Engineering", "e1"),
                        "price": leaf("Not explicitly stated", "e1")}]}, refs, s)  # fmt: skip
-    assert set(out["business_model"]) == {"delivery"} and set(out["offerings"][0]) == {"name"}
+    assert set(out["business_model"]) == {"delivery"}
+    assert set(catalogue["offerings"][0]) == {"name"}
     assert s["invalid"] == 3
 
 

@@ -39,7 +39,7 @@ from .structured import JsonLdNode, extract_json_ld, published_at
 
 log = logging.getLogger(__name__)
 
-_BOILERPLATE_REGIONS = frozenset({"nav", "header", "footer", "aside"})
+BOILERPLATE_REGIONS = frozenset({"nav", "header", "footer", "aside"})
 _DESCRIPTION_KEYS = ("description", "og:description", "twitter:description")
 # Stored with every page (spec section 24). Bump when parse output changes for
 # the same input, so pages parsed by different versions can be told apart.
@@ -49,8 +49,8 @@ _DESCRIPTION_KEYS = ("description", "og:description", "twitter:description")
 PARSER_VERSION = "5"
 
 __all__ = [
-    "PARSER_VERSION", "Link", "ListBlock", "MicrodataItem", "ParsedPage", "Table", "TextBlock",
-    "parse_page", "primary_language",
+    "BOILERPLATE_REGIONS", "PARSER_VERSION", "Link", "ListBlock", "MicrodataItem", "ParsedPage",
+    "Table", "TextBlock", "parse_page", "primary_language",
 ]  # fmt: skip
 
 
@@ -90,7 +90,7 @@ class ParsedPage:
         but saying different things must not look alike. A page with nothing
         outside those regions falls back to all its text.
         """
-        content = [b.text for b in self.blocks if b.region not in _BOILERPLATE_REGIONS]
+        content = [b.text for b in self.blocks if b.region not in BOILERPLATE_REGIONS]
         return "\n".join(content) if content else self.cleaned_text
 
     # The name the duplicate-detection code has always used.

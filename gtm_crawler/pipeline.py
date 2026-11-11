@@ -182,7 +182,7 @@ async def _run_job(
         await asyncio.to_thread(store.note_stage, job.id, name)
 
     if getattr(job, "kind", "crawl") == "refresh":
-        return await _refresh(engine, settings, job, owner, stage)
+        return await _refresh(engine, settings, job, owner, stage, stop)
     first_party: dict[str, Any] = {}
 
     def gaps(crawl_id: int, organization_id: int) -> set[str]:
@@ -234,6 +234,9 @@ async def _run_job(
             )
         if any(c.get("status") == "paused" for c in out["competitors"]):
             out["job_status"] = str(JobState.PAUSED)
+    if _stopped(stop):  # paused or cancelled while the competitors were crawled
+        out["job_status"] = str(JobState.PAUSED)
+        return await _with_quality(engine, job.id, out)
     await _profile_and_questions(engine, settings, target.organization_id, out, stage)
     if out["job_status"] == JobState.COMPLETED:
         # Acquisition and interpretation are done: only the result is left.
@@ -258,11 +261,22 @@ async def _profile_and_questions(
                                                    organization_id)  # fmt: skip
 
 
+def _stopped(stop: asyncio.Event | None) -> bool:
+    return stop is not None and stop.is_set()
+
+
 async def _refresh(
-    engine: Engine, settings: Settings, job: Any, owner: str, stage: Any
+    engine: Engine,
+    settings: Settings,
+    job: Any,
+    owner: str,
+    stage: Any,
+    stop: asyncio.Event | None = None,
 ) -> dict[str, Any]:
     """Re-read the company's stored evidence (its latest crawl, documents included in the
-    assessment) and rebuild its profile and questions; nothing is fetched."""
+    assessment) and rebuild its profile and questions; nothing is fetched. A pause or
+    cancel (``stop``) is honoured between steps: the job ends PAUSED (CANCELLED once the
+    worker sees it was cancelled), before the model is called."""
     with engine.connect() as conn:
         crawl_id = conn.execute(
             select(Crawl.id).where(Crawl.organization_id == job.organization_id)
@@ -273,10 +287,13 @@ async def _refresh(
                            "organization_id": job.organization_id, "status": "completed",
                            "job_status": str(JobState.COMPLETED), "stats": {},
                            "competitors": []}  # fmt: skip
-    if crawl_id is not None:
+    if crawl_id is not None and not _stopped(stop):
         await stage("extract")
         with log_context(stage="extract"):
             out.update(await asyncio.to_thread(reextract, engine, settings, crawl_id))
+    if _stopped(stop):
+        out["job_status"] = str(JobState.PAUSED)
+        return await _with_quality(engine, job.id, out)
     await _profile_and_questions(engine, settings, job.organization_id, out, stage)
     await stage("done")
     await asyncio.to_thread(JobStore(engine).set_stage, job.id, owner, JobState.FINALIZING)

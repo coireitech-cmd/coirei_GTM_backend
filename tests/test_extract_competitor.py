@@ -91,6 +91,13 @@ def test_third_party_alternatives_list() -> None:
         ("Globex", "third_party_alternatives_list"),
         ("Initech", "third_party_alternatives_list"),
     ]
+    # The site's menu and footer are not the article's list (live crawl of clay.com's).
+    menus = page("/acme/alternatives",
+                 "<nav><ul><li>Affiliate</li><li>Advertise</li></ul></nav>"
+                 "<h1>Acme alternatives</h1><h2>1. Globex</h2>"
+                 "<footer><ul><li>Agency Directory</li></ul></footer>",
+                 site="https://reviews.example")  # fmt: skip
+    assert found(menus, first_party=False) == [("Globex", "third_party_alternatives_list")]
     # A list of alternatives to someone else is not about the company.
     other = page("/x", "<h1>Globex Alternatives</h1><h2>1. Initech</h2>",
                  site="https://reviews.example")  # fmt: skip

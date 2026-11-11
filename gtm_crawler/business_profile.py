@@ -1,4 +1,4 @@
-"""The Business Intelligence Profile: what COIREI knows about a company, under fourteen
+"""The Business Intelligence Profile: what COIREI knows about a company, under thirteen
 headings, every field with its value, status, confidence, extraction date and sources.
 
 It is assembled on read from what Postgres already holds: the assessed evidence
@@ -24,7 +24,7 @@ from typing import Any, Literal
 
 from sqlalchemy import Engine, select
 
-from .config import Settings
+from .config import AssessmentSettings, Settings
 from .db.models import (
     ACTIVE_JOB_STATUSES,
     CrawlJob,
@@ -43,6 +43,7 @@ from .onboarding import (
     _product_item,
     field_status,
     fill_from_profile,
+    offerings_of,
     verification,
 )
 from .profile import stored_profile
@@ -58,7 +59,6 @@ SECTIONS: tuple[tuple[str, str], ...] = (
     ("business_model", "Business model"),
     ("target_customers", "Target customer hypotheses"),
     ("brand_positioning", "Brand positioning and messaging"),
-    ("public_market", "Public market information"),
     ("marketing_footprint", "Existing marketing footprint"),
     ("sales_commercial", "Sales and commercial information"),
     ("customer_evidence", "Customer evidence"),
@@ -90,7 +90,7 @@ def _private(section: str, key: str, label: str) -> Field:
 
 
 _CP, _BM, _TC, _BR = "company_profile", "business_model", "target_customers", "brand_positioning"
-_PM, _MF, _SC, _CE = "public_market", "marketing_footprint", "sales_commercial", "customer_evidence"
+_MF, _SC, _CE = "marketing_footprint", "sales_commercial", "customer_evidence"
 
 REGISTRY: tuple[Field, ...] = (
     _f(_CP, "company_name", "Company name", "company_name", model=(("company", "name"),),
@@ -134,11 +134,13 @@ REGISTRY: tuple[Field, ...] = (
        model=(("business_model", "plans"),)),
     _f(_BM, "price", "Published prices", "price", model=(("business_model", "price_range"),)),
     _f(_TC, "target_segments", "Stated target market",
-       model=(("icp", "stated_target_market"), ("target_customers", "segments"))),
-    _f(_TC, "target_industries", "Target industries",
-       model=(("target_customers", "industries"),)),
-    _f(_TC, "main_use_case", "Use cases", "main_use_case",
-       model=(("target_customers", "use_cases"),)),
+       model=(("icp", "stated_target_market"),)),
+    _f(_TC, "business_types", "Business types served", model=(("icp", "business_types"),)),
+    _f(_TC, "company_sizes", "Company sizes served", model=(("icp", "company_sizes"),)),
+    _f(_TC, "buyer_roles", "Target audience (roles and teams)",
+       model=(("icp", "buyer_roles"),)),
+    _f(_TC, "target_industries", "Target industries", model=(("icp", "industries"),)),
+    _f(_TC, "main_use_case", "Use cases", "main_use_case", model=(("icp", "use_cases"),)),
     _f(_TC, "customer_concentration", "Customer concentration", "customer_concentration",
        scalar=True),
     _f(_TC, "icp_hypotheses", "Ideal customer hypotheses", model=(("icp", "hypotheses"),)),
@@ -162,18 +164,6 @@ REGISTRY: tuple[Field, ...] = (
     _f(_BR, "messaging_consistency", "Messaging consistency across website and social",
        model=(("brand", "consistency"),), scalar=True),
     _f(_BR, "differentiators", "Differentiators", model=(("differentiators", None),)),
-    _f(_PM, "product_category", "Product category", "product_category",
-       model=(("market", "sub_category"),)),
-    _f(_PM, "competitors", "Competitors", model=(("competitors", None),)),
-    _f(_PM, "total_funding", "Total funding", "total_funding",
-       model=(("facts", "total_funding"),), scalar=True),
-    _f(_PM, "funding_round", "Funding rounds", "funding_round",
-       model=(("facts", "funding_rounds"),)),
-    _f(_PM, "investor", "Investors", "investor", model=(("facts", "investors"),)),
-    _f(_PM, "valuation", "Valuation", "valuation", model=(("facts", "valuation"),),
-       scalar=True),
-    _f(_PM, "ownership_type", "Ownership", "ownership_type",
-       model=(("facts", "ownership"),), scalar=True),
     _f(_MF, "social_profiles", "Social profiles"),
     _private(_MF, "marketing_channels", "Marketing channels in use"),
     _private(_MF, "best_channels", "Channels that bring the best customers"),
@@ -211,8 +201,8 @@ EDITABLE = frozenset({(f.section, f.key) for f in REGISTRY} | {("products_servic
 _VALUES = frozenset({"confirmed", "edited", "rejected"})
 # Fields whose model value is a hypothesis: an unresolved assumption until confirmed.
 _HYPOTHESES = frozenset({"icp_hypotheses"})
-_DETAILS = ("benefits", "problems_solved", "use_cases", "target_users", "pricing_model",
-            "maturity", "related_offerings", "proof")  # fmt: skip
+_DETAILS = ("components", "benefits", "problems_solved", "use_cases", "target_users",
+            "pricing_model", "maturity", "related_offerings", "proof")  # fmt: skip
 # Statuses the user is asked to resolve (Inferred stays: it is labelled, not a gap).
 _OPEN = ("Not found", "Conflicting", "Needs confirmation")
 _REASONS = {
@@ -246,7 +236,7 @@ def _leaf(node: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def _offering_details(items: list[dict[str, Any]], details: dict[str, Any]) -> None:
-    """The offering-details part, joined to each offering by its name (any case)."""
+    """The catalogue part's details of each offering, joined to it by name (any case)."""
     by_name = {str(o["name"]["value"]).casefold(): o for o in details.get("offerings") or []
                if isinstance(o.get("name"), dict)}  # fmt: skip
     for item in items:
@@ -350,7 +340,27 @@ def _finish(
         elif status == "rejected":
             out["value"] = None
     out["status"] = field_status(state, out["value"] is not None, active, status, access)
+    if status in ("confirmed", "edited"):
+        out["confidence"] = 1.0  # the company said so
+    elif out["value"] is None:
+        out["confidence"] = None
+    elif out["confidence"] is None:
+        out["confidence"] = _cited_confidence(sources)
     return out
+
+
+# What one cited page counts for when no assessment scored the value (a model's reading of
+# the company's pages): pages combine as assessment combines sources (assess.py), kept
+# under the Supported threshold, so an unassessed value never reads as established.
+PAGE_CONFIDENCE = 0.3
+_CEILING = AssessmentSettings().found_confidence - 0.01
+
+
+def _cited_confidence(sources: list[dict[str, Any]]) -> float | None:
+    pages = {src["url"] for src in sources}
+    if not pages:
+        return None
+    return round(min(_CEILING, 1 - (1 - PAGE_CONFIDENCE) ** len(pages)), 2)
 
 
 def assemble(
@@ -386,11 +396,7 @@ def assemble(
     fields: dict[str, list[dict[str, Any]]] = {key: [] for key, _ in SECTIONS}
     for f in REGISTRY:
         item = _item(f.key, f.label, [e for d in f.dossier for e in entries(d)], scalar=f.scalar)
-        if f.key == "competitors":
-            # ponytail: competitor names only; their evidence is on /dossier and /onboarding.
-            names = [c["name"] for c in dossier["competitors"]]
-            item.update(value=names or None, state="SUPPORTED" if names else "UNKNOWN")
-        elif f.key in _IDENTITY_FIELDS:
+        if f.key in _IDENTITY_FIELDS:
             _identity_item(item, f.key, identities, dossier["company"].get("subdomains"))
         leaves = _model_leaves(model, f.model)
         used = None
@@ -410,13 +416,20 @@ def assemble(
 
     items = [_product_item(p) for p in products]
     catalogue: list[dict[str, Any]] = [{"key": "products_services", "items": items}]
-    if model and model.get("offerings"):
+    if model and offerings_of(model):
         answered = {k for f, k in by_key if f == "product"}
         catalogue[0]["items"] = _catalogue(items, model, answered)
     elif model:
         fill_from_profile(catalogue, model)
     if model:
-        _offering_details(catalogue[0]["items"], model.get("offering_details") or {})
+        _offering_details(catalogue[0]["items"], {"offerings": offerings_of(model)})
+    # What the user added in the catalogue question (questions.py): sold, though research
+    # did not find it.
+    catalogue[0]["items"] += [
+        _item("product", "Product", [], key, scalar=True)
+        for f, key in by_key
+        if f == "product" and key.startswith("user:")
+    ]
     offerings = [
         _finish(i, "public", active, by_key.get(("product", i["item_key"]), []), retrieved, None)
         for i in catalogue[0]["items"]

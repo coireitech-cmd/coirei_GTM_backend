@@ -68,6 +68,7 @@ from .documents import DocumentError, ingest_document
 from .domain import FINAL_JOB_STATES
 from .dossier import DOSSIER_FIELDS, build_dossier, clean_dossier
 from .jobs import JobStore, QueueFull
+from .live import Screenshots, recent_pages, stored_page
 from .log import configure_logging
 from .market.api import add_market_routes
 from .metrics import instrument_engine
@@ -181,7 +182,10 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
                   description=API_DESCRIPTION, openapi_tags=API_TAGS,
                   docs_url=docs_url, redoc_url=None)  # fmt: skip
     jobs = JobStore(engine)
-    evidence = EvidenceStore(engine, make_rawstore(settings.rawstore), settings.sources)
+    rawstore = make_rawstore(settings.rawstore)
+    evidence = EvidenceStore(engine, rawstore, settings.sources)
+    screenshots = Screenshots(settings, rawstore)
+    app.router.on_shutdown.append(screenshots.close)
     instrument_engine(engine)
     app.mount("/metrics", make_asgi_app())
 
@@ -347,6 +351,35 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         `stop_reason`. `result` is the summary once the job has finished.
         """
         return view(crawl_id)
+
+    @app.get("/v1/crawls/{crawl_id}/live", dependencies=guarded, tags=["Crawls"],
+             summary="The pages the crawl is on now", responses=NO_CRAWL)  # fmt: skip
+    def live(crawl_id: int, limit: int = Query(10, ge=1, le=50)) -> dict[str, Any]:
+        """The job's `status` and `stage`, and the HTML pages it fetched most recently
+        (newest first, the company's site and its competitors'), each with the
+        `screenshot` path of its picture. Poll it while the crawl runs."""
+        job = view(crawl_id)
+        pages = [{**p, "screenshot": f"/v1/crawls/{crawl_id}/live/{p['fetch_id']}.png"}
+                 for p in recent_pages(engine, crawl_id, limit)]  # fmt: skip
+        return {"crawl_id": crawl_id, "status": job["status"], "stage": job.get("stage"),
+                "pages": pages}  # fmt: skip
+
+    @app.get("/v1/crawls/{crawl_id}/live/{fetch_id}.png", dependencies=guarded,
+             tags=["Crawls"], summary="A screenshot of a page the crawl fetched",
+             response_class=Response,
+             responses={200: {"content": {"image/png": {}}},
+                        404: {"description": "No such crawl, or no such page in it."}})  # fmt: skip
+    async def live_screenshot(crawl_id: int, fetch_id: int) -> Response:
+        """The page as the crawler fetched it, rendered from the stored copy with
+        JavaScript off (the site is not fetched again; its styles and images are, through
+        the network guard). PNG, 1280 x 900."""
+        found = await run_in_threadpool(stored_page, engine, crawl_id, fetch_id)
+        if found is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND,
+                                f"no page {fetch_id} in crawl {crawl_id}")  # fmt: skip
+        png = await screenshots.png(fetch_id, *found)
+        return Response(png, media_type="image/png",
+                        headers={"Cache-Control": "private, max-age=3600"})  # fmt: skip
 
     @app.post("/v1/crawls/{crawl_id}/pause", dependencies=guarded, tags=["Crawls"],
               summary="Pause a crawl", status_code=status.HTTP_202_ACCEPTED,
@@ -714,7 +747,10 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         a field answered "I don't know" stays in the profile's missing information."""
         company(company_id)
         try:
-            return {"answers": save_answers(engine, company_id, body)}
+            return {"answers": save_answers(
+                engine, company_id, body,
+                lambda: build_business_profile(engine, settings, company_id)["sections"][1][
+                    "items"])}  # fmt: skip
         except ValueError as exc:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 

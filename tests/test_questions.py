@@ -49,7 +49,7 @@ def test_nothing_is_asked_before_research_has_found_anything() -> None:
 
 
 def test_questions_prefill_from_the_profile_and_ask_what_is_missing() -> None:
-    model = {"offerings": [{"name": {"value": "Arm", **CITED}}],
+    model = {"catalogue": {"offerings": [{"name": {"value": "Arm", **CITED}}]},
              "differentiators": [{"value": "Fastest arms", **CITED}]}  # fmt: skip
     qs = by_id(questions.generate(bip(found_profile(), model)))
     assert qs["products_to_promote"]["choices"] == ["Arm"]
@@ -79,7 +79,7 @@ def test_an_answered_or_unknown_question_is_not_asked_again() -> None:
     assert "monthly_marketing_budget" not in qs and "monthly_leads" not in qs
     leads = field(view, "monthly_leads")
     assert leads["value"] is None and leads["status"] == "Not found"
-    missing = {m["key"]: m for m in view["sections"][12]["items"]}
+    missing = {m["key"]: m for m in view["sections"][11]["items"]}
     assert missing["monthly_leads"]["reason"] == "you said you don't know yet"
 
 
@@ -169,3 +169,34 @@ def test_the_model_words_the_questions_once_and_answers_reach_the_profile(
     assert api.put(url, json=bad).status_code == 422
     unknown = {"answers": [{"question_id": "favourite_colour", "status": "dont_know"}]}
     assert api.put(url, json=unknown).status_code == 422
+
+
+def test_the_catalogue_is_confirmed_and_what_research_missed_is_added() -> None:
+    model = {"catalogue": {"offerings": [{"name": {"value": "Arm", **CITED}},
+                                         {"name": {"value": "Gripper", **CITED}}]}}  # fmt: skip
+    view = bip(found_profile(), model)
+    qs = by_id(questions.generate(view))
+    assert qs["catalogue"]["type"] == "multi_choice"
+    assert qs["catalogue"]["choices"] == qs["catalogue"]["suggested"] == ["Arm", "Gripper"]
+    answer = questions.Answer(question_id="catalogue", status="answered",
+                              value=["arm", "Lasers"])  # fmt: skip
+    rows = questions._catalogue_rows(7, answer, view["sections"][1]["items"])
+    assert [(r["item_key"], r["status"], r["value"]) for r in rows] == [
+        ("llm:Arm", "confirmed", "Arm"), ("llm:Gripper", "rejected", "Gripper"),
+        ("user:Lasers", "edited", "Lasers")]  # fmt: skip
+    answers = [{**r, "verified_at": "2026-11-10T09:00:00+00:00"} for r in rows]
+    after = bip(found_profile(), model, answers)
+    items = {i["value"]: i for i in after["sections"][1]["items"] if i["value"]}
+    assert set(items) == {"Arm", "Lasers"}
+    assert items["Lasers"]["status"] == "Verified" and items["Lasers"]["confidence"] == 1.0
+    # Answered: not asked again.
+    assert "catalogue" not in by_id(questions.generate(after))
+
+
+def test_what_the_model_inferred_about_buyers_is_asked_to_confirm() -> None:
+    model = {"icp": {"business_types": [{"value": "Marketing agencies", **CITED}]},
+             "brand": {"mission": {"value": "Robots for all", **CITED}}}  # fmt: skip
+    qs = by_id(questions.generate(bip(found_profile(), model)))
+    gap = qs["gap:business_types"]
+    assert gap["suggested"] == ["Marketing agencies"] and "Is it right?" in gap["text"]
+    assert "gap:mission" not in qs  # inferred brand wording is labelled, not asked

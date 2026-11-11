@@ -118,8 +118,8 @@
   "products": [],
   "versions": {
     "extractors": {
-      "company": "8",
-      "competitor": "3",
+      "company": "9",
+      "competitor": "4",
       "llm": "page-llm-3",
       "product": "6",
       "signals": "5",

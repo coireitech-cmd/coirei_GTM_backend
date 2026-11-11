@@ -48,7 +48,7 @@ from .common import AMOUNT_QUALIFIERS, QUALIFIER, Context, Sentence, reported, s
 from .common import draft as _draft
 
 EXTRACTOR = "company"
-VERSION = "8"
+VERSION = "9"
 
 _ORG_TYPES = re.compile(r"Organization|Corporation|Business|Company|NGO")
 # A top-level JSON-LD node: a script's root or a direct member of its @graph.
@@ -419,6 +419,10 @@ def _sentence(s: Sentence, ctx: Context) -> Iterator[ObservationDraft]:
                         {"qualifier": "range", "min": low, "max": high})  # fmt: skip
     for pattern, category, certainty in _OWNERSHIP:
         for m in pattern.finditer(text):
+            # The company must be what is listed: in "Facebook is a publicly listed company
+            # that only wants our money" (a blog post) the "our" comes after the claim.
+            if not ctx.is_subject_of(text, m.start()):
+                continue
             yield _span(s, m, 0, "ownership_type", certainty,
                         {"qualifier": "eq", "value": category})  # fmt: skip
     yield from _business_model(s, ctx)

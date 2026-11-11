@@ -46,11 +46,11 @@ from .urls import registrable_domain, url_host
 
 log = logging.getLogger(__name__)
 
-PROMPT_VERSION = "profile-8"
+PROMPT_VERSION = "profile-10"
 FACTS_PROMPT_VERSION = "facts-1"
-OFFERINGS_PROMPT_VERSION = "offerings-2"
+OFFERINGS_PROMPT_VERSION = "offerings-5"
 BRAND_PROMPT_VERSION = "brand-1"
-ICP_PROMPT_VERSION = "icp-1"
+ICP_PROMPT_VERSION = "icp-4"
 VP_PROMPT_VERSION = "value-prop-2"
 # A short text, a year, an argument citing its evidence inline ("... [e3]."), a
 # price (text that is not a salary), a pitch (text that is not marketing filler), and
@@ -58,7 +58,11 @@ VP_PROMPT_VERSION = "value-prop-2"
 # written ("4 million+").
 _S, _I, _R, _P, _N = ("str",), ("int",), ("reasoning",), ("price",), ("count",)
 _D = ("domain",)  # a host name ("acme.com"), not a word the model put there ("Bakery")
+# A name as the evidence writes it: one no line contains ("Competitors in AI search") is the
+# model's own description, not a product's or a company's name.
+_M = ("name",)
 _V, _Q = ("pitch",), ("proof",)
+_G = ("segment",)  # who or what market, specifically: "real estate developers", not "businesses"
 
 
 def _enum(*values: str) -> tuple[str, tuple[str, ...]]:
@@ -70,6 +74,7 @@ def _tag(*values: str) -> tuple[str, tuple[str, ...]]:
     return ("tag", values)
 
 
+SOLD_AS = ("one_product", "several_products", "services", "courses", "goods", "mixed")
 PROOF_KINDS = ("statistic", "customer", "testimonial", "award", "track_record", "press")
 
 
@@ -90,13 +95,11 @@ SCHEMA: dict[str, Any] = {
         "sales_motion": _enum("self_serve", "sales_led", "partner_led", "hybrid"),
         "plans": [_S],
     },
-    "offerings": [{"name": _S, "type": _enum("product", "service", "course", "plan"),
-                   "description": _S, "key_features": [_S], "price": _P}],
-    "target_customers": {"segments": [_S], "industries": [_S], "use_cases": [_S],
-                         "named_customers": [_S], "case_studies": [_S]},
-    "market": {"category": _S, "sub_category": _S, "geography": [_S]},
+    # Offerings and who they are for are their own calls (OFFERINGS_, ICP_SCHEMA).
+    "target_customers": {"named_customers": [_S], "case_studies": [_S]},
+    "market": {"category": _G, "sub_category": _G, "geography": [_S]},
     "differentiators": [_S],
-    "competitors": [{"name": _S, "domain": _D}],
+    "competitors": [{"name": _M, "domain": _D}],
 }  # fmt: skip
 # Ownership, funding and traction: their own small call. With them in the main schema the
 # small model lost track of its structure, dropping or misplacing whole sections.
@@ -106,10 +109,19 @@ FACTS_SCHEMA: dict[str, Any] = {
     "total_funding": _P, "funding_rounds": [_S], "investors": [_S], "valuation": _P,
     "customer_count": _N, "annual_revenue": _P, "arr": _P,
 }  # fmt: skip
-# Per offering, what it does for whom: its own call, so the main one stays small.
-OFFERINGS_SCHEMA: dict[str, Any] = {"offerings": [{
-    "name": _S, "benefits": [_S], "problems_solved": [_S], "use_cases": [_S],
-    "target_users": [_S],
+# The catalogue: what is sold on its own, each with its parts (modules, agents, features)
+# and what it does for whom. Its own call, reasoning first: a site's product menu lists a
+# platform's modules, and a small model asked for "products" beside everything else took
+# each one for a product.
+OFFERINGS_SCHEMA: dict[str, Any] = {
+    "reasoning": _R,
+    # How the company sells: with one_product, the offerings beside the main one are its
+    # modules (onboarding.offerings_of folds them in), whatever the model listed.
+    "sold_as": _tag(*SOLD_AS), "main_offering": _M,
+    "offerings": [{
+    "name": _M, "type": _enum("product", "service", "course"), "description": _S,
+    "components": [_M], "key_features": [_S], "price": _P,
+    "benefits": [_S], "problems_solved": [_S], "use_cases": [_S], "target_users": [_S],
     "pricing_model": _enum("subscription", "one_time", "usage_based", "custom_quote", "free"),
     "maturity": _enum("available", "beta", "waitlist", "coming_soon"),
     "related_offerings": [_S], "proof": [_S],
@@ -121,8 +133,9 @@ BRAND_SCHEMA: dict[str, Any] = {
     "tone_of_voice": _S, "personality": [_S], "consistency": _S,
 }  # fmt: skip
 ICP_SCHEMA: dict[str, Any] = {
-    "reasoning": _R, "stated_target_market": [_S],
-    "hypotheses": [{"segment": _S, "why": _S, "signals": [_S]}],
+    "reasoning": _R, "stated_target_market": [_S], "business_types": [_G],
+    "company_sizes": [_G], "buyer_roles": [_G], "industries": [{"name": _G, "why": _S}],
+    "use_cases": [_S], "hypotheses": [{"segment": _S, "why": _S, "signals": [_S]}],
 }  # fmt: skip
 VP_SCHEMA: dict[str, Any] = {
     "reasoning": _R, "for_whom": _V, "problem": _V, "outcome": _V, "how": _V,
@@ -143,7 +156,7 @@ _FLUFF = re.compile(
 )
 # An object in a list needs this key, or it is dropped (an offering with no name).
 _REQUIRED = {"offerings": ("name",), "competitors": ("name",), "proof": ("kind", "claim"),
-             "hypotheses": ("segment",)}  # fmt: skip
+             "hypotheses": ("segment",), "industries": ("name",)}  # fmt: skip
 MAX_ITEMS = 25
 MAX_TEXT = 1200  # a reasoning paragraph
 # The company's own pages read for the profile, by the type the page model gave them.
@@ -159,6 +172,14 @@ SALARY_NOTE = " (salary graduates earn, not a fee)"
 # What a model writes for a value it does not have ("Not explicitly stated").
 _PLACEHOLDER = re.compile(
     r"(not\s+(explicitly\s+)?(stated|specified|mentioned|available|disclosed)|unknown|n/?a|none)\W*",
+    re.I,
+)
+# A segment that names no one in particular ("Businesses", "All industries", "Technology").
+_VAGUE = re.compile(
+    r"(?:all|any|various|many|other|general)?\s*(?:types? of\s+)?(?:business(?:es)?|"
+    r"compan(?:y|ies)|organi[sz]ations?|industr(?:y|ies)|sectors?|everyone|anyone|customers?|"
+    r"clients?|users?|people|individuals|consumers|technology|tech|software|services?|it|"
+    r"b2b|b2c)\W*",
     re.I,
 )
 _DOMAIN = re.compile(r"(?:[a-z0-9-]+\.)+[a-z]{2,}", re.I)
@@ -216,6 +237,10 @@ reasoning. The choices mean:
 - named_customers: organisations the pages say buy from or use this company (clients,
   customers, "trusted by" logos, case studies). A founder's or employee's past employer, or
   a company they worked at, studied at or consulted for, is not a customer.
+- market category / sub_category: the market the company competes in, as a buyer would
+  search for it ("sales engagement software", "artisan bakery", "data science training");
+  never a word that fits any company ("technology", "software", "services"), nor the name
+  of one of its own modules or features.
 A salary or package that graduates get (LPA, CTC, "per annum") is not a price. Use a
 blog post or a course syllabus only as evidence of what the company teaches or sells.
 Use only what the evidence says. Leave out any field or item the evidence does not support;
@@ -290,9 +315,37 @@ Every value is {{"value": ..., "evidence": [ids of the lines that support it]}},
 
 
 OFFERINGS_SYSTEM = _part_system(
-    "You describe each product, service, course or plan one company sells.",
+    "You list what one company sells: its catalogue of products, services and courses.",
     OFFERINGS_SCHEMA,
-    """- name: the offering's name exactly as the pages write it.
+    """Write "reasoning" first: two to four sentences, each ending with ids, on what a
+customer can buy from this company on its own: one platform or product with modules, a few
+separate products, services, courses, or goods. Then:
+- sold_as: one_product (one platform, app or product, whatever modules, agents or features
+  it has; one set of plans), several_products (separate products, each with its own name
+  and its own price or plans), services, courses, goods (a range of physical goods), or
+  mixed. A single pricing table of plans means one_product.
+- main_offering: with one_product, the name of that product or platform (often the
+  company's or brand's name with a product word: "<Brand> CRM"), as the pages write it.
+Then list each offering, every one the pages sell (a suite's products, each service, each
+course, each range of goods); with one_product, list only the main one and put its modules,
+agents and features in its components. Keep it short: at most 12 components, each a name as
+the pages write it (a menu item or heading: "Engage Agent", "Reports"), and at most 5 items
+in every other list:
+- An offering is bought, subscribed to or hired on its own: it has its own name and the
+  pages sell it as such (its own price or plans, its own sign-up, demo or order, or a list
+  of the company's separate products, services or courses).
+- Modules, agents, features, capabilities, tools, integrations, add-ons, and use-case or
+  "solutions for ..." pages that are part of an offering are not offerings: list them in
+  that offering's components. A product menu often names one platform's modules; when they
+  share the platform's name, sign-up or pricing page, they are its components. Most
+  software companies sell one platform; a suite whose products are priced apart sells each.
+- Plans, tiers and editions ("Free", "Pro", "Enterprise") are not offerings.
+- type: product (software, an app or platform, a device, goods), service (work people do
+  for the customer:
+  consulting, implementation, agency work, repairs; onboarding that comes with a plan is
+  not one), course (training, a programme, a class).
+- name: the offering's name exactly as the pages write it; description: one sentence on
+  what it is; key_features: what it does; price: as written.
 - benefits: outcomes and value the customer gets; problems_solved: the customer pains it
   addresses; use_cases: situations where customers use it; target_users: who it is for.
 - pricing_model: subscription (recurring), one_time (paid once), usage_based (pay per use),
@@ -335,18 +388,44 @@ Revenue, funding and counts that belong to another company (a customer, a compet
 market report) are not this company's.""",
 )
 ICP_SYSTEM = _part_system(
-    "You read who one company says it serves, and suggest who its best customers may be.",
+    "You read who one company sells to, and suggest who its best customers may be.",
     ICP_SCHEMA,
     """Write "reasoning" first: three to five sentences, each ending with ids, on who buys
 today (named customers, case studies, use cases, pricing, industries) and which kind of
-customer the evidence points to.
-- stated_target_market: who the company itself says it serves, in its words.
+customer the evidence points to. Be specific: "real estate developers in Pune", not
+"businesses"; a word that fits any company's customers says nothing.
+- stated_target_market: who the company itself says it serves, in its words ("built for
+  growing B2B teams", "for home bakers"): a buyer, never a product, feature or technology.
+- Read the prices for who buys: low monthly plans anyone can start online mean individuals,
+  startups and small businesses; an enterprise plan or "talk to sales" adds larger ones.
+- Product screenshots, demo tables and sample data on a page (example companies, rows,
+  dashboards) are illustrations, not customers or industries served.
+- A company whose product suits any industry: give only the industries its own examples,
+  case studies and customers show, and say "any industry" in stated_target_market if the
+  pages say so; never guess industries.
+- business_types: the kinds of buyer ("B2B SaaS startups", "marketing agencies", "retail
+  chains", "working professionals", "parents of school children").
+- company_sizes: the sizes of organisation it sells to, as the pages say ("small
+  businesses", "mid-market", "enterprises", "10-200 employees") or as its plans show (an
+  enterprise plan); leave it out for a company that sells to people.
+- buyer_roles: the job titles, teams or people who buy or use it ("founders", "CMOs",
+  "sales teams", "HR managers", "students").
+- industries: each industry or vertical its customers are in, as specific as the evidence
+  allows, from industry or solutions pages, "for <industry>" sections, case studies and the
+  industries of its named customers; why: the evidence for it in a few words. The company's
+  own industry is not one of them (a marketing software company's customers are not
+  "marketing software").
+- A company that sells to people (a shop, a bakery, a consumer app, a school for
+  individuals): business_types, company_sizes and industries stay out; buyer_roles are the
+  people who buy ("home cooks", "gift buyers", "parents", "working professionals").
+- use_cases: situations or jobs customers use it for.
 - hypotheses: up to three customer segments that may convert best, each a segment specific
   enough to target (industry, size, role, place), why the evidence suggests it, and the
   signals (lines) it rests on. These are hypotheses to test, not facts.""",
 )
 
 PAGE_CHARS = 1500  # of each key page's text
+CATALOGUE_PAGE_CHARS = 3000  # the catalogue reads more of each page: menus, plans, offers
 
 
 def evidence_lines(
@@ -574,6 +653,12 @@ def _leaf(spec: Any, data: Any, refs: dict[str, dict[str, Any]], stats: dict[str
     elif kind == "enum" and value not in spec[1]:
         stats["invalid"] += 1
         return None
+    elif kind == "name" and not any(_plain(value) in _plain(r["text"]) for r in refs.values()):
+        stats["invalid"] += 1
+        return None
+    elif kind == "segment" and _VAGUE.fullmatch(value.strip()):
+        stats["invalid"] += 1
+        return None
     elif kind == "domain" and not _DOMAIN.fullmatch(value.strip().removeprefix("www.")):
         stats["invalid"] += 1
         return None
@@ -596,6 +681,12 @@ def _leaf(spec: Any, data: Any, refs: dict[str, dict[str, Any]], stats: dict[str
         return None
     cited = [refs[i] for i in dict.fromkeys(grounded)]
     return _cited(value.strip() if isinstance(value, str) else value, cited)
+
+
+def _plain(text: str) -> str:
+    """``text`` in lower case with its punctuation as spaces: "Lead-Nurturing" is in
+    "lead nurturing"."""
+    return " " + " ".join(re.sub(r"[\W_]+", " ", text).casefold().split()) + " "
 
 
 def lift(schema: dict[str, Any], data: Any) -> Any:
@@ -629,13 +720,17 @@ def clean(spec: Any, data: Any, refs: dict[str, dict[str, Any]], stats: dict[str
         if not isinstance(data, list):
             return None
         required = _REQUIRED.get(path)
-        items = [clean(spec[0], x, refs, stats) for x in data[:MAX_ITEMS]]
-        items = [
-            i
-            for i in items
-            if i is not None and (required is None or all(k in i for k in required))
-        ]
-        return items or None
+        # A small model can repeat a list until its tokens run out: each value once.
+        items, seen = [], set()
+        for x in data[: MAX_ITEMS * 4]:
+            i = clean(spec[0], x, refs, stats)
+            if i is None or (required is not None and not all(k in i for k in required)):
+                continue
+            key = str(i["value"]).casefold() if isinstance(i, dict) and "value" in i else None
+            if key is None or key not in seen:
+                seen.add(key)
+                items.append(i)
+        return items[:MAX_ITEMS] or None
     return _leaf(spec, data, refs, stats)
 
 
@@ -694,7 +789,7 @@ def key_pages(
 PARTS = ((PROMPT_VERSION, SYSTEM, SCHEMA, None),
          (VP_PROMPT_VERSION, VP_SYSTEM, VP_SCHEMA, "value_proposition"),
          (FACTS_PROMPT_VERSION, FACTS_SYSTEM, FACTS_SCHEMA, "facts"),
-         (OFFERINGS_PROMPT_VERSION, OFFERINGS_SYSTEM, OFFERINGS_SCHEMA, "offering_details"),
+         (OFFERINGS_PROMPT_VERSION, OFFERINGS_SYSTEM, OFFERINGS_SCHEMA, "catalogue"),
          (BRAND_PROMPT_VERSION, BRAND_SYSTEM, BRAND_SCHEMA, "brand"),
          (ICP_PROMPT_VERSION, ICP_SYSTEM, ICP_SCHEMA, "icp"))  # fmt: skip
 
@@ -708,16 +803,36 @@ def _inputs(
     pages = key_pages(engine, settings, organization_id)
     max_chars = settings.llm.profile_max_chars
     main = evidence_lines(dossier, max_chars, pages)
+    unnamed = {**dossier, "products": [],
+               "company": {**dossier["company"], "fields": {
+                   k: v for k, v in dossier["company"]["fields"].items()
+                   if k not in ("number_of_products", "product_name")}}}  # fmt: skip
     evidence = {
         # The other parts read the same evidence as the main one: one text, one digest each.
-        PROMPT_VERSION: main, OFFERINGS_PROMPT_VERSION: main, BRAND_PROMPT_VERSION: main,
-        ICP_PROMPT_VERSION: main, FACTS_PROMPT_VERSION: main,
+        PROMPT_VERSION: main, BRAND_PROMPT_VERSION: main, FACTS_PROMPT_VERSION: main,
+        # Without the products a page extraction named (plan bullets, menu items, modules,
+        # each labelled a product): the catalogue reads what is sold from the pages, and the
+        # customers part reads their prose (no demo tables of sample companies).
+        OFFERINGS_PROMPT_VERSION: evidence_lines(unnamed, max_chars, _for_catalogue(pages),
+                                                 page_chars=CATALOGUE_PAGE_CHARS),
+        ICP_PROMPT_VERSION: evidence_lines(unnamed, max_chars,
+                                           [(t, u, prose(x)) for t, u, x in pages],
+                                           page_chars=VP_PAGE_CHARS),
         VP_PROMPT_VERSION: evidence_lines(dossier, max_chars,
                                           [(t, u, prose(x)) for t, u, x in pages],
                                           VP_FIELDS, VP_PAGE_CHARS),
     }  # fmt: skip
     return {v: (text, refs, hashlib.sha256(text.encode()).hexdigest())
             for v, (text, refs) in evidence.items()}  # fmt: skip
+
+
+def _for_catalogue(pages: list[tuple[str, str, str]]) -> list[tuple[str, str, str]]:
+    """The key pages in the order that best shows what is sold: the home page, then
+    pricing (one table of plans, or a price per product), then product, service and
+    uploaded pages, then the rest (landing pages the page model also took for home
+    pages, about pages). Within the evidence budget, the pricing page is not crowded out."""
+    rank = {"pricing": 1, "product": 2, "service": 2, "document": 2}
+    return [*pages[:1], *sorted(pages[1:], key=lambda p: rank.get(p[0], 3))]
 
 
 def _stored(engine: Engine, model: str, version: str, digest: str) -> dict[str, Any] | None:
@@ -818,7 +933,7 @@ def _call(reader: PageReader, s: LlmSettings, system: str, schema: dict[str, Any
         return {"error": str(exc)}
     stats = {"uncited": 0, "invalid": 0, "number_not_in_evidence": 0}
     try:
-        data = json.loads(re.sub(r"<think>.*?</think>", "", answer, flags=re.S))
+        data = _json(re.sub(r"<think>.*?</think>", "", answer, flags=re.S))
     except ValueError:
         data = None
     if schema is VP_SCHEMA and isinstance(data, dict):
@@ -827,6 +942,33 @@ def _call(reader: PageReader, s: LlmSettings, system: str, schema: dict[str, Any
     if built is None:  # not JSON, or nothing cited: not stored, so a later run retries
         return {"error": "no usable answer", "dropped": stats}
     return {"profile": built, "dropped": stats, "evidence_lines": len(refs)}
+
+
+def _json(text: str) -> Any:
+    """``text`` as JSON; an answer cut off at its token limit (a list repeated until the
+    budget ran out) up to its last complete value, with its brackets closed."""
+    try:
+        return json.loads(text, strict=False)
+    except ValueError:
+        pass
+    stack: list[str] = []
+    cut: tuple[int, str] | None = None
+    in_string = escaped = False
+    for i, ch in enumerate(text):
+        if in_string:
+            escaped, in_string = (False, True) if escaped else (ch == "\\", ch != '"')
+        elif ch == '"':
+            in_string = True
+        elif ch in "{[":
+            stack.append("}" if ch == "{" else "]")
+        elif ch in "}]" and stack:
+            stack.pop()
+            cut = (i + 1, "".join(reversed(stack)))
+        elif ch == "," and stack:
+            cut = (i, "".join(reversed(stack)))
+    if cut is None:
+        raise ValueError("no JSON value")
+    return json.loads(text[: cut[0]] + cut[1], strict=False)
 
 
 _STATEMENT_PARTS = ("for_whom", "problem", "how", "outcome")

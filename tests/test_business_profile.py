@@ -73,14 +73,13 @@ def test_field_status(
     assert field_status(state, has_value, active, answer, access) == expected
 
 
-def test_registry_has_the_fourteen_sections_and_the_spec_fields() -> None:
+def test_registry_has_the_thirteen_sections_and_the_spec_fields() -> None:
     assert [k for k, _ in SECTIONS] == [
         "company_profile",
         "products_services",
         "business_model",
         "target_customers",
         "brand_positioning",
-        "public_market",
         "marketing_footprint",
         "sales_commercial",
         "customer_evidence",
@@ -128,7 +127,9 @@ def test_registry_has_the_fourteen_sections_and_the_spec_fields() -> None:
         "calls_to_action",
         "messaging_consistency",
         "differentiators",
-        "competitors",
+        "business_types",
+        "company_sizes",
+        "buyer_roles",
         "social_profiles",
         "marketing_channels",
         "monthly_marketing_budget",
@@ -335,7 +336,7 @@ def test_missing_information_lists_open_fields_once_research_is_done() -> None:
         }
     )
     done = bip(d)
-    missing = {m["key"]: m for m in done["sections"][12]["items"]}
+    missing = {m["key"]: m for m in done["sections"][11]["items"]}
     assert "company_name" not in missing
     assert missing["legal_name"]["status"] == "Conflicting"
     assert missing["founded_year"]["status"] == "Not found"
@@ -343,7 +344,7 @@ def test_missing_information_lists_open_fields_once_research_is_done() -> None:
     # While research runs, a public field not found yet is still being extracted.
     running = bip(d, job="running")
     assert field(running, "founded_year")["status"] == "Extracting"
-    open_keys = {m["key"] for m in running["sections"][12]["items"]}
+    open_keys = {m["key"] for m in running["sections"][11]["items"]}
     assert "founded_year" not in open_keys and "monthly_marketing_budget" in open_keys
 
 
@@ -358,7 +359,7 @@ def test_source_records_list_every_field_with_sources() -> None:
             }
         }
     )
-    records = bip(d)["sections"][13]["items"]
+    records = bip(d)["sections"][12]["items"]
     assert records == [
         {
             "key": "company_name",
@@ -391,7 +392,8 @@ def test_products_come_from_the_evidence_or_the_model() -> None:
         "evidence_confidence": None,
         "citations": [{"url": f"{SITE}/", "quote": "q"}],
     }
-    inferred = bip(dossier({}), {"offerings": [{"name": leaf}]})["sections"][1]["items"]
+    model = {"catalogue": {"offerings": [{"name": leaf}]}}
+    inferred = bip(dossier({}), model)["sections"][1]["items"]
     assert [(p["value"], p["status"]) for p in inferred] == [("Gripper", "Inferred")]
 
 
@@ -408,8 +410,8 @@ def test_the_models_offerings_replace_crawled_product_names() -> None:
     answers = [{"section": "products_services", "field": "product", "item_key": "6",
                 "status": "confirmed", "value": "Kept",
                 "verified_at": "2026-11-10T09:00:00+00:00"}]  # fmt: skip
-    view = bip(dossier({}, products), {"offerings": [offering("arm"), offering("Gripper")]},
-               answers)  # fmt: skip
+    model = {"catalogue": {"offerings": [offering("arm"), offering("Gripper")]}}
+    view = bip(dossier({}, products), model, answers)
     items = view["sections"][1]["items"]
     assert [(i["value"], i["item_key"]) for i in items] == [
         ("arm", "4"),
@@ -436,3 +438,78 @@ def test_business_profile_endpoint(engine: Engine, tmp_path: Path) -> None:
     onboarding = api.get(f"/v1/companies/{company}/onboarding").json()
     first = onboarding["sections"][0]["items"][0]
     assert "status" in first and "extracted_at" in first
+
+
+def test_modules_and_plans_are_not_products() -> None:
+    """One platform with modules (an agent, a feature) is one product, its modules among
+    its components; a plan is not a product either, even when the model lists one."""
+
+    def named(value: str) -> dict[str, Any]:
+        return {"value": value, "evidence_confidence": None,
+                "citations": [{"url": f"{SITE}/", "quote": "q"}]}  # fmt: skip
+
+    modules = ["Marketing Intelligence", "Lead Nurturing", "Engage Agent"]
+    # The page extraction found each module as a product.
+    crawled = [{"product_id": i, "name": m, "fields": {}} for i, m in enumerate(modules, 1)]
+    model = {
+        "business_model": {"plans": [named("Pro")]},
+        "catalogue": {"offerings": [
+            {"name": named("Coirei GTM"), "type": named("product"),
+             "components": [named(m) for m in modules]},
+            {"name": named("engage agent")},  # a module the model also listed: dropped
+            {"name": named("Pro")},  # a plan
+        ]},
+    }  # fmt: skip
+    items = bip(dossier({}, crawled), model)["sections"][1]["items"]
+    assert [i["value"] for i in items] == ["Coirei GTM"]
+    assert items[0]["details"]["components"] == modules
+    assert items[0]["details"]["type"] == "product"
+
+
+def test_target_customers_come_from_the_icp_part() -> None:
+    def cited(value: Any) -> dict[str, Any]:
+        return {"value": value, "evidence_confidence": 0.5,
+                "citations": [{"url": f"{SITE}/", "quote": "q"}]}  # fmt: skip
+
+    view = bip(dossier({}), {"icp": {
+        "business_types": [cited("B2B SaaS startups")],
+        "company_sizes": [cited("Small businesses")],
+        "buyer_roles": [cited("Founders"), cited("Sales teams")],
+        "industries": [{"name": cited("Real estate developers"),
+                        "why": cited("Case study with a Pune developer")}],
+        "use_cases": [cited("Finding leads")],
+    }})  # fmt: skip
+    assert field(view, "business_types")["value"] == ["B2B SaaS startups"]
+    assert field(view, "company_sizes")["value"] == ["Small businesses"]
+    assert field(view, "buyer_roles")["value"] == ["Founders", "Sales teams"]
+    assert field(view, "target_industries")["value"] == [
+        {"name": "Real estate developers", "why": "Case study with a Pune developer"}
+    ]
+    assert field(view, "main_use_case")["value"] == ["Finding leads"]
+
+
+def test_every_value_has_a_confidence() -> None:
+    def pages(*urls: str) -> dict[str, Any]:
+        return {"value": "x", "evidence_confidence": None,
+                "citations": [{"url": u, "quote": "q"} for u in urls]}  # fmt: skip
+
+    view = bip(dossier({}), {"icp": {"business_types": [pages(f"{SITE}/", f"{SITE}/a")],
+                                     "buyer_roles": [pages(*(f"{SITE}/{i}" for i in "abcd"))]},
+                             "brand": {"mission": pages(f"{SITE}/")}})  # fmt: skip
+    # A model's reading of pages nothing assessed: pages combine, below Supported (0.60).
+    assert field(view, "mission")["confidence"] == 0.3
+    assert field(view, "business_types")["confidence"] == 0.51
+    assert field(view, "buyer_roles")["confidence"] == 0.59
+    assert field(view, "vision")["confidence"] is None  # no value, no confidence
+    answers = [
+        {
+            "section": "brand_positioning",
+            "field": "mission",
+            "item_key": "",
+            "status": "edited",
+            "value": "Ours",
+            "verified_at": "2026-11-10T09:00:00+00:00",
+        }
+    ]
+    edited = bip(dossier({}), {"brand": {"mission": pages(f"{SITE}/")}}, answers)
+    assert field(edited, "mission")["confidence"] == 1.0

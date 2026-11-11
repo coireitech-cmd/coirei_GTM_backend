@@ -1,0 +1,42 @@
+{
+  "about": "Analyst labels of every parsed market figure (sizes, forecasts, growth rates) and price point in the live benchmark runs of 2026-10-21, judged by reading each excerpt (qualitative, not a gate). A figure is correct when its value, currency, kind, year and scope (geography, segment, measure, market definition) are what the excerpt says. Labelled by the implementing agent (Claude), not an independent reviewer.",
+  "runs": {
+    "run1": {"code": "ae25ee5 (M7 scope fix, before benchmark findings)", "figures": 64, "value_and_currency_correct": 64, "fully_correct": 31},
+    "run2": {"code": "after the run-1 findings", "figures": 59, "value_and_currency_correct": 59, "fully_correct": 47},
+    "run3": {"code": "final (this commit)", "figures": 58, "value_and_currency_correct": 58, "fully_correct": 49}
+  },
+  "per_case": {
+    "ind-ev-charging-europe": {"run1": [8, 14], "run2": [12, 14], "run3": [12, 13]},
+    "ind-plant-based-meat-us": {"run1": [0, 0], "run2": [0, 0], "run3": [0, 0]},
+    "sizing-crm-india-msme": {"run1": [5, 16], "run2": [13, 16], "run3": [13, 16]},
+    "prod-invoicing-freelancers": {"run1": [4, 12], "run2": [6, 10], "run3": [6, 10]},
+    "prod-email-marketing-ecommerce": {"run1": [14, 22], "run2": [16, 19], "run3": [18, 19]}
+  },
+  "selected_top_down_totals": {
+    "ind-ev-charging-europe": {"run1": "USD 13.8 billion, 2024, Europe (aloraadvisory.com): correct scope", "run3": "same: correct"},
+    "sizing-crm-india-msme": {"run1": "USD 1.28 billion, 2025, 'India CRM marketing services market' (mordorintelligence.com): WRONG market definition", "run3": "USD 2.315 billion, 2024, 'India CRM Software Market' (marketresearchfuture.com): correct scope"},
+    "ind-plant-based-meat-us": {"run1": "none (no eligible figure)", "run3": "none (no eligible figure)"}
+  },
+  "errors_run1_fixed": [
+    {"case": "sizing-crm-india-msme", "excerpt": "The India CRM marketing services market size is expected to increase from USD 1.28 billion in 2025 ...", "error": "different market definition taken as CRM software; selected as the TAM (4 figures)", "fix": "Metric.qualifier", "test": "test_live_a_narrower_market_definition_is_not_the_subject_total"},
+    {"case": "ind-ev-charging-europe", "excerpt": "The Europe electric vehicle charging infrastructure market generated a revenue of USD 5,688.3 million in 2025.", "error": "market revenue filed as company revenue (dropped from summaries)", "fix": "scope._measure", "test": "test_live_scope_readings"},
+    {"case": "ind-ev-charging-europe / sizing-crm-india-msme", "excerpt": "we estimate that the market ...; This shift is reflected in the market ...; We are forecasting the market ...; Asia Pacific is the fastest growing regional market ...", "error": "flagged as another market (verbs and adjectives read as market words)", "fix": "phrase head after the last determiner; generic words", "test": "test_live_scope_readings"},
+    {"case": "sizing-crm-india-msme", "excerpt": "Large Enterprises accounted for 58.12% ..., while Small and Medium Enterprises are expected to record the highest CAGR of 12.85% ...; BFSI retained a 16.11% share ..., while Healthcare and Life Sciences are forecast to grow at a 13.07% CAGR", "error": "growth rate filed under the wrong segment (2 figures)", "fix": "segment named after the market phrase first", "test": "test_live_scope_readings"},
+    {"case": "ind-ev-charging-europe", "excerpt": "The cumulative investment required ... is approximately US$220 billion ...", "error": "investment filed as a market size", "fix": "measure 'investment'", "test": "test_live_scope_readings"},
+    {"case": "prod-email-marketing-ecommerce", "excerpt": "... and the Email Marketing Software revenue is expected to grow ... reaching nearly USD 4.12 Bn.; It will grow ... CAGR of 13.8%", "error": "market revenue / unstated CAGR filed as company revenue (3 figures)", "fix": "scope._measure", "test": "test_live_second_figure_revenue_is_the_market_revenue"},
+    {"case": "prod-invoicing-freelancers / prod-email-marketing-ecommerce", "excerpt": "Save $2k per Month; a $150 gift card; spend at least $299 per month; $5 of mobile messages", "error": "savings, gift card, spend threshold and credits filed as list prices (5 figures)", "fix": "extract._NOT_PRICE_*", "test": "test_live_amounts_that_are_not_list_prices"},
+    {"case": "prod-invoicing-freelancers", "excerpt": "2.9% + $0.30 per transaction", "error": "fee without its unit (2 figures)", "fix": "'transaction' unit", "test": "test_live_amounts_that_are_not_list_prices"},
+    {"case": "prod-email-marketing-ecommerce", "excerpt": "https://mailchimp.com/pricing/ -> /pricing/pricing (404)", "error": "a wasted competitor fetch", "fix": "engine._competitor_urls", "test": "test_live_given_pricing_page_gets_no_pricing_suffix"}
+  ],
+  "errors_run2_fixed": [
+    {"case": "ind-ev-charging-europe", "excerpt": "... takes an investment of anywhere between EUR 300,000 and EUR 1.2 million", "error": "capex filed as a price point", "fix": "extract._NOT_PRICE_BEFORE", "test": "test_live_capex_is_not_a_price_and_other_spending_is_another_market"},
+    {"case": "prod-email-marketing-ecommerce", "excerpt": "According to IDC Predictions, spending on cloud IT infrastructure deployment environments reached approximately USD 37.70 billion in 2020 ...", "error": "another market's spending not flagged (2 figures)", "fix": "scope.assign off_subject for spending", "test": "test_live_capex_is_not_a_price_and_other_spending_is_another_market"}
+  ],
+  "errors_open_run3": [
+    {"case": "sizing-crm-india-msme", "excerpt": "By service type, CRM Implementation and Integration held 27.14% of the India CRM marketing services market share in 2025, while CRM Migration and Modernization is projected to expand at a 12.74% CAGR through 2031.", "error": "a service type's growth rate read as the whole market's (3 figures: service types and applications are not in the segment lexicon)"},
+    {"case": "sizing-crm-india-msme", "excerpt": "By service application, Customer Acquisition led with a 20.18% revenue share in 2025, while Omnichannel Customer Engagement is projected to grow at a 12.96% CAGR through 2031.", "error": "as above"},
+    {"case": "prod-invoicing-freelancers", "excerpt": "get 2.9% + $0 (Visa, Mastercard, Discover) and 3.4% + $0 (Amex) per transaction ...", "error": "fee unit lost when a parenthesis sits between the amount and 'per transaction' (4 figures)"},
+    {"case": "prod-email-marketing-ecommerce", "excerpt": "... is expected to grow by 11.8% from 2026 to 2032, reaching nearly USD 4.12 Bn.", "error": "forecast year (2032) not attached: the year precedes the figure in a 'from ... to ...' span"},
+    {"case": "ind-ev-charging-europe", "excerpt": "... will capture the lion's share of the US$58.4 billion 2030 market ...", "error": "the 2030 market total flagged as part of a larger figure ('share of')"}
+  ]
+}

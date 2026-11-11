@@ -1,0 +1,110 @@
+# TEST-ONLY staging rehearsal stack (docs/staging.md, "Staging smoke test").
+#
+# The real image, the real staging profile (GTM_ENV=staging with
+# deploy/config.staging.toml) and its own PostgreSQL, on an isolated network
+# with a synthetic company site. Run it through deploy/staging-test/run.sh:
+#
+#   GTM_API_TOKEN=... docker compose -p gtmstaging -f deploy/staging-test/compose.yml up -d
+#
+# Nothing binds 5432: the database is reachable only inside the network.
+# The API is published on 127.0.0.1:18000 for the smoke test.
+#
+# TEST-ONLY EXCEPTION: GTM__FETCH__ALLOWED_NETWORKS lets the crawler reach the
+# synthetic site on this private network. Never set it in a real staging or
+# production deployment; there the crawler must reach public addresses only.
+
+x-app: &app
+  image: gtm-crawler-staging
+  build: ../..
+  environment: &app-env
+    GTM_ENV: staging
+    GTM__DATABASE__URL: postgresql+psycopg://gtm:gtm@postgres:5432/gtm_crawler_staging
+    GTM__IDENTITY__USER_AGENT_CONTACT: https://staging-test.invalid/contact
+    GTM__API__TOKEN: ${GTM_API_TOKEN:?set GTM_API_TOKEN}
+    GTM__API__PREVIOUS_TOKEN: ${GTM_API_PREVIOUS_TOKEN:-}
+    GTM__FETCH__ALLOWED_NETWORKS: 172.31.250.0/24  # TEST-ONLY, see above
+  volumes:
+    - ../config.staging.toml:/app/config.staging.toml:ro
+    - rawdata:/data/raw
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: gtm
+      POSTGRES_PASSWORD: gtm
+      POSTGRES_DB: gtm_crawler_staging
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gtm -d gtm_crawler_staging"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  migrate:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+
+  api:
+    <<: *app
+    command: ["gtm-api"]
+    environment:
+      <<: *app-env
+      GTM__API__HOST: 0.0.0.0
+    ports:
+      - "127.0.0.1:18000:8000"
+    healthcheck:  # readiness: database reachable and schema at this image's head
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  worker:
+    <<: *app
+    command: ["gtm-worker"]
+    environment:
+      <<: *app-env
+      GTM__WORKER__METRICS_HOST: 0.0.0.0
+    stop_grace_period: 60s  # time to hand the running job back
+    security_opt:  # Chromium sandbox, as in docker-compose.yml
+      - seccomp=../chrome-seccomp.json
+    mem_limit: 2560m
+    memswap_limit: 2560m
+    healthcheck:  # liveness: the worker's metrics endpoint answers
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9100/metrics', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  site:  # TEST-ONLY synthetic company site, http://acme-staging.test/
+    image: gtm-crawler-staging
+    user: "0:0"  # binds port 80; test fixture only, not the crawler
+    command: ["python", "/site/site.py"]
+    volumes:
+      - ./site.py:/site/site.py:ro
+    networks:
+      default:
+        aliases: [acme-staging.test]
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.31.250.0/24
+
+volumes:
+  pgdata:
+  rawdata:

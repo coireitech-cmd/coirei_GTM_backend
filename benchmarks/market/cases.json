@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "about": "Market-research benchmark (docs/MARKET_BENCHMARK.md). Run: python -m gtm_crawler.market.benchmark run benchmarks/market/cases.json <out-dir>. Needs GTM__SEARCH__API_KEY and GTM__IDENTITY__USER_AGENT_CONTACT in the environment; never commit them.",
+  "cases": [
+    {
+      "id": "ind-ev-charging-europe",
+      "kind": "industry",
+      "question": "How large is the European EV charging infrastructure market, how fast is it growing, and what drives and limits it?",
+      "request": {
+        "mode": "industry", "subject": "electric vehicle charging infrastructure", "geography": "Europe",
+        "budget": {"max_queries": 4, "results_per_query": 5, "max_sources": 6, "max_duration_seconds": 240},
+        "sizing": {"market_definition": "EV charging infrastructure (hardware and services) in Europe", "year": 2024, "currency": "USD"}
+      },
+      "expect": {"status_in": ["partial", "completed"]}
+    },
+    {
+      "id": "ind-plant-based-meat-us",
+      "kind": "industry",
+      "question": "How large is the US plant-based meat market, and is it growing or shrinking?",
+      "request": {
+        "mode": "industry", "subject": "plant-based meat", "geography": "United States",
+        "budget": {"max_queries": 4, "results_per_query": 5, "max_sources": 6, "max_duration_seconds": 240},
+        "sizing": {"market_definition": "Plant-based meat sold in the United States (retail and food service)", "year": 2024, "currency": "USD"}
+      },
+      "expect": {"status_in": ["partial", "completed"]}
+    },
+    {
+      "id": "prod-invoicing-freelancers",
+      "kind": "product",
+      "question": "Is there room for an invoicing app for freelancers next to FreshBooks and Wave, and at what price?",
+      "request": {
+        "mode": "product", "subject": "Billfold", "industry": "invoicing software",
+        "segments": ["freelancers"],
+        "budget": {"max_queries": 4, "results_per_query": 5, "max_sources": 5, "max_duration_seconds": 240},
+        "product": {
+          "name": "Billfold", "problem": "freelancers lose time chasing late invoice payments",
+          "target_customer": "freelancers", "price": "$9 per month", "stage": "concept",
+          "known_competitors": [
+            {"name": "FreshBooks", "url": "https://www.freshbooks.com/"},
+            {"name": "Wave", "url": "https://www.waveapps.com/"}
+          ],
+          "differentiators": ["automatic payment reminders by WhatsApp"]
+        }
+      },
+      "expect": {"status_in": ["partial", "completed"], "min_competitor_pages_fetched": 1}
+    },
+    {
+      "id": "prod-email-marketing-ecommerce",
+      "kind": "product",
+      "question": "How do email-marketing tools for online stores price and compete (Mailchimp, Klaviyo)?",
+      "request": {
+        "mode": "product", "subject": "Sendly", "industry": "email marketing software",
+        "segments": ["e-commerce stores"],
+        "budget": {"max_queries": 4, "results_per_query": 5, "max_sources": 5, "max_duration_seconds": 240},
+        "product": {
+          "name": "Sendly", "problem": "small online stores struggle to send targeted email campaigns",
+          "target_customer": "small e-commerce stores", "price": "$20 per month", "stage": "prototype",
+          "known_competitors": [
+            {"name": "Mailchimp", "url": "https://mailchimp.com/pricing/"},
+            {"name": "Klaviyo", "url": "https://www.klaviyo.com/pricing"}
+          ],
+          "differentiators": ["abandoned-cart flows set up in one click"]
+        }
+      },
+      "expect": {"status_in": ["partial", "completed"], "min_competitor_pages_fetched": 1}
+    },
+    {
+      "id": "sizing-crm-india-msme",
+      "kind": "sizing",
+      "question": "Bottom-up CRM seat market for Indian MSMEs, cross-checked against collected India CRM market figures.",
+      "inputs_checked": {
+        "customers": "63,388,000 MSMEs = 633.88 lakh 'Total Number of Units', ALL INDIA, NSS 73rd round (July 2015-June 2016): RBI Handbook of Statistics on Indian States, Table 127 (https://www.rbi.org.in/Scripts/PublicationsView.aspx?id=21517), read 2026-10-21. The other inputs are labelled assumptions."
+      },
+      "request": {
+        "mode": "industry", "subject": "CRM software", "geography": "India",
+        "budget": {"max_queries": 4, "results_per_query": 5, "max_sources": 6, "max_duration_seconds": 240},
+        "sizing": {
+          "market_definition": "CRM software seats for Indian MSMEs, per year", "year": 2025, "currency": "USD",
+          "bottom_up": {
+            "customers": {"name": "msmes", "base": 63388000, "unit": "enterprises", "basis": "assumption",
+                          "rationale": "633.88 lakh units, NSS 73rd round 2015-16 (RBI Handbook of Statistics on Indian States, Table 127); not updated to 2025"},
+            "units_per_customer": {"name": "seats", "base": 2, "low": 1, "high": 3, "unit": "seats", "basis": "assumption",
+                                   "rationale": "most MSMEs are micro enterprises with one or two people selling"},
+            "price_per_unit": {"name": "price", "base": 120, "low": 60, "high": 180, "unit": "USD/seat/year", "basis": "assumption",
+                               "rationale": "entry-level CRM list prices of USD 5-15 per seat per month"},
+            "sam_filters": [{"name": "uses_business_software", "base": 0.05, "low": 0.03, "high": 0.08, "unit": "fraction",
+                             "basis": "assumption", "rationale": "share already using paid business software", "dimension": "readiness"}],
+            "penetration": {"name": "penetration", "base": 0.01, "low": 0.005, "high": 0.02, "unit": "fraction",
+                            "basis": "assumption", "rationale": "three-year share for a new entrant"}
+          }
+        }
+      },
+      "expect": {
+        "status_in": ["partial", "completed"],
+        "bottom_up": {
+          "low": [3803280000.0, 114098400.0, 570492.0],
+          "base": [15213120000.0, 760656000.0, 7606560.0],
+          "high": [34229520000.0, 2738361600.0, 54767232.0]
+        }
+      }
+    }
+  ]
+}

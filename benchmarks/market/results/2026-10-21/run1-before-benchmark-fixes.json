@@ -1,0 +1,578 @@
+{
+  "cases": [
+    {
+      "case": "ind-ev-charging-europe",
+      "mode": "industry",
+      "status": "partial",
+      "status_reasons": [
+        "coverage: 1 of 8 research question(s) have no evidence: What does the industry include and exclude?",
+        "1 source(s) failed",
+        "12 source(s) skipped"
+      ],
+      "duration_seconds": 12.0,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 5,
+        "irrelevant": 1,
+        "failed": 1,
+        "skipped": 12
+      },
+      "sources_tried": 7,
+      "sources_used": 5,
+      "retrieval_rate": 0.71,
+      "domains": 5,
+      "questions": 8,
+      "questions_answered": 7,
+      "evidence": 99,
+      "duplicate_excerpts": 0,
+      "contradictions": 0,
+      "metrics": 10,
+      "competitor_pages": {
+        "tried": 0,
+        "fetched": 0,
+        "rendered": 0
+      },
+      "price_points": 1,
+      "gates": {
+        "provenance": {
+          "checked": 99,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "citations": {
+          "checked": 104,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 13,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 13,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 9,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 51,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "sizing": {
+        "target_scope": "Europe, USD, 2024 or earlier",
+        "results": [
+          {
+            "method": "top_down",
+            "tam": 13800000000.0,
+            "sam": null,
+            "som": null,
+            "verified": false
+          }
+        ],
+        "excluded": [
+          {
+            "figure": "USD 18.5 billion for 2025 (Europe)",
+            "evidence_ids": [
+              "ev_572a99a03af2",
+              "ev_d7f7d5bb78de"
+            ],
+            "reason": "for 2025, after the sizing year 2024"
+          },
+          {
+            "figure": "USD 18.5 billion for 2025 (geography not stated)",
+            "evidence_ids": [
+              "ev_a1ea987fd58f"
+            ],
+            "reason": "for 2025, after the sizing year 2024"
+          },
+          {
+            "figure": "USD 220 billion for None (geography not stated)",
+            "evidence_ids": [
+              "ev_91e517e1ac31"
+            ],
+            "reason": "no year stated"
+          }
+        ],
+        "insufficient": [
+          "bottom_up: no inputs"
+        ],
+        "cross_check": null
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        }
+      ],
+      "wall_seconds": 12.4,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "ind-plant-based-meat-us",
+      "mode": "industry",
+      "status": "partial",
+      "status_reasons": [
+        "coverage: 7 of 8 research question(s) have no evidence: What do official statistics say?; What does the industry include and exclude?; What drives demand, and who buys?; Who competes, and how concentrated is the market?; Which regulations and technology shifts matter?; What are the barriers to entry",
+        "sizing: market sizing requested but not calculated: top_down: no inputs, and no collected market-size figure matches United States, USD, 2024 or earlier; bottom_up: no inputs",
+        "5 source(s) failed",
+        "7 source(s) skipped"
+      ],
+      "duration_seconds": 12.7,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "blocked": 1,
+        "fetched": 3,
+        "failed": 5,
+        "irrelevant": 1,
+        "duplicate": 1,
+        "skipped": 7
+      },
+      "sources_tried": 11,
+      "sources_used": 3,
+      "retrieval_rate": 0.27,
+      "domains": 3,
+      "questions": 8,
+      "questions_answered": 1,
+      "evidence": 2,
+      "duplicate_excerpts": 0,
+      "contradictions": 0,
+      "metrics": 0,
+      "competitor_pages": {
+        "tried": 0,
+        "fetched": 0,
+        "rendered": 0
+      },
+      "price_points": 0,
+      "gates": {
+        "provenance": {
+          "checked": 2,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "citations": {
+          "checked": 3,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 2,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "sizing": {
+        "target_scope": "United States, USD, 2024 or earlier",
+        "results": [],
+        "excluded": [],
+        "insufficient": [
+          "top_down: no inputs, and no collected market-size figure matches United States, USD, 2024 or earlier",
+          "bottom_up: no inputs"
+        ],
+        "cross_check": null
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        }
+      ],
+      "wall_seconds": 13.3,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "prod-invoicing-freelancers",
+      "mode": "product",
+      "status": "partial",
+      "status_reasons": [
+        "coverage: 1 of 7 research question(s) have no evidence: How large is the category, and how fast is it growing?",
+        "1 source(s) failed",
+        "14 source(s) skipped"
+      ],
+      "duration_seconds": 13.1,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 5,
+        "irrelevant": 4,
+        "failed": 1,
+        "skipped": 14
+      },
+      "sources_tried": 10,
+      "sources_used": 5,
+      "retrieval_rate": 0.5,
+      "domains": 3,
+      "questions": 7,
+      "questions_answered": 6,
+      "evidence": 34,
+      "duplicate_excerpts": 2,
+      "contradictions": 0,
+      "metrics": 0,
+      "competitor_pages": {
+        "tried": 4,
+        "fetched": 4,
+        "rendered": 0
+      },
+      "price_points": 12,
+      "gates": {
+        "provenance": {
+          "checked": 34,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "citations": {
+          "checked": 71,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 12,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 38,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        },
+        {
+          "name": "min_competitor_pages_fetched",
+          "ok": true,
+          "detail": 4
+        }
+      ],
+      "wall_seconds": 13.6,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "prod-email-marketing-ecommerce",
+      "mode": "product",
+      "status": "partial",
+      "status_reasons": [
+        "6 source(s) failed",
+        "12 source(s) skipped"
+      ],
+      "duration_seconds": 16.7,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "fetched": 7,
+        "failed": 6,
+        "duplicate": 1,
+        "blocked": 1,
+        "skipped": 12
+      },
+      "sources_tried": 15,
+      "sources_used": 7,
+      "retrieval_rate": 0.47,
+      "domains": 7,
+      "questions": 7,
+      "questions_answered": 7,
+      "evidence": 210,
+      "duplicate_excerpts": 0,
+      "contradictions": 0,
+      "metrics": 4,
+      "competitor_pages": {
+        "tried": 5,
+        "fetched": 2,
+        "rendered": 0
+      },
+      "price_points": 15,
+      "gates": {
+        "provenance": {
+          "checked": 210,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "citations": {
+          "checked": 146,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 20,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 4,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 0,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 79,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        },
+        {
+          "name": "min_competitor_pages_fetched",
+          "ok": true,
+          "detail": 2
+        }
+      ],
+      "wall_seconds": 17.3,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    },
+    {
+      "case": "sizing-crm-india-msme",
+      "mode": "industry",
+      "status": "partial",
+      "status_reasons": [
+        "coverage: 1 of 8 research question(s) have no evidence: What does the industry include and exclude?",
+        "3 source(s) failed",
+        "11 source(s) skipped"
+      ],
+      "duration_seconds": 14.6,
+      "queries_sent": 4,
+      "queries_failed": 0,
+      "sources": {
+        "failed": 3,
+        "fetched": 6,
+        "skipped": 11
+      },
+      "sources_tried": 9,
+      "sources_used": 6,
+      "retrieval_rate": 0.67,
+      "domains": 6,
+      "questions": 8,
+      "questions_answered": 7,
+      "evidence": 111,
+      "duplicate_excerpts": 0,
+      "contradictions": 0,
+      "metrics": 15,
+      "competitor_pages": {
+        "tried": 0,
+        "fetched": 0,
+        "rendered": 0
+      },
+      "price_points": 0,
+      "gates": {
+        "provenance": {
+          "checked": 111,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "citations": {
+          "checked": 118,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "numeric": {
+          "checked": 8,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "scope": {
+          "checked": 16,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "sizing_math": {
+          "checked": 18,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "unsupported": {
+          "checked": 69,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        },
+        "status": {
+          "checked": 1,
+          "failed": 0,
+          "pass": true,
+          "examples": []
+        }
+      },
+      "gates_passed": true,
+      "sizing": {
+        "target_scope": "India, USD, 2025 or earlier",
+        "results": [
+          {
+            "method": "top_down",
+            "tam": 1280000000.0,
+            "sam": null,
+            "som": null,
+            "verified": false
+          },
+          {
+            "method": "bottom_up",
+            "tam": 15213120000.0,
+            "sam": 760656000.0,
+            "som": 7606560.0,
+            "verified": false
+          }
+        ],
+        "excluded": [
+          {
+            "figure": "USD 1.41 billion for 2026 (India)",
+            "evidence_ids": [
+              "ev_32b50745f141"
+            ],
+            "reason": "for 2026, after the sizing year 2025"
+          },
+          {
+            "figure": "USD 83 billion for 2025 (Global)",
+            "evidence_ids": [
+              "ev_0a7d2f024333"
+            ],
+            "reason": "geography Global, not India"
+          },
+          {
+            "figure": "USD 2.31 billion for 2024 (India)",
+            "evidence_ids": [
+              "ev_f0b198487f30"
+            ],
+            "reason": "not selected: the 2025 figure stating India was used"
+          },
+          {
+            "figure": "USD 2.58 billion for 2025 (geography not stated)",
+            "evidence_ids": [
+              "ev_d71c2fd737a9"
+            ],
+            "reason": "geography not stated: it may be global or another region than India"
+          }
+        ],
+        "insufficient": [],
+        "cross_check": "top-down and bottom-up TAM differ by 11.9x: the market definitions or inputs disagree; review before use"
+      },
+      "expectations": [
+        {
+          "name": "status_in",
+          "ok": true,
+          "detail": "partial"
+        },
+        {
+          "name": "bottom_up.low",
+          "ok": true,
+          "detail": "[3803280000.0, 114098400.0, 570492.0] vs [3803280000.0, 114098400.0, 570492.0]"
+        },
+        {
+          "name": "bottom_up.base",
+          "ok": true,
+          "detail": "[15213120000.0, 760656000.0, 7606560.0] vs [15213120000.0, 760656000.0, 7606560.0]"
+        },
+        {
+          "name": "bottom_up.high",
+          "ok": true,
+          "detail": "[34229520000.0, 2738361600.0, 54767232.0] vs [34229520000.0, 2738361600.0, 54767232.0]"
+        }
+      ],
+      "wall_seconds": 15.1,
+      "search_cost_usd": "unknown (set cost.search_query_usd)"
+    }
+  ],
+  "gates_passed": true
+}

@@ -1,0 +1,8 @@
+{"code": "4b91711 (rank + tier)", "scenario": "html estimate vs long contextual PDF", "total": null, "collected": ["observatory.europa.eu*"], "useful": 1, "without_evidence": 0}
+{"code": "4b91711 (rank + tier)", "scenario": "irrelevant high-ranked pages", "total": null, "collected": ["stats.gov"], "useful": 0, "without_evidence": 1}
+{"code": "4b91711 (rank + tier)", "scenario": "failed top source, then an alternative", "total": 13800000000.0, "collected": ["research.example.com", "advisory.example.org*"], "useful": 1, "without_evidence": 1}
+{"code": "4b91711 (rank + tier)", "scenario": "PDFs competing for a slot", "total": null, "collected": ["y.europa.eu*", "z.europa.eu"], "useful": 1, "without_evidence": 1}
+{"code": "this milestone (selection)", "scenario": "html estimate vs long contextual PDF", "total": 13800000000.0, "collected": ["advisory.example.com*"], "useful": 1, "without_evidence": 0}
+{"code": "this milestone (selection)", "scenario": "irrelevant high-ranked pages", "total": 13800000000.0, "collected": ["advisory.example.com*"], "useful": 1, "without_evidence": 0}
+{"code": "this milestone (selection)", "scenario": "failed top source, then an alternative", "total": 13800000000.0, "collected": ["research.example.com", "advisory.example.org*"], "useful": 1, "without_evidence": 1}
+{"code": "this milestone (selection)", "scenario": "PDFs competing for a slot", "total": 13800000000.0, "collected": ["x.europa.eu*", "y.europa.eu*"], "useful": 2, "without_evidence": 0}

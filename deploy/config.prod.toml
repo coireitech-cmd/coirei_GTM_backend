@@ -1,0 +1,58 @@
+# Production overlay: copy next to the base config as config.prod.toml and run
+# with GTM_ENV=prod. Values here override config.toml; environment variables
+# override both.
+#
+# NO SECRETS IN THIS FILE. Set them in the environment (secret manager ->
+# container env), never here:
+#   GTM__DATABASE__URL                 PostgreSQL URL with credentials
+#   GTM__API__TOKEN                    API bearer token (GTM__API__PREVIOUS_TOKEN while rotating)
+#   GTM__SEARCH__API_KEY               Exa key (search is off while it is empty)
+#   GTM__IDENTITY__USER_AGENT_CONTACT  where site operators reach us (not secret, but required)
+# The prod profile refuses to start without the token, the contact, a
+# non-development database URL and a statement timeout, or with DEBUG logging.
+#
+# Budgets are deliberately conservative for the first rollout (Appendix B
+# phase 18: "conservative initial budgets"). Raise them one at a time, only
+# when dashboards (deploy/grafana) and cost reports show headroom; record why.
+# Defaults are in config.example.toml.
+
+[logging]
+level = "INFO"                   # DEBUG is refused: it may log page content
+
+[database]
+# The worker uses crawl.concurrency + 2 connections; keep the pool just above.
+pool_size = 6
+max_overflow = 2
+statement_timeout_ms = 30000     # required (> 0) by the profile
+lock_timeout_ms = 10000
+
+[fetch]
+# Public addresses only. Never add private ranges here in production.
+allowed_networks = []
+
+[crawl]
+max_pages = 200                  # default 1000; pages per company-site crawl
+max_duration_seconds = 1800      # default 3600; wall-clock cap per crawl
+concurrency = 4                  # default 8; in-flight fetches per crawl
+per_host_concurrency = 1         # default 2; be gentle with each host
+min_delay_seconds = 1.0          # default 0.5; robots.txt Crawl-delay can raise it
+max_bytes = 104857600            # default 500 MiB; downloaded bytes per crawl (100 MiB)
+
+[browser]
+max_renders = 20                 # default 100; Chromium renders per crawl (the costly part)
+concurrency = 1                  # default 2; one Chromium page at a time per worker
+
+[search]
+max_queries_per_crawl = 5        # default 10; paid Exa queries per crawl
+
+[external]
+max_search_pages = 10            # default 20; third-party pages from search results
+max_reference_pages = 5          # default 10; profile pages on reference domains
+max_competitor_crawls = 2        # default 5; competitor sites crawled per job
+competitor_max_pages = 15        # default 30; pages per competitor crawl
+
+[worker]
+max_job_attempts = 3             # default 5; a job that keeps killing workers fails sooner
+
+[api]
+max_queued_jobs = 50             # default 1000; backpressure (429) beyond this backlog

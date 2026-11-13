@@ -537,7 +537,8 @@ def build_business_profile(
     with engine.connect() as conn:
         job = conn.execute(
             select(CrawlJob.id, CrawlJob.status)
-            .where(CrawlJob.organization_id == organization_id)
+            # A discovery job reads the profile; it does not change it.
+            .where(CrawlJob.organization_id == organization_id, CrawlJob.kind != "discovery")
             .order_by(CrawlJob.id.desc())
             .limit(1)
         ).first()

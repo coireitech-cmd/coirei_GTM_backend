@@ -64,6 +64,7 @@ from .db.evidence import EvidenceStore
 from .db.migrate import known_revisions, migration_head
 from .db.models import Crawl, CrawlJob, Organization, Product
 from .deadletter import DeadLetterError, DeadLetters
+from .discovery import ReviewRequest, competitors_view, save_review
 from .documents import DocumentError, ingest_document
 from .domain import FINAL_JOB_STATES
 from .dossier import DOSSIER_FIELDS, build_dossier, clean_dossier
@@ -119,6 +120,8 @@ API_TAGS = [
     {"name": "Companies", "description": "Results for a crawled company."},
     {"name": "Onboarding", "description": "Company documents, the onboarding view to verify "
                                          "and the user's verification."},
+    {"name": "Competitors", "description": "Competitor discovery from the business profile "
+                                          "and the user's review of what it found."},
     {"name": "Dead letters", "description": "URLs and jobs that failed for good, to inspect, "
                                             "requeue or discard."},
     {"name": "Market research", "description": "Industry and product market research runs, "
@@ -434,8 +437,9 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         if known is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, f"no company {company_id}")
 
-    def refresh(company_id: int) -> Any:
-        """Queue a refresh of the company's profile (or return its unfinished job)."""
+    def refresh(company_id: int, kind: str = "refresh") -> Any:
+        """Queue a refresh of the company's profile, or a discovery of its competitors (or
+        return its unfinished job)."""
         with engine.connect() as conn:
             root = conn.execute(
                 select(CrawlJob.root_url).where(CrawlJob.organization_id == company_id)
@@ -443,7 +447,7 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
             ).scalar() or "https://{}/".format(conn.execute(
                 select(Organization.registrable_domain).where(Organization.id == company_id)
             ).scalar())  # fmt: skip
-        job, _ = jobs.create(root, settings.urls, kind="refresh", trace=traceparent())
+        job, _ = jobs.create(root, settings.urls, kind=kind, trace=traceparent())
         return job
 
     @app.post(
@@ -461,6 +465,64 @@ def create_app(settings: Settings, engine: Engine) -> FastAPI:
         with `GET /v1/crawls/{crawl_id}` (`kind`: `refresh`, `stage`)."""
         company(company_id)
         return view(refresh(company_id).id)
+
+    @app.post(
+        "/v1/companies/{company_id}/competitors/discover",
+        dependencies=guarded,
+        tags=["Competitors"],
+        summary="Discover the company's competitors",
+        status_code=status.HTTP_202_ACCEPTED,
+        responses=NO_COMPANY,
+    )
+    def post_discover(company_id: int) -> dict[str, Any]:
+        """Queue a job that searches for the companies competing for the same customers
+        and spending, from the company's Business Intelligence Profile (the user's
+        confirmed values first): direct, indirect, substitute and emerging competitors,
+        each read from its own pages, classified and ranked. Start it once the user has
+        confirmed the profile; `unconfirmed` in the results lists what it relied on that
+        was not confirmed. If the company already has an unfinished job, that job is
+        returned. Follow it with `GET /v1/crawls/{crawl_id}` (`kind`: `discovery`,
+        `stage`), then `GET /v1/companies/{company_id}/competitors`."""
+        company(company_id)
+        return view(refresh(company_id, "discovery").id)
+
+    @app.get(
+        "/v1/companies/{company_id}/competitors",
+        dependencies=guarded,
+        tags=["Competitors"],
+        summary="The competitors discovered, with the user's review",
+        responses=NO_COMPANY,
+    )
+    def get_competitors(company_id: int) -> Any:
+        """The latest completed discovery's competitors by `class` (direct, indirect,
+        substitute, emerging), best `score` (0..1) first, each with its `basis`
+        (`named_by_source`: a source named it; `inferred_overlap`: the model judged the
+        overlap; `user_added`), `reasoning`, `profile` (what it sells, positioning,
+        pricing and target customers, each cited from its own pages; and the overlap on
+        buyers, problem and budget; every value with its `citations`), `found_by` (the
+        queries and pages) and `review` (suggested, approved, rejected, user_added).
+        `job` is the latest discovery job, perhaps still running."""
+        company(company_id)
+        return jsonable_encoder(competitors_view(engine, company_id))
+
+    @app.put(
+        "/v1/companies/{company_id}/competitors",
+        dependencies=guarded,
+        tags=["Competitors"],
+        summary="Record the user's review of the competitors",
+        responses={**NO_COMPANY, 422: {"description": "Not a domain; or no name or class."}},
+    )
+    def put_competitors(company_id: int, body: ReviewRequest) -> Any:
+        """Review by `domain`: `approve` or `reject` a competitor found; `add` one
+        research missed (`name` required, `class` optional); `reclassify` one (`class`
+        required). Every review is kept and the latest per domain wins. A rejected
+        domain is left out of later discoveries; an added one is always in them."""
+        company(company_id)
+        try:
+            save_review(engine, company_id, body)
+        except ValueError as exc:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
+        return jsonable_encoder(competitors_view(engine, company_id))
 
     @app.get("/v1/companies/{company_id}/dossier", dependencies=guarded, tags=["Companies"],
              summary="Get a company's dossier", responses=NO_COMPANY)  # fmt: skip

@@ -463,6 +463,26 @@ class ExternalSettings:
 
 
 @dataclass(frozen=True)
+class DiscoverySettings:
+    """Competitor discovery from the confirmed business profile (``discovery.py``,
+    approved 2026-11-13): hypothesis searches, then single public pages (no link
+    following), each candidate read from at most ``pages_per_candidate`` of its own pages."""
+
+    max_queries: int = 40
+    # Result pages read for names (lists, reviews, comparisons).
+    max_listing_pages: int = 30
+    max_candidates: int = 15  # profiled and classified
+    pages_per_candidate: int = 4
+    # Below this a candidate is not shown (score: discovery._score, 0..1).
+    min_score: float = 0.35
+    # Emerging-competitor searches only see pages published within this many days.
+    emerging_days: int = 540
+
+    def __post_init__(self) -> None:
+        _require_positive(self, "discovery", allow_zero=("min_score",))
+
+
+@dataclass(frozen=True)
 class BrowserSettings:
     """Headless Chromium fallback for pages whose HTML carries no usable content."""
 
@@ -775,6 +795,7 @@ class Settings:
     sources: SourceSettings = field(default_factory=SourceSettings)
     search: SearchSettings = field(default_factory=SearchSettings)
     external: ExternalSettings = field(default_factory=ExternalSettings)
+    discovery: DiscoverySettings = field(default_factory=DiscoverySettings)
     assessment: AssessmentSettings = field(default_factory=AssessmentSettings)
     worker: WorkerSettings = field(default_factory=WorkerSettings)
     api: ApiSettings = field(default_factory=ApiSettings)

@@ -53,6 +53,7 @@ from .db.models import (
     Url,
     is_current,
 )
+from .discovery import discover
 from .domain import JobState
 from .dossier import build_dossier
 from .extract import extract_crawl
@@ -123,7 +124,7 @@ class JobUnavailable(Exception):
 def job_result(out: dict[str, Any]) -> dict[str, Any]:
     """What is kept on the job row: everything but bulky per-crawl statistics."""
     keep = ("crawl_id", "organization_id", "status", "job_status", "extraction", "assessment",
-            "cost", "quality")  # fmt: skip
+            "cost", "quality", "discovery")  # fmt: skip
     competitors = [{k: v for k, v in c.items() if k not in ("extraction",)}
                    for c in out.get("competitors", [])]  # fmt: skip
     return {**{k: out[k] for k in keep if k in out}, "competitors": competitors}
@@ -183,6 +184,10 @@ async def _run_job(
 
     if getattr(job, "kind", "crawl") == "refresh":
         return await _refresh(engine, settings, job, owner, stage, stop)
+    if getattr(job, "kind", "crawl") == "discovery":
+        found = await discover(engine, settings, job, owner, stage, stop, transport,
+                               search_transport)  # fmt: skip
+        return await _with_quality(engine, job.id, found)
     first_party: dict[str, Any] = {}
 
     def gaps(crawl_id: int, organization_id: int) -> set[str]:

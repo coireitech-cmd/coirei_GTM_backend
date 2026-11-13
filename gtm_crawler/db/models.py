@@ -51,8 +51,11 @@ EVIDENCE_ROLES = ("supports", "qualifies", "contradicts", "superseded")
 CRAWL_STATUSES = ("running", "paused", "completed", "partial", "failed")
 # Spec sections 5 and 8; see domain.py for their meaning and transitions.
 JOB_STATUSES = tuple(s.value for s in JobState)
-# A crawl fetches; a refresh re-reads stored evidence (new documents, new prompts).
-JOB_KINDS = ("crawl", "refresh")
+# A crawl fetches; a refresh re-reads stored evidence (new documents, new prompts); a
+# discovery searches for the company's competitors (discovery.py).
+JOB_KINDS = ("crawl", "refresh", "discovery")
+COMPETITOR_CLASSES = ("direct", "indirect", "substitute", "emerging")
+COMPETITOR_BASES = ("named_by_source", "inferred_overlap", "user_added")
 ACTIVE_JOB_STATUSES = tuple(s.value for s in JobState if s not in FINAL_JOB_STATES)
 CRAWL_URL_STATES = tuple(s.value for s in UrlState)
 CRAWL_EVENT_ENTITIES = ("job", "crawl", "url")
@@ -942,6 +945,36 @@ class CompanyVerification(Base):
     value: Mapped[Any] = mapped_column(JSONB(none_as_null=True), nullable=True)
     actor: Mapped[str | None] = mapped_column(Text, nullable=True)
     verified_at: Mapped[datetime] = _created_at()
+
+
+class CompetitorCandidate(Base):
+    """A competitor one discovery job found for a company (``discovery.py``): how it
+    competes (``class``), how strongly (``score``), why, and what it sells, each part
+    citing the pages it rests on. The latest finished discovery job's rows are the
+    company's list; the user's review of them is ``company_verification`` (field
+    ``discovered_competitor``, item key the domain)."""
+
+    __tablename__ = "competitor_candidate"
+    __table_args__ = (
+        CheckConstraint(_in("class", COMPETITOR_CLASSES), name="class"),
+        CheckConstraint(_in("basis", COMPETITOR_BASES), name="basis"),
+        UniqueConstraint("job_id", "domain"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"), index=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("crawl_job.id"), index=True)
+    name: Mapped[str] = mapped_column(Text)
+    domain: Mapped[str] = mapped_column(Text)
+    class_: Mapped[str] = mapped_column("class", Text)
+    score: Mapped[float] = mapped_column(Float)
+    basis: Mapped[str] = mapped_column(Text)
+    reasoning: Mapped[str | None] = mapped_column(Text)
+    # offerings, positioning, pricing, target customers, overlap: {value, citations}.
+    profile: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    # The hypotheses, queries and pages that found it.
+    found_by: Mapped[list[Any]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = _created_at()
 
 
 class LlmPageResult(Base):

@@ -92,6 +92,7 @@ class SearchProvider(Protocol):
         num_results: int,
         include_domains: tuple[str, ...] = (),
         exclude_domains: tuple[str, ...] = (),
+        start_published: str | None = None,
     ) -> list[SearchResult]: ...
 
     async def aclose(self) -> None: ...
@@ -222,8 +223,11 @@ class ExaSearch:
         num_results: int,
         include_domains: tuple[str, ...] = (),
         exclude_domains: tuple[str, ...] = (),
+        start_published: str | None = None,
     ) -> list[SearchResult]:
         body: dict[str, object] = {"query": query, "numResults": num_results}
+        if start_published:  # an ISO date: only pages published after it
+            body["startPublishedDate"] = start_published
         if include_domains:
             body["includeDomains"] = list(include_domains)
         elif exclude_domains:  # an include list already limits the domains
@@ -300,6 +304,7 @@ class FailoverSearch:
         num_results: int,
         include_domains: tuple[str, ...] = (),
         exclude_domains: tuple[str, ...] = (),
+        start_published: str | None = None,
     ) -> tuple[str, list[SearchResult]]:
         """(provider that answered, its results). Raises ``SearchError`` naming
         every provider's failure (or open circuit) if none answered."""
@@ -311,8 +316,10 @@ class FailoverSearch:
                 SEARCH_REQUESTS.labels(provider.name, "circuit_open").inc()
                 continue
             try:
+                # Only a dated search passes the date: providers need not take it.
+                dated = {"start_published": start_published} if start_published else {}
                 results = await provider.search(
-                    query, num_results, include_domains, exclude_domains
+                    query, num_results, include_domains, exclude_domains, **dated
                 )
             except SearchError as exc:
                 self.breaker.record(provider.name, ok=False)

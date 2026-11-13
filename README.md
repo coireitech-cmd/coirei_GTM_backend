@@ -830,6 +830,59 @@ own site is then crawled (up to `max_competitor_crawls` competitors,
 and extracted, so competitor-analysis fields come from the competitor's own
 first-party pages.
 
+### Competitor discovery from the business profile
+
+Once the user has confirmed the Business Intelligence Profile, a `discovery`
+job (`POST /v1/companies/{id}/competitors/discover`, `discovery.py`) looks for
+the companies that compete for the same customers and spending, not just the
+same industry. The rule above (explicit evidence only) stays for the crawl's
+own competitor list; discovery relaxes it, as approved on 2026-11-13, and says
+for every result whether a source named it (`named_by_source`) or the model
+inferred the overlap (`inferred_overlap`). The user's review is the final gate.
+
+1. **Hypotheses.** The profile's offerings, problems solved, buyers and
+   positioning (the user's answers first) become search hypotheses: the
+   category buyers search for, their problems, segments, keywords and the
+   alternatives they use instead, by product name where there is one
+   (`discovery-hyp-2`).
+2. **Search**, in parallel, one family per kind of competitor: direct (name,
+   category), indirect (problem for segment), substitute (alternative vs
+   category), emerging (pages published in the last `emerging_days`) and review
+   sites and marketplaces (G2, Capterra, Product Hunt, LinkedIn, app stores).
+3. **Candidates.** A company's own page is a candidate; a review-site or
+   LinkedIn profile names one (LinkedIn's website line through the search
+   provider's copy); a list or comparison page is read by the model for the
+   companies it presents (`discovery-list-1`, each name must appear on the
+   page). An alternative the profile names as a product ("LinkedIn Sales
+   Navigator") is a substitute candidate, always read. Directories, media, the
+   company itself, its customers and investors are never candidates (LinkedIn
+   and Zapier are, for their own products), nor a domain the user rejected; one
+   the user added is always in.
+4. **Profile and classify.** The strongest `max_candidates` (each search
+   family's best two among them) are read from up
+   to `pages_per_candidate` of their own pages (home, pricing, about, product),
+   single pages fetched under robots.txt, the network guard and the throttle,
+   links never followed. The model (`discovery-judge-3`, not told the
+   company's own prices) says what each sells, to whom, at what price, whether
+   it serves the same buyers, problem and budget, and its class: `direct`,
+   `indirect`, `substitute`, `emerging` (or not a competitor: dropped); with no
+   class, it is asked once more on less evidence. Every value cites the page
+   lines it rests on; what it sells, its positioning, price and customers keep
+   only lines from its own pages (a rival list describes other vendors too),
+   and a price must name an amount or a way of charging. One whose own pages
+   say it was founded in or after the year `emerging_days` ago is `emerging`.
+5. **Rank** by overlap, basis and independent sources (0..1, below
+   `min_score` dropped) and store (`competitor_candidate`).
+
+`GET /v1/companies/{id}/competitors` lists the latest completed run by class
+with each result's review; `PUT` records the review per domain (`approve`,
+`reject`, `add` with a name, `reclassify` with a class), kept append-only in
+`company_verification` (field `discovered_competitor`). A discovery job never
+marks the profile as being extracted. Budgets: `[discovery]` in the config
+(`max_queries` 40, `max_listing_pages` 30, `max_candidates` 15,
+`pages_per_candidate` 4). `scripts/competitor_report.py` renders the results
+as an HTML or PDF review report.
+
 ## Parsing
 
 `gtm_crawler.parse.parse_page` turns an HTML body into a `ParsedPage`:

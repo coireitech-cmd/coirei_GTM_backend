@@ -78,9 +78,9 @@ from .urls import InvalidUrl, registrable_domain, url_host
 
 log = logging.getLogger(__name__)
 
-HYP_VERSION = "discovery-hyp-2"
+HYP_VERSION = "discovery-hyp-3"
 LIST_VERSION = "discovery-list-1"
-JUDGE_VERSION = "discovery-judge-3"
+JUDGE_VERSION = "discovery-judge-9"
 STAGES = ("hypotheses", "search", "extract", "profile", "classify", "done")
 # The user's review: company_verification rows of this section and field, keyed by domain.
 REVIEW_SECTION, REVIEW_FIELD = "competitors", "discovered_competitor"
@@ -91,6 +91,16 @@ REVIEW_SITES = ("g2.com", "capterra.com", "getapp.com", "trustradius.com", "prod
                 "alternativeto.net", "linkedin.com", "apps.shopify.com",
                 "appexchange.salesforce.com", "marketplace.atlassian.com",
                 "ecosystem.hubspot.com")  # fmt: skip
+# Where young companies announce themselves: a launch page there, found by the searches
+# for recent pages, makes a candidate emerging.
+LAUNCH_SITES = ("ycombinator.com", "producthunt.com", "betalist.com")
+# Where buyers compare other kinds of business (public pages); a maker of goods has none.
+LISTING_SITES = {"software": REVIEW_SITES,
+                 "service": ("clutch.co", "goodfirms.co", "justdial.com", "sulekha.com",
+                             "yelp.com"),
+                 "local_business": ("yelp.com", "tripadvisor.com", "justdial.com",
+                                    "yellowpages.com"),
+                 "physical_product": ()}  # fmt: skip
 # Sites that list, review, report on or host companies: never a competitor themselves
 # (registrable domains; a marketplace on a vendor's domain, like apps.shopify.com, is not
 # here, since its vendor may well be a competitor).
@@ -105,7 +115,9 @@ DIRECTORY_DOMAINS = ("g2.com", "capterra.com", "getapp.com", "trustradius.com",
                      "zapier.com", "github.com", "news.ycombinator.com", "ycombinator.com",
                      "tracxn.com", "owler.com", "craft.co", "comparably.com",
                      "trustpilot.com", "bloomberg.com", "reuters.com",
-                     "wordpress.com", "blogspot.com", "google.com", "apple.com")  # fmt: skip
+                     "wordpress.com", "blogspot.com", "google.com", "apple.com",
+                     "clutch.co", "goodfirms.co", "justdial.com", "sulekha.com", "yelp.com",
+                     "tripadvisor.com", "yellowpages.com", "betalist.com")  # fmt: skip
 # Sites never read as a company's own (their pages list or profile others), whose own
 # product is still one a buyer may use instead (Sales Navigator, Zaps).
 ALSO_PRODUCTS = ("linkedin.com", "zapier.com")
@@ -228,24 +240,35 @@ def _numbered(lines: Sequence[str], refs: Sequence[dict[str, Any]] | None = None
 HYP_SCHEMA: dict[str, Any] = {
     "reasoning": _R,
     "categories": [_S], "problems": [_S], "segments": [_G], "keywords": [_S],
-    "alternatives": [_S],
+    "rivals": [_S], "alternatives": [_S],
+    "kind": _enum(*LISTING_SITES), "where": _S,
 }  # fmt: skip
 HYP_SYSTEM = _part_system(
     "You plan the search for one company's competitors: the companies its buyers could "
     "spend the same budget on instead.",
     HYP_SCHEMA,
-    """Write "reasoning" first: two or three sentences, each ending with ids, on who buys
-from the company and what they would otherwise buy. Then, each at most five, in the words
-a buyer types into a search engine:
+    """Write "reasoning" first: two or three sentences, each ending with ids, on what buyers
+pay the company for, who they are and what they would otherwise buy. Then:
+- kind: what buyers pay for. "software": a product they log into and use themselves
+  (apps, SaaS, platforms). "service": people who do the work or teach (agencies,
+  consultants, courses, training institutes, professional services). "local_business":
+  a place buyers visit (a shop, bakery, restaurant, clinic, gym). "physical_product":
+  goods it makes and ships (a brand of shoes, food, devices).
+- where: the city, region or country its buyers are in, when it serves one place (a
+  local business, a regional service); leave it out when it sells everywhere.
+Each of these at most five, in the words a buyer types into a search engine:
 - categories: what buyers call this kind of product or service ("data enrichment
-  software", "wedding photographer"), not the company's slogan.
+  software", "wedding photographer", "sourdough bakery"), not the company's slogan.
 - problems: what the buyer wants done, starting with a verb ("find verified emails for
-  leads", "plan a wedding menu").
-- segments: the buyers, specifically ("B2B sales teams", "real estate developers").
+  leads", "plan a wedding menu", "learn Python for a job").
+- segments: the buyers, specifically ("B2B sales teams", "engaged couples",
+  "college graduates").
 - keywords: other search terms for the same need.
-- alternatives: other ways buyers get the job done that are not this kind of product: a
-  type of agency or freelancer, an in-house team, spreadsheets, a different kind of tool;
-  by the name of a well-known product where buyers use one ("Excel", "Upwork").""",
+- rivals: well-known companies of the same kind its buyers compare it with, by name.
+- alternatives: other ways these buyers get the same job done that are not this kind of
+  business, by the name of a well-known product or place where they use one: for
+  software, an agency, an in-house team or "Excel"; for a course, "YouTube tutorials" or
+  a degree; for a bakery, a supermarket or a café chain.""",
 )
 
 
@@ -258,19 +281,32 @@ class Query:
     since: str | None = None  # an ISO date: only pages published after it
 
 
+_NOWHERE = re.compile(r"(?:the\s+)?(?:global(?:ly)?|worldwide|international(?:ly)?|online|"
+                      r"everywhere|anywhere|world)", re.I)  # fmt: skip
+
+
 def hypotheses(subject: Subject, model: dict[str, Any] | None) -> dict[str, list[str]]:
     """The model's hypotheses (``HYP_SCHEMA``, cleaned) with the profile's own values first."""
     model = model or {}
     got = {k: texts([x.get("value") for x in model.get(k) or []]) for k in HYP_SCHEMA
-           if k != "reasoning"}  # fmt: skip
+           if isinstance(HYP_SCHEMA[k], list)}  # fmt: skip
     seeds = {"categories": subject.facts.get("industry", []),
              "problems": [p for o in subject.offerings for p in o["problems"]],
              "segments": [*subject.facts.get("target market", []),
                           *subject.facts.get("buyers", [])],
-             "keywords": [], "alternatives": []}  # fmt: skip
+             "keywords": [], "rivals": [], "alternatives": []}  # fmt: skip
     # The model's, in a buyer's words, before the profile's (often a site's headings).
-    return {k: list(dict.fromkeys(v for v in [*got[k], *seeds[k]] if len(v) <= 80))[:6]
-            for k in seeds}  # fmt: skip
+    out = {k: list(dict.fromkeys(v for v in [*got[k], *seeds[k]] if len(v) <= 80))[:6]
+           for k in seeds}  # fmt: skip
+    # A rival of the same kind (or one the crawl named) is not another way to get the job
+    # done: the small model lists the same names under both.
+    same = {_key(n) for n in [*out["rivals"], *(c["name"] for c in subject.known)]}
+    out["alternatives"] = [a for a in out["alternatives"] if _key(a) not in same]
+    # What kind of business, and where (one value each); software unless the model says.
+    out["kind"] = texts((model.get("kind") or {}).get("value")) or ["software"]
+    out["where"] = [w for w in texts((model.get("where") or {}).get("value"))[:1]
+                    if not _NOWHERE.fullmatch(w.strip())]  # fmt: skip
+    return out
 
 
 def build_queries(subject: Subject, hyp: dict[str, list[str]], max_queries: int,
@@ -279,26 +315,77 @@ def build_queries(subject: Subject, hyp: dict[str, list[str]], max_queries: int,
     every family; each query once."""
     cats, probs, segs = hyp["categories"], hyp["problems"], hyp["segments"]
     alts, keys = hyp["alternatives"], hyp["keywords"]
+    kind = (hyp.get("kind") or ["software"])[0]
+    # Where its buyers are, for a business that serves one place (the model leaves it out
+    # otherwise): a bakery's rivals are the bakeries in its city, not the best anywhere.
+    at = f" in {hyp['where'][0]}" if hyp.get("where") else ""
     products = [o["name"] for o in subject.offerings if o["name"] != subject.name][:2]
     since = (today - timedelta(days=emerging_days)).date().isoformat()
     cat = cats[0] if cats else (keys[0] if keys else None)
+    sites = LISTING_SITES.get(kind, REVIEW_SITES)
+    if kind == "software":
+        direct = [
+            Query("direct", f"direct:{t}", q)
+            for t, q in competitor_queries([subject.name], products, cats[:2])
+        ]
+        how = [Query("indirect", "indirect:tools to {problem}", f"tools to {p}") for p in probs[:3]]
+        new = [
+            Query("emerging", "emerging:new {category} startups", f"new {c} startups", since=since)
+            for c in [*cats[:2], *keys[:1]]
+        ]
+        new += [
+            Query("emerging", "emerging:AI {problem}", f"AI tool to {p}", since=since)
+            for p in probs[:2]
+        ]
+        # Where young software companies announce themselves.
+        new += [Query("emerging", "emerging:{category} launch", f"{c} launch", LAUNCH_SITES, since)
+                for c in cats[:2]]  # fmt: skip
+    else:  # not "software", "apps like", "migrate from": no buyer of bread types those
+        n = subject.name
+        likes = {"physical_product": ('brands like "{name}"', '"{name}" dupe'),
+                 "local_business": ('places like "{name}"', '"{name}" or'),
+                 "service": ('companies like "{name}"', '"{name}" reviews')}  # fmt: skip
+        like = likes.get(kind, ())
+        direct = [
+            Query("direct", f"direct:{t}", t.replace("{name}", n))
+            for t in (
+                '"{name}" competitors',
+                '"{name}" alternatives',
+                '"{name}" vs',
+                'similar to "{name}"',
+                *like,
+            )  # fmt: skip
+        ]
+        # What a buyer of this kind of business searches: "top sneaker brands", "IT
+        # training institutes in Chennai", "sourdough bakery in San Francisco".
+        noun = {"physical_product": " brands", "service": " companies"}.get(kind, "")
+        terms = list(dict.fromkeys([*cats[:3], *keys[:2]]))
+        direct += [Query("direct", "direct:best {category}{where}", f"best {c}{at}") for c in terms]
+        direct += [Query("direct", "direct:top {category} {noun}{where}", f"top {c}{noun}{at}")
+                   for c in terms if noun]  # fmt: skip
+        direct += [Query("direct", "direct:top rated {category}{where}", f"top rated {c}{at}")
+                   for c in terms]  # fmt: skip
+        how = [Query("indirect", "indirect:{problem}{where}", f"{p}{at}") for p in probs[:3]]
+        # A shop opens; a brand or a firm launches.
+        opens = "opening" if kind == "local_business" else "launch"
+        new = [
+            Query("emerging", "emerging:new {category}{where}", f"new {c}{at}", since=since)
+            for c in terms
+        ] + [Query("emerging", f"emerging:{{category}} {opens}{{where}}", f"{c} {opens}{at}",
+                   since=since) for c in terms[:2]]  # fmt: skip
     families: list[list[Query]] = [
-        [Query("direct", f"direct:{t}", q)
-         for t, q in competitor_queries([subject.name], products, cats[:2])],
+        direct,
         [Query("indirect", "indirect:{problem} for {segment}", f"{p} for {s}")
-         for p in probs[:3] for s in segs[:2]]
-        + [Query("indirect", "indirect:tools to {problem}", f"tools to {p}") for p in probs[:3]],
+         for p in probs[:3] for s in segs[:2]] + how,
         [Query("substitute", "substitute:{alternative} vs {category}", f"{a} vs {cat}")
          for a in alts[:4] if cat]
         + [Query("substitute", "substitute:{alternative} for {problem}", f"{a} for {p}")
            for a in alts[:3] for p in probs[:1]],
-        [Query("emerging", "emerging:new {category} startups", f"new {c} startups", since=since)
-         for c in [*cats[:2], *keys[:1]]]
-        + [Query("emerging", "emerging:AI {problem}", f"AI tool to {p}", since=since)
-           for p in probs[:2]],
-        [Query("review", "review:{category}", c, REVIEW_SITES) for c in [*cats[:3], *keys[:2]]]
+        new,
+        [Query("review", "review:{category}", f"{c}{at}", sites)
+         for c in [*cats[:3], *keys[:2]] if sites]
         + [Query("review", "review:{name} alternatives", f"{subject.name} alternatives",
-                 REVIEW_SITES)],
+                 sites)] * bool(sites),
     ]  # fmt: skip
     out: list[Query] = []
     seen: set[str] = set()
@@ -367,8 +454,10 @@ def title_name(title: str | None) -> str | None:
     return name if 1 < len(name) <= 60 else None
 
 
+# A list, a comparison or news about a company ("/upriver-raises-seed", "/introducing-x").
 _LISTING_PATH = re.compile(r"blog|best|top-|vs|versus|alternative|competitor|compar|"
-                           r"list|guide|article|news", re.I)  # fmt: skip
+                           r"list|guide|article|news|raises|funding|launch|announc|"
+                           r"introduc|opening", re.I)  # fmt: skip
 
 
 def page_kind(url: str, blocked: Sequence[str]) -> Literal["home", "profile", "listing"]:
@@ -382,7 +471,11 @@ def page_kind(url: str, blocked: Sequence[str]) -> Literal["home", "profile", "l
         return "profile"
     if _listed(_domain(url), blocked) or _listed(url_host(url), REVIEW_SITES):
         return "listing"
-    return "home" if path.count("/") == 0 else "listing"
+    # An article ("/parker-lusseau-pastries-monterey", on a blog or a news site) reports
+    # on companies; a landing page ("/wholesale", "/space-hippie") is a company's.
+    article = len(re.findall(r"[a-z0-9]+", path, re.I)) >= 4 or \
+        url_host(url).split(".")[0] in ("blog", "news", "insights")  # fmt: skip
+    return "home" if path.count("/") == 0 and not article else "listing"
 
 
 def candidates_from_hits(hits: Iterable[Hit], subject: Subject,
@@ -443,7 +536,17 @@ def merge(cands: Iterable[Candidate], subject: Subject, blocked: Sequence[str],
             have.basis = c.basis
         if len(c.name) < len(have.name) and c.domain:  # "Apollo.io" over "Apollo.io Sales"
             have.name = c.name
-    return list(by.values())
+    moved = False
+    for c in by.values():
+        # Its own site, among the pages that found it, over a linked domain of the same
+        # name: a review site's link went through pipedrive.live, an affiliate short link.
+        label = _key((c.domain or "").split(".")[0])
+        hosts = {_domain(f["url"]) for f in c.found_by if f.get("url")}
+        same = sorted(h for h in hosts if h and h != c.domain and _key(h.split(".")[0]) == label)
+        if label and c.domain not in hosts and same:
+            c.domain, moved = same[0], True
+    # Once more when a domain moved: another candidate may already be on it.
+    return merge(by.values(), subject, blocked, rejected) if moved else list(by.values())
 
 
 _BASIS_WEIGHT = {"named_by_source": 1.0, "user_added": 1.0, "inferred_overlap": 0.5}
@@ -487,6 +590,12 @@ sources.""",
 )
 
 
+# A directory's section per company (distillintelligence.com/competitors/allbirds,
+# cbinsights.com/company/x/alternatives-competitors), not a vendor's own article.
+_DIRECTORY_PATH = re.compile(r"/(competitors?|alternatives?|compare|company|companies|"
+                             r"profiles?)/", re.I)  # fmt: skip
+
+
 def listing_candidates(
     answer: dict[str, Any] | None,
     hit: Hit,
@@ -503,8 +612,16 @@ def listing_candidates(
         name = (item.get("name") or {}).get("value")
         if not isinstance(name, str) or item.get("named_as") == "other":
             continue
-        # Not the publisher's own pages (its review of the product), nor the company.
-        domain = link_domain(name, links, {subject.domain, _domain(hit.url) or ""})
+        # Not the publisher's own pages (its review of the product), nor the company; but
+        # the publisher by its own name ("Orsa" on orsa.social's "Introducing Orsa"),
+        # never another company's domain a search for the name finds (orsa.se).
+        publisher = _domain(hit.url) or ""
+        itself = _key(name) == _key(publisher.split(".")[0])
+        if itself and _DIRECTORY_PATH.search(urlsplit(hit.url).path):
+            continue  # a directory's page on the company ("/competitors/acme") names itself
+        domain = link_domain(name, links, {subject.domain, publisher}) or (
+            publisher if itself else None
+        )
         quote = next((c["quote"] for c in item["name"].get("citations", []) if "quote" in c), "")
         basis = ("named_by_source" if item.get("named_as") == "alternative" and names_subject
                  else "inferred_overlap")  # fmt: skip
@@ -516,11 +633,14 @@ def listing_candidates(
 
 def link_domain(name: str, links: Sequence[tuple[str, str]], skip: set[str]) -> str | None:
     """The one domain a page links to for ``name`` (``links``: url, anchor text), other
-    than those in ``skip``."""
+    than those in ``skip``: its name's ("apollo.io"), or, linked by its name, one that
+    starts like it ("veja-store.com"); not an affiliate redirect (shareasale.com)."""
     slug, named = _key(name), name.casefold()
     found = {d for url, text in links
              if (d := _domain(url)) and d not in skip
-             and (text.strip().casefold() == named or d.split(".")[0] == slug)}  # fmt: skip
+             and ((label := _key(d.split(".")[0])) == slug
+                  or text.strip().casefold() == named and len(slug) > 1
+                  and (label.startswith(slug) or slug.startswith(label)))}  # fmt: skip
     return found.pop() if len(found) == 1 else None
 
 
@@ -528,19 +648,24 @@ def link_domain(name: str, links: Sequence[tuple[str, str]], skip: set[str]) -> 
 
 _LEVEL = ("yes", "partly", "no")
 JUDGE_SCHEMA: dict[str, Any] = {
+    # The verdict before the details: an answer cut short by its token budget (a long
+    # list of what it sells) lost the class, and with it the competitor.
     "reasoning": _R,
+    "class": _enum(*COMPETITOR_CLASSES, "not_competitor"),
+    "same_buyers": _enum(*_LEVEL), "same_problem": _enum(*_LEVEL),
+    "same_budget": _enum(*_LEVEL), "same_place": _enum(*_LEVEL),
     # Not "offerings": profile.clean wants a name in each of those (profile._REQUIRED).
     "sells": [_S], "positioning": _S, "pricing": _P, "target_customers": [_S],
-    "same_buyers": _enum(*_LEVEL), "same_problem": _enum(*_LEVEL),
-    "same_budget": _enum(*_LEVEL), "founded": _I,
-    "class": _enum(*COMPETITOR_CLASSES, "not_competitor"),
+    "founded": _I,
 }  # fmt: skip
 
 
 _OWN_PRICES = ("pricing", "pricing model")
+WHERE = "where its buyers are"  # the subject's fact for a business serving one place
 
 
 def judge_system(subject: Subject) -> str:
+    where = "; ".join(subject.facts.get(WHERE, [])) or "everywhere, online"
     about = "; ".join(
         [
             *(o["name"] for o in subject.offerings),
@@ -554,19 +679,26 @@ def judge_system(subject: Subject) -> str:
         JUDGE_SCHEMA,
         f"""The evidence is the other company's own pages and the pages that named it.
 Write "reasoning" first: two to four sentences, each ending with ids, on what it sells,
-to whom, and how that meets {subject.name}'s buyers. Then:
-- sells, positioning, pricing, target_customers: what this company's own pages (the lines
-  that start with "page") say of it, cited from those lines; never what a list says of
-  another company, never {subject.name}'s. Leave out what its pages do not say.
-- same_buyers, same_problem, same_budget: yes, partly or no, against {subject.name}.
-- founded: the year its own pages say it was founded or launched (not a copyright year);
-  leave it out when they do not say.
-- class: "direct" if it sells the same kind of product to the same buyers; "indirect" if
-  a different kind of product solves the same problem for them; "substitute" if it is
+to whom, and how that meets {subject.name}'s buyers. Then, in this order:
+- class: "direct" if it sells the same kind of product to the same buyers, the same
+  way; "indirect" if a different kind of product solves the same problem for them, or
+  the same kind is sold another way (online instead of in person, a national platform
+  instead of a local business, packaged in stores instead of made fresh, one feature of
+  a suite instead of the suite); "substitute" if it is
   another way to get the job done (a service, an agency, a general tool used instead);
   "emerging" if it is young or early (new, beta, waitlist, recently founded) and goes
   after the same buyers; "not_competitor" if it is a directory, media, a customer, a
-  partner whose product {subject.name} complements, or it serves other buyers.""",
+  partner whose product {subject.name} complements, or it serves other buyers (a business
+  serving one place, like a shop or a local service, in another city or country does).
+- same_buyers, same_problem, same_budget: yes, partly or no, against {subject.name}.
+- same_place: whether its buyers are where {subject.name}'s are ({where}): "yes", "partly"
+  (some are, or it also ships there), "no" (they are in another city, region or country).
+- sells, positioning, pricing, target_customers: what this company's own pages (the lines
+  that start with "page") say of it, cited from those lines, each short (sells: at most
+  five items); never what a list says of another company, never {subject.name}'s. Leave
+  out what its pages do not say.
+- founded: the year its own pages say it was founded or launched (not a copyright year);
+  leave it out when they do not say.""",
     )
 
 
@@ -585,10 +717,15 @@ def score(judged: dict[str, Any], c: Candidate) -> float:
 
 def judge_text(c: Candidate, pages: Sequence[tuple[str, str]],
                compact: bool = False) -> tuple[str, dict[str, Any]]:  # fmt: skip
-    """The candidate's evidence lines: how it was found, then its own pages; ``compact``:
-    fewer of each (a second try when the model gave no usable answer)."""
+    """The candidate's evidence lines: its own pages, then how it was found (the model
+    cites the first lines most: what it sells is on its own pages); ``compact``: fewer of
+    each (a second try when the model gave no usable answer)."""
     lines: list[str] = []
     refs: list[dict[str, Any]] = []
+    for url, text in pages:
+        for chunk in _chunks(text, 600)[: 3 if compact else 6]:
+            lines.append(f"page {url}: {chunk}")
+            refs.append({"url": url, "quote": chunk})
     for f in [f for f in c.found_by if f.get("url")][: 2 if compact else 6]:
         # The search says what it was looked for as ("new data enrichment startups").
         searched = f" (search: {f['query']})" if f.get("query") else ""
@@ -597,10 +734,6 @@ def judge_text(c: Candidate, pages: Sequence[tuple[str, str]],
         )
         lines.append(text)
         refs.append({"url": f["url"], "quote": f.get("quote") or f.get("title") or ""})
-    for url, text in pages:
-        for chunk in _chunks(text, 600)[: 3 if compact else 6]:
-            lines.append(f"page {url}: {chunk}")
-            refs.append({"url": url, "quote": chunk})
     return _numbered(lines, refs, 9000)
 
 
@@ -697,6 +830,8 @@ async def discover(engine: Engine, settings: Settings, job: Any, owner: str, sta
                                         HYP_SYSTEM, HYP_SCHEMA, text, refs)  # fmt: skip
         hyp = hypotheses(subject, model)
         stats["hypotheses"] = hyp
+        if hyp["where"]:  # the judge weighs a rival elsewhere as serving other buyers
+            subject.facts[WHERE] = hyp["where"]
         # Kept on the job (pipeline.job_result): what was searched and found, by stage.
         out["discovery"] = {"status": "ready", "unconfirmed": subject.unconfirmed,
                             "stats": stats}  # fmt: skip
@@ -722,11 +857,14 @@ async def discover(engine: Engine, settings: Settings, job: Any, owner: str, sta
                               "title": None, "how": "named_on_site"}])
                   for c in subject.known]  # fmt: skip
         rejected = {k for k, r in review.items() if r["status"] == "rejected"}
-        # What the profile says buyers use instead, by name: substitutes to judge.
+        # What the profile says buyers use instead, by name: substitutes to judge; and the
+        # rivals the model knows by name, direct candidates corroborated by the search.
         alts = merge([Candidate(a, None, found_by=[{
-            "family": "substitute", "query": None, "url": None, "title": None,
-            "how": "alternative"}]) for a in named_alternatives(hyp["alternatives"])],
-            subject, not_rivals, rejected)  # fmt: skip
+            "family": family, "query": None, "url": None, "title": None, "how": how}])
+            for family, how, names in (
+                ("substitute", "alternative", named_alternatives(hyp["alternatives"])),
+                ("direct", "rival", named_alternatives(hyp["rivals"])))
+            for a in names], subject, not_rivals, rejected)  # fmt: skip
         alts = await _resolve(search, alts, subject, not_rivals, rejected, len(alts))
         cands = merge([*found, *alts], subject, not_rivals, rejected)
         cands = await _resolve(search, cands, subject, not_rivals, rejected,
@@ -752,25 +890,36 @@ async def discover(engine: Engine, settings: Settings, job: Any, owner: str, sta
             return await _finish(engine, job, owner, stage, out)
 
         await stage("profile")
-        pages = await asyncio.gather(*(_own_pages(collector, c.domain or "", d.pages_per_candidate)
+        pages = await asyncio.gather(*(_own_pages(collector, c.domain or "",
+                                                  d.pages_per_candidate, search)
                                        for c in chosen))  # fmt: skip
         await stage("classify")
         system = judge_system(subject)
         new_since = (datetime.now(UTC) - timedelta(days=d.emerging_days)).year
         rows = []
         for c, (site, own) in zip(chosen, pages, strict=True):
-            if site and c.domain and c.name == c.domain.split(".")[0].title():
-                c.name = site  # named after its domain until its home page was read
+            # Named after its domain until its home page was read, or by a word that is not
+            # its name (a list's "Demo" button on zendesk.com): its home page's name.
+            if site and c.domain and (c.name == c.domain.split(".")[0].title()
+                                      or not name_fits(c.name, c.domain)):  # fmt: skip
+                c.name = site
             if stopped():
                 return await _finish(engine, job, owner, stage, out)
-            judged = None
-            for compact in (False, True):  # once more, on less evidence, if no class came
+            # Once more, on less evidence, when no class came, or no cited word of what it
+            # sells (a small model leaves out a field's ids); the fuller answer is kept.
+            answers: list[dict[str, Any]] = []
+            for compact in (False, True):
                 text, refs = judge_text(c, own, compact)
-                judged = await asyncio.to_thread(_cached_call, engine, settings, reader,
-                                                 JUDGE_VERSION, system, JUDGE_SCHEMA, text,
-                                                 refs)  # fmt: skip
-                if judged and judged.get("class"):
+                got = await asyncio.to_thread(_cached_call, engine, settings, reader,
+                                              JUDGE_VERSION, system, JUDGE_SCHEMA, text,
+                                              refs)  # fmt: skip
+                answers.append(got or {})
+                if got and got.get("class") and profile_value("sells", got.get("sells"),
+                                                              owns(c, own)):  # fmt: skip
                     break
+            judged = max(answers, key=lambda a: (bool(a.get("class")),
+                                                 bool(profile_value("sells", a.get("sells"),
+                                                                    owns(c, own)))))  # fmt: skip
             row = _row(subject, job.id, c, judged, own, d.min_score, new_since)
             if row is not None:
                 rows.append(row)
@@ -778,7 +927,8 @@ async def discover(engine: Engine, settings: Settings, job: Any, owner: str, sta
                 stats.setdefault("dropped", []).append({
                     "name": c.name, "domain": c.domain, "pages": len(own),
                     "class": ((judged or {}).get("class") or {}).get("value"),
-                    "judged": judged is not None,
+                    "same_place": ((judged or {}).get("same_place") or {}).get("value"),
+                    "judged": bool(judged),
                     "score": score(judged or {}, c)})  # fmt: skip
         stats["kept"] = len(rows)
         await asyncio.to_thread(_store, engine, job.id, rows)
@@ -970,27 +1120,46 @@ async def _resolve(
 
 
 def site_name(og: Sequence[str], title: str | None, domain: str) -> str | None:
-    """The name a home page gives its company: its og:site_name, else the part of its
-    title that is the domain's name ("Sales platform - Apollo" on apollo.io: "Apollo");
-    None when no part is. A name is a few words: "Origami gets customers for you." is not."""
-    if og and og[0].strip() and len(og[0].split()) <= 4:
-        return og[0].strip()
+    """The name a home page gives its company: its og:site_name or the part of its title
+    that is the domain's name ("Sales platform - Apollo" on apollo.io: "Apollo"), less a
+    shop suffix ("Giesswein Shop DE"); None when none is. A name is a few words ("Origami
+    gets customers for you." is not) and its domain's ("Get" on cobbledgoods.com is not)."""
     label = _key(domain.split(".")[0])
-    for part in _TITLE_SPLIT.split(title or ""):
-        key = _key(part)
-        if key and (key.startswith(label) or label.startswith(key)) and len(part.split()) <= 4:
-            return part.strip()
+    for part in [*og[:1], *_TITLE_SPLIT.split(title or "")]:
+        name = _SHOP.sub("", part.strip())
+        key = _key(name)
+        if len(key) > 1 and (key.startswith(label) or label.startswith(key)) and \
+                len(name.split()) <= 4:  # fmt: skip
+            return name
     return None
 
 
-async def _own_pages(collector: Collector, domain: str,
-                     limit: int) -> tuple[str | None, list[tuple[str, str]]]:  # fmt: skip
+_SHOP = re.compile(r"\s+(official\s+)?(online\s+)?(shop|store|site|website)(\s+[A-Z]{2})?$",
+                   re.I)  # fmt: skip
+
+
+async def _own_pages(collector: Collector, domain: str, limit: int,
+                     search: Any = None) -> tuple[str | None, list[tuple[str, str]]]:  # fmt: skip
     """The name the candidate's home page gives it, and (url, text) of that page and of
     the pages it links to that say what it sells and to whom (pricing, about, product),
-    up to ``limit``."""
-    home = await collector.collect(f"https://{domain}/", "discovery", vendor=True)
+    up to ``limit``. A home page robots.txt allows but the site refused us (bot
+    protection's 403, a page over the size budget) is read from the search provider's
+    copy instead, as LinkedIn's are; one robots.txt forbids or we could not check stays
+    unread."""
+    url = f"https://{domain}/"
+    home = await collector.collect(url, "discovery", vendor=True)
     if home.page is None or home.source.status is not RetrievalStatus.FETCHED:
-        return None, []
+        if home.source.status is not RetrievalStatus.FAILED or search is None \
+                or not hasattr(search, "contents"):  # fmt: skip
+            return None, []
+        try:
+            copy: PageContents | None = await search.contents(url)
+        except SearchError:
+            copy = None
+        if copy is None:
+            return None, []
+        site = site_name([], copy.title, domain)
+        return site, [(copy.url, f"{site}. {copy.text}" if site else copy.text)]
     pages = [(home.page.url, home.page.cleaned_text)]
     site = site_name(home.page.meta.get("og:site_name") or [], home.page.title, domain)
     if site:
@@ -1013,24 +1182,38 @@ PROFILE_FIELDS = ("sells", "positioning", "pricing", "target_customers")
 _PRICE = re.compile(r"[$€£¥₹]|\d|\b(free|trial|per|plans?|tiers?|seats?|credits?|usage|"
                     r"monthly|month|annual(ly)?|yearly|quote|contact sales|custom)\b",
                     re.I)  # fmt: skip
+# A rate whose amount the page did not render ("Starting at /user/month").
+_NO_AMOUNT = re.compile(r"^\D*/\s*(?:user|seat|month|mo|year|yr)\b\D*$", re.I)
 _NOT_SAID = re.compile(r"\bnot\s+(explicitly\s+|clearly\s+)?(stated|specified|mentioned|"
                        r"available|disclosed|provided|listed)\b", re.I)  # fmt: skip
 
 
-def profile_value(key: str, value: Any, own: set[str]) -> Any:
-    """``value`` with only the citations from the candidate's own pages; None if none is
-    (the pages that found it, rival lists, describe other companies, and the model wrote
-    their products and prices down as this one's), if it says the evidence does not say,
-    or if it is a price that names no amount or way of charging."""
+def owns(c: Candidate, pages: Sequence[tuple[str, str]]) -> tuple[str, ...]:
+    """The candidate's own domains: its own, and where its home page took us (nike.com
+    to nike.in)."""
+    return tuple(dict.fromkeys(d for d in (c.domain, *(_domain(u) for u, _ in pages)) if d))
+
+
+def profile_value(key: str, value: Any, own: Sequence[str]) -> Any:
+    """``value`` with only the citations from the candidate's own site (``own``, its
+    domains, ``owns``: the pages read, and those of its pages a search found); None if
+    none is (rival lists describe other companies, and the model wrote their products and
+    prices down as this one's), if it says the evidence does not say, or if it is a price
+    that names no amount or way of charging."""
     if isinstance(value, list):
         return [x for v in value if (x := profile_value(key, v, own)) is not None] or None
     if not isinstance(value, dict):
         return None
     said = str(value.get("value") or "")
-    if _NOT_SAID.search(said) or (key == "pricing" and not _PRICE.search(said)):
+    if _NOT_SAID.search(said) or (
+        key == "pricing" and (not _PRICE.search(said) or _NO_AMOUNT.search(said))
+    ):
         return None
-    cites = [c for c in value.get("citations") or [] if c.get("url") in own]
+    cites = [c for c in value.get("citations") or [] if _listed(_domain(c.get("url") or ""), own)]
     return {**value, "citations": cites} if cites else None
+
+
+_LAUNCH_PAGE = re.compile(r"launch|introduc|opening|opens|debut|seed|stealth|beta", re.I)
 
 
 def _row(subject: Subject, job_id: int, c: Candidate, judged: dict[str, Any] | None,
@@ -1038,15 +1221,21 @@ def _row(subject: Subject, job_id: int, c: Candidate, judged: dict[str, Any] | N
          new_since: int) -> dict[str, Any] | None:  # fmt: skip
     """The stored row for a judged candidate; None when it is not a competitor (a
     candidate the user added is kept whatever the model said). One its own pages say was
-    founded in ``new_since`` or later is ``emerging``, whatever it sells."""
+    founded in ``new_since`` or later is ``emerging``, whatever it sells; so is one with
+    no founding year whose launch the searches for recent pages found (a YC or Product
+    Hunt launch, an "introducing", "opening" or seed-round page)."""
     judged = judged or {}
     cls = (judged.get("class") or {}).get("value")
     added = c.basis == "user_added"
     s = score(judged, c)
-    if not added and (cls not in COMPETITOR_CLASSES or s < min_score):
+    # A business serving one place competes with those whose buyers are there too: the
+    # judge's class alone kept a Swiss bakery as a San Francisco bakery's rival.
+    place = (judged.get("same_place") or {}).get("value")
+    elsewhere = bool(subject.facts.get(WHERE)) and place == "no"
+    if not added and (cls not in COMPETITOR_CLASSES or s < min_score or elsewhere):
         return None
     reasoning = judged.get("reasoning") or {}
-    own = {u for u, _ in pages}
+    own = owns(c, pages)
     founded = profile_value("founded", judged.get("founded"), own)
     if founded and not any(  # "© 2026 Reachable" is not when it was founded
         re.search(rf"\b(found|launch|establish|since|start|incorporat)\w*\D{{0,30}}"
@@ -1054,7 +1243,13 @@ def _row(subject: Subject, job_id: int, c: Candidate, judged: dict[str, Any] | N
         for c in founded["citations"]
     ):  # fmt: skip
         founded = None
-    if cls in ("direct", "indirect") and founded and founded["value"] >= new_since:
+    launched = any(
+        f.get("family") == "emerging" and f.get("url")
+        and (_listed(_domain(f["url"]), LAUNCH_SITES)
+             or _LAUNCH_PAGE.search(urlsplit(f["url"]).path))
+        for f in c.found_by
+    )  # fmt: skip
+    if cls in ("direct", "indirect") and (founded["value"] >= new_since if founded else launched):
         cls = "emerging"
     return {
         "organization_id": subject.organization_id, "job_id": job_id, "name": c.name,
@@ -1065,7 +1260,8 @@ def _row(subject: Subject, job_id: int, c: Candidate, judged: dict[str, Any] | N
                     if (v := profile_value(k, judged.get(k), own)) is not None}
                    | ({"founded": founded} if founded else {})
                    | {k: judged[k] for k in ("same_buyers", "same_problem", "same_budget",
-                                             "class", "reasoning") if k in judged}
+                                             "same_place", "class", "reasoning")
+                      if k in judged}
                    | {"pages_read": [u for u, _ in pages]},
         "found_by": c.found_by[:20],
     }  # fmt: skip
@@ -1174,6 +1370,46 @@ def competitors_view(engine: Engine, organization_id: int) -> dict[str, Any]:
     }  # fmt: skip
 
 
+def _level(profile: dict[str, Any], key: str) -> Any:
+    return (profile.get(key) or {}).get("value")
+
+
+def name_fits(name: str, domain: str) -> bool:
+    """Whether ``name``, or one of its words, starts like the domain's name or the
+    domain's name like it ("LinkedIn Sales Navigator" on linkedin.com; "Demo" on
+    zendesk.com does not)."""
+    label = _key(domain.split(".")[0])
+    words = [k for w in re.split(r"[\s.]+", name) if len(k := _key(w)) >= 3]
+    return any(w.startswith(label) or label.startswith(w) for w in [_key(name), *words] if w)
+
+
+def checks(item: dict[str, Any]) -> list[str]:
+    """What looks wrong with one found competitor, for the reviewer to look at first; pure.
+    Signs of a known way discovery goes wrong, not proof: a wrong company under the
+    right name, a slogan for a name, nothing read of its own, a class its overlap
+    contradicts, thin evidence."""
+    p, domain, name = item.get("profile") or {}, item.get("domain") or "", item.get("name") or ""
+    out = []
+    if _listed(domain, tuple(d for d in DIRECTORY_DOMAINS if d not in ALSO_PRODUCTS)):
+        out.append("a directory or media site")
+    if name == domain:
+        out.append("named by its domain: its site gave no name")
+    elif domain and not name_fits(name, domain):
+        out.append("its name is not its domain's: maybe another company's site")
+    if len(name.split()) > 4:
+        out.append("its name reads like a sentence")
+    if not p.get("pages_read"):
+        out.append("none of its own pages was read")
+    elif not p.get("sells"):
+        out.append("its pages said nothing of what it sells")
+    buyers, problem = _level(p, "same_buyers"), _level(p, "same_problem")
+    if item.get("class") in ("direct", "indirect") and "no" in (buyers, problem):
+        out.append(f"{item['class']}, yet same buyers: {buyers}, same problem: {problem}")
+    if not item.get("reasoning"):
+        out.append("no reasoning")
+    return out
+
+
 def review_view(found: list[dict[str, Any]], review: dict[str, dict[str, Any]]) -> dict[str, Any]:
     """Found competitors with the user's review, grouped by class; pure. A reclassified
     one moves to its new class; one the user added is listed even if not found."""
@@ -1182,7 +1418,7 @@ def review_view(found: list[dict[str, Any]], review: dict[str, dict[str, Any]]) 
     for f in found:
         r = review.get(f["domain"])
         item = {**f, "review": status.get(r["status"], "suggested") if r else "suggested",
-                "reviewed_at": r["verified_at"] if r else None}  # fmt: skip
+                "reviewed_at": r["verified_at"] if r else None, "checks": checks(f)}  # fmt: skip
         if r and r["status"] == "edited" and (r["value"] or {}).get("class"):
             item["class"] = r["value"]["class"]
         if r and r["status"] == "edited" and (r["value"] or {}).get("added"):
@@ -1196,7 +1432,7 @@ def review_view(found: list[dict[str, Any]], review: dict[str, dict[str, Any]]) 
                           "class": value.get("class") or "direct", "score": None,
                           "basis": "user_added", "reasoning": None, "profile": {},
                           "found_by": [], "review": "user_added",
-                          "reviewed_at": r["verified_at"]})  # fmt: skip
+                          "reviewed_at": r["verified_at"], "checks": []})  # fmt: skip
     return {"competitors": {cls: [i for i in items if i["class"] == cls]
                             for cls in COMPETITOR_CLASSES},
             "counts": {s: sum(i["review"] == s for i in items)

@@ -59,6 +59,9 @@ def test_clean_keeps_only_cited_in_vocabulary_values() -> None:
     ]
     assert "company" not in out and "market" not in out
     assert s == {"uncited": 2, "invalid": 1, "number_not_in_evidence": 1}
+    # One item where a list was asked is that list's one item, not nothing.
+    one = profile.clean([("str",)], leaf("Training", "e1"), REFS, stats())
+    assert [i["value"] for i in one] == ["Training"]
 
 
 def test_evidence_lines_put_facts_before_pages_within_budget() -> None:
@@ -238,6 +241,11 @@ def test_reasoning_keeps_only_cited_sentences() -> None:
     assert r["value"] == "Students pay fees per course. They train in Chennai."
     assert [c["url"] for c in r["citations"]] == [f"{SITE}/", f"{SITE}/about"]
     assert s == {"uncited": 2, "invalid": 0, "number_not_in_evidence": 1}
+    # Ids written after the full stop cite the sentence before them.
+    after = profile.clean(profile.SCHEMA, {"business_model": {"reasoning": (
+        "Students pay fees per course. [e1] They train in Chennai. [e2][e1]")}},
+        REFS, stats())  # fmt: skip
+    assert after["business_model"]["reasoning"]["value"] == r["value"]
 
 
 def test_salary_figures_are_labelled_and_never_a_price() -> None:

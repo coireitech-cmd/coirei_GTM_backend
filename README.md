@@ -842,13 +842,22 @@ inferred the overlap (`inferred_overlap`). The user's review is the final gate.
 
 1. **Hypotheses.** The profile's offerings, problems solved, buyers and
    positioning (the user's answers first) become search hypotheses: the
-   category buyers search for, their problems, segments, keywords and the
-   alternatives they use instead, by product name where there is one
-   (`discovery-hyp-2`).
+   category buyers search for, their problems, segments, keywords, the rivals
+   of the same kind it knows by name (direct candidates; never also counted as
+   alternatives) and the alternatives they use instead, by product name where
+   there is one; and what
+   kind of business it is (software, service, local business, physical
+   product) and where its buyers are when it serves one place
+   (`discovery-hyp-3`).
 2. **Search**, in parallel, one family per kind of competitor: direct (name,
    category), indirect (problem for segment), substitute (alternative vs
    category), emerging (pages published in the last `emerging_days`) and review
    sites and marketplaces (G2, Capterra, Product Hunt, LinkedIn, app stores).
+   Only software is searched with software words ("best X software", "apps
+   like", "migrate from"); a service or local business is searched where its
+   buyers are ("best artisan bakery in San Francisco") and on its own listing
+   sites (Yelp, Clutch, Justdial); a maker of goods on none. The judge is told
+   where, so a bakery in another country serves other buyers.
 3. **Candidates.** A company's own page is a candidate; a review-site or
    LinkedIn profile names one (LinkedIn's website line through the search
    provider's copy); a list or comparison page is read by the model for the
@@ -862,7 +871,11 @@ inferred the overlap (`inferred_overlap`). The user's review is the final gate.
    family's best two among them) are read from up
    to `pages_per_candidate` of their own pages (home, pricing, about, product),
    single pages fetched under robots.txt, the network guard and the throttle,
-   links never followed. The model (`discovery-judge-3`, not told the
+   links never followed; a home page robots.txt allows but the site refuses
+   (bot protection's 403, over the size budget) is read from the search
+   provider's copy, as LinkedIn's are, never one robots.txt forbids. Its own
+   pages come first in the evidence, and anything on its own domain counts as
+   its own. The model (`discovery-judge-9`, not told the
    company's own prices) says what each sells, to whom, at what price, whether
    it serves the same buyers, problem and budget, and its class: `direct`,
    `indirect`, `substitute`, `emerging` (or not a competitor: dropped); with no
@@ -870,7 +883,15 @@ inferred the overlap (`inferred_overlap`). The user's review is the final gate.
    lines it rests on; what it sells, its positioning, price and customers keep
    only lines from its own pages (a rival list describes other vendors too),
    and a price must name an amount or a way of charging. One whose own pages
-   say it was founded in or after the year `emerging_days` ago is `emerging`.
+   say it was founded in or after the year `emerging_days` ago is `emerging`;
+   so is one with no founding year whose launch the searches for recent pages
+   found (YC Launches, Product Hunt, BetaList, an "introducing", "opening" or
+   seed-round page). Software is also searched on those launch sites; a news or
+   launch path ("/upriver-raises-seed") is read as a page about others, never
+   as a company's own. The same kind of product sold another way (online
+   instead of in person, packaged instead of fresh) is `indirect`. A business
+   serving one place keeps only rivals whose buyers are there too: the judge
+   says `same_place`, and "no" drops it.
 5. **Rank** by overlap, basis and independent sources (0..1, below
    `min_score` dropped) and store (`competitor_candidate`).
 
@@ -882,6 +903,17 @@ marks the profile as being extracted. Budgets: `[discovery]` in the config
 (`max_queries` 40, `max_listing_pages` 30, `max_candidates` 15,
 `pages_per_candidate` 4). `scripts/competitor_report.py` renders the results
 as an HTML or PDF review report.
+
+Each listed competitor carries `checks`: signs of a known way discovery goes
+wrong, for the reviewer to look at first (`discovery.checks`): a directory or
+media site, a name that is not its domain's (another company's site under the
+right name), a name that is its domain or a sentence, none of its own pages
+read or nothing said of what it sells, a direct or indirect class its overlap
+contradicts ("same problem: no"), no reasoning.
+`scripts/discovery_check.py run1.json run2.json ...` prints them for several
+companies at once, with each run's own warnings (failed searches, unread
+listing pages, candidates the model gave no class, a kind of competitor never
+found), to check a change against varied companies, not just one.
 
 ## Parsing
 

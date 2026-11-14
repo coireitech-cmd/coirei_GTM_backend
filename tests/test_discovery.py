@@ -71,14 +71,40 @@ def test_queries_cover_every_kind_of_competitor_within_the_budget() -> None:
     emerging = [q for q in queries if q.family == "emerging"]
     assert emerging and all(q.since == "2025-05-22" for q in emerging)
     assert all(q.include == REVIEW_SITES for q in queries if q.family == "review")
+    launch = [q for q in queries if q.template == "emerging:{category} launch"]
+    assert launch and all(q.include == discovery.LAUNCH_SITES and q.since for q in launch)
+
+
+def test_a_local_business_is_searched_where_it_sells_without_software_words() -> None:
+    hyp = {**HYP, "categories": ["artisan bakery"], "problems": ["buy sourdough bread"],
+           "kind": ["local_business"], "where": ["San Francisco"]}  # fmt: skip
+    texts = [q.text for q in build_queries(subject(), hyp, 40, NOW, 540)]
+    assert "best artisan bakery in San Francisco" in texts
+    assert "buy sourdough bread in San Francisco" in texts
+    assert {'places like "Acme"', "artisan bakery opening in San Francisco",
+            "top rated artisan bakery in San Francisco"} <= set(texts)  # fmt: skip
+    assert not any(w in t.casefold() for t in texts
+                   for w in ("software", "tools", "apps like", "migrate", "startups"))  # fmt: skip
+    review = [q for q in build_queries(subject(), hyp, 40, NOW, 540) if q.family == "review"]
+    assert review and all("yelp.com" in q.include for q in review)
+    # Goods shipped anywhere: no place, no listing sites.
+    goods = build_queries(subject(), {**hyp, "kind": ["physical_product"], "where": []},
+                          40, NOW, 540)  # fmt: skip
+    assert {"best artisan bakery", "top artisan bakery brands"} <= {q.text for q in goods}
+    assert not [q for q in goods if q.family == "review"]
 
 
 def test_hypotheses_put_the_profile_first_and_keep_short_terms() -> None:
     model = {"categories": [{"value": "CRM software"}, {"value": "x" * 90}],
-             "alternatives": [{"value": "spreadsheets"}]}  # fmt: skip
+             "rivals": [{"value": "Globex"}],
+             "alternatives": [{"value": "spreadsheets"}, {"value": "GLOBEX"}]}  # fmt: skip
     hyp = hypotheses(subject(), model)
     assert hyp["categories"] == ["CRM software"]  # once, and not the 90-character one
-    assert hyp["problems"] == ["track sales deals"] and hyp["alternatives"] == ["spreadsheets"]
+    assert hyp["problems"] == ["track sales deals"] and hyp["rivals"] == ["Globex"]
+    assert hyp["alternatives"] == ["spreadsheets"]  # a rival is not an alternative
+    assert hyp["kind"] == ["software"] and hyp["where"] == []
+    assert hypotheses(subject(), {"where": {"value": "Global"}})["where"] == []
+    assert hypotheses(subject(), {"where": {"value": "Chennai"}})["where"] == ["Chennai"]
 
 
 @pytest.mark.parametrize(
@@ -86,6 +112,10 @@ def test_hypotheses_put_the_profile_first_and_keep_short_terms() -> None:
     [
         ("https://globex.example/", "home"),
         ("https://globex.example/crm", "home"),
+        ("https://globex.example/sustainable-sneakers/", "home"),
+        ("https://news.example/footwear-startup-drifbolt-launches-3d-shoes/", "listing"),
+        ("https://blog.globex.example/meet-globex", "listing"),
+        ("https://foodgps.com/parker-lusseau-pastries-monterey/", "listing"),
         ("https://globex.example/blog/best-crm-tools", "listing"),
         ("https://www.g2.com/products/globex/reviews", "profile"),
         ("https://www.g2.com/products/acme/competitors/alternatives", "listing"),
@@ -111,6 +141,11 @@ def test_site_name() -> None:
     assert discovery.site_name([], "The AI GTM System for teams", "apollo.io") is None
     # A slogan that starts with the name is not the name.
     assert discovery.site_name([], "Origami gets customers for you.", "origami.chat") is None
+    # Not another word the site calls itself, and not its shop.
+    assert discovery.site_name(["Get"], "Cobbled Goods | Shoes", "cobbledgoods.com") == \
+        "Cobbled Goods"  # fmt: skip
+    assert discovery.site_name(["Giesswein Shop DE"], None, "giesswein.com") == "Giesswein"
+    assert discovery.site_name(["VEJA"], None, "veja-store.com") == "VEJA"
 
 
 def hit(url: str, title: str | None = None, family: str = "direct") -> Hit:
@@ -133,6 +168,15 @@ def test_candidates_leave_out_the_company_directories_customers_and_rejected() -
     assert set(by) == {"Globex", "Initech"}
     # Known by name from the profile, then by domain from a listing: one candidate.
     assert by["Initech"].domain == "initech.example" and by["Initech"].basis == "named_by_source"
+    # A review site linked an affiliate short link of its name; its own blog found it too.
+    review = {"family": "direct", "url": "https://reviews.example/best-crm"}
+    own = {"family": "direct", "url": "https://www.pipedrive.com/en/blog/acme-alternative"}
+    merged = merge([Candidate("Pipedrive", "pipedrive.live", found_by=[review]),
+                    Candidate("Pipedrive", "pipedrive.com", found_by=[own])],
+                   subject(), DIRECTORY_DOMAINS, set())  # fmt: skip
+    assert [(c.name, c.domain, len(c.found_by)) for c in merged] == [
+        ("Pipedrive", "pipedrive.com", 2)
+    ]
 
 
 def test_a_listing_names_its_companies_with_the_domain_it_links_to() -> None:
@@ -152,6 +196,17 @@ def test_a_listing_names_its_companies_with_the_domain_it_links_to() -> None:
     # A page that never names the company does not name an alternative to it.
     got = listing_candidates(answer, hit("u"), "Globex, Initech", links, subject())
     assert got[0].basis == "inferred_overlap"
+    # Linked by its name through an affiliate redirect: not its domain.
+    affiliate = [("https://www.shareasale.com/r.cfm?b=1", "Globex")]
+    got = listing_candidates(answer, hit("https://reviews.example/x"), page, affiliate, subject())
+    assert got[0].domain is None
+    # A vendor's own list of alternatives names the vendor too: its site, not a namesake's.
+    got = listing_candidates(answer, hit("https://globex.social/blog/acme"), page, [], subject())
+    assert got[0].domain == "globex.social" and got[1].domain is None
+    # A directory's page on the company names the directory: not a rival.
+    got = listing_candidates(answer, hit("https://globex.io/competitors/acme"), page, [],
+                             subject())  # fmt: skip
+    assert [c.name for c in got] == ["Initech"]
 
 
 def test_the_judge_is_not_told_the_company_prices() -> None:
@@ -197,11 +252,39 @@ def test_a_young_competitor_is_emerging() -> None:
     assert row(2025, "https://list.example/x") == "direct"
     # A copyright year is not a founding year.
     assert row(2026, quote="Contact © {} G. All rights reserved.") == "direct"
+    # No founding year, but a launch the searches for recent pages found.
+    levels = ("same_buyers", "same_problem", "same_budget")
+    judged = {"class": {"value": "direct"}, **{k: {"value": "yes"} for k in levels}}
+
+    def found(url: str, family: str = "emerging") -> str:
+        cand = Candidate("G", "g.example", "named_by_source", [{"url": url, "family": family}])
+        got = discovery._row(subject(), 1, cand, judged, [(page, "")], 0.35, new_since=2025)
+        assert got is not None
+        return str(got["class_"])
+
+    assert found("https://www.ycombinator.com/launches/abc-g-people-data") == "emerging"
+    assert found("https://g.example/blog/introducing-g/") == "emerging"
+    assert found("https://www.ycombinator.com/launches/abc", family="direct") == "direct"
+    assert found("https://list.example/best-crm") == "direct"
+
+
+def test_a_business_serving_one_place_keeps_only_rivals_there() -> None:
+    page = "https://g.example/"
+    c = Candidate("G", "g.example", "named_by_source", [{"url": "https://a.example/x"}])
+    levels = ("same_buyers", "same_problem", "same_budget")
+    judged = {"class": {"value": "direct"}, "same_place": {"value": "no"},
+              **{k: {"value": "yes"} for k in levels}}  # fmt: skip
+    local = subject()
+    local.facts[discovery.WHERE] = ["San Francisco"]
+    assert discovery._row(local, 1, c, judged, [(page, "")], 0.35, 2025) is None
+    assert "San Francisco" in discovery.judge_system(local)
+    # Sold everywhere online: where its buyers are does not decide.
+    assert discovery._row(subject(), 1, c, judged, [(page, "")], 0.35, 2025) is not None
 
 
 def test_profile_values_cite_only_the_candidates_own_pages() -> None:
     # A rival list's line about another vendor was written down as this one's price.
-    own = {"https://g.example/pricing"}
+    own = ("g.example",)
     mine = {"url": "https://g.example/pricing", "quote": "$49/mo"}
     list_line = {"url": "https://list.example/x", "quote": "Apollo from $29/mo"}
     pv = discovery.profile_value
@@ -211,10 +294,29 @@ def test_profile_values_cite_only_the_candidates_own_pages() -> None:
         {"value": "$49/mo", "citations": [list_line, mine]}], own,
     ) == [{"value": "$49/mo", "citations": [mine]}]  # fmt: skip
     # Not a price, or the model saying the page does not say.
-    for said in ("Paid for once", "Pricing details are not explicitly mentioned"):
+    for said in (
+        "Paid for once",
+        "Pricing details are not explicitly mentioned",
+        "Starting at /user/month for Zoho One",
+    ):
         assert pv("pricing", {"value": said, "citations": [mine]}, own) is None
-    assert pv("pricing", {"value": "Free trial", "citations": [mine]}, own) is not None
+    for said in ("Free trial", "$49/user/month", "From 20 USD / month", "€9 /mo"):
+        assert pv("pricing", {"value": said, "citations": [mine]}, own) is not None
     assert pv("sells", {"value": "Data enrichment", "citations": [mine]}, own) is not None
+    # Its own page a search found, not read again, is still its own.
+    found = {"url": "https://www.g.example/features", "quote": "Data enrichment"}
+    assert pv("sells", {"value": "Data enrichment", "citations": [found]}, own) is not None
+    # Where its home page took us is its own too (nike.com to nike.in).
+    c = Candidate("G", "g.example")
+    assert discovery.owns(c, [("https://g.in/", "")]) == ("g.example", "g.in")
+
+
+def test_the_judge_reads_its_own_pages_before_the_lists_that_found_it() -> None:
+    found = {"family": "direct", "query": "q", "url": "https://list.example/x", "title": "L"}
+    c = Candidate("Globex", "globex.example", found_by=[found])
+    text, refs = discovery.judge_text(c, [("https://globex.example/", "Globex sells CRM.")])
+    assert text.splitlines()[0].startswith("[e1] page https://globex.example/")
+    assert refs["e2"]["url"] == "https://list.example/x"
 
 
 def test_score_rewards_overlap_and_independent_sources() -> None:
@@ -269,6 +371,29 @@ def test_review_view_applies_the_latest_review() -> None:
     assert c["substitute"][0]["name"] == "Hooli" and c["substitute"][0]["review"] == "approved"
     assert c["indirect"][0]["review"] == "user_added"
     assert view["counts"] == {"suggested": 0, "approved": 1, "rejected": 1, "user_added": 1}
+
+
+def test_checks_flag_what_looks_wrong() -> None:
+    overlap = {"same_buyers": {"value": "yes"}, "same_problem": {"value": "partly"}}
+    good = {"name": "LinkedIn Sales Navigator", "domain": "linkedin.com", "class": "direct",
+            "basis": "named_by_source", "reasoning": "r", "found_by": [{"url": "https://g2.com/x"}],
+            "profile": {"pages_read": ["https://linkedin.com/"], "sells": [{"value": "x"}],
+                        **overlap}}  # fmt: skip
+    assert discovery.checks(good) == []
+    wrong_site = {**good, "name": "FullEnrich", "domain": "enrichly.io"}
+    assert discovery.checks(wrong_site) == [
+        "its name is not its domain's: maybe another company's site"
+    ]
+    bad = {"name": "branchnova.com", "domain": "branchnova.com", "class": "indirect",
+           "basis": "inferred_overlap", "reasoning": None,
+           "found_by": [{"url": "https://branchnova.com/a"}],
+           "profile": {"same_problem": {"value": "no"}}}  # fmt: skip
+    assert discovery.checks(bad) == [
+        "named by its domain: its site gave no name", "none of its own pages was read",
+        "indirect, yet same buyers: None, same problem: no", "no reasoning"]  # fmt: skip
+    assert discovery.checks({**good, "domain": "g2.com", "name": "G2"}) == [
+        "a directory or media site"
+    ]
 
 
 @pytest.mark.parametrize(
@@ -423,3 +548,32 @@ def test_discovery_finds_classifies_and_takes_the_review(
     assert api.get(f"/v1/crawls/{queued['crawl_id']}").json()["status"] == "FAILED"
     after = api.get(f"/v1/companies/{company}/competitors").json()
     assert after["competitors"] == c and after["job"]["status"] == "failed"
+
+
+def test_a_home_page_the_site_refused_is_read_from_the_search_providers_copy() -> None:
+    from types import SimpleNamespace
+
+    from gtm_crawler.market.models import RetrievalStatus
+    from gtm_crawler.search import PageContents
+
+    class Refusing:  # a site's bot protection answers 403; robots.txt allowed the fetch
+        def __init__(self, status: RetrievalStatus) -> None:
+            self.status = status
+
+        async def collect(self, url: str, *_: Any, **__: Any) -> Any:
+            return SimpleNamespace(page=None, source=SimpleNamespace(status=self.status))
+
+    class Provider:
+        async def contents(self, url: str) -> PageContents:
+            return PageContents(url, "Globex | CRM", "Globex sells CRM to sales teams.")
+
+    own = discovery._own_pages
+    site, pages = asyncio.run(own(Refusing(RetrievalStatus.FAILED), "globex.example", 4,
+                                  Provider()))  # type: ignore[arg-type]  # fmt: skip
+    assert site == "Globex" and pages == [
+        ("https://globex.example/", "Globex. Globex sells CRM to sales teams.")
+    ]
+    # robots.txt forbade it (or could not be read): never read another way.
+    blocked = asyncio.run(own(Refusing(RetrievalStatus.BLOCKED), "globex.example", 4,
+                              Provider()))  # type: ignore[arg-type]  # fmt: skip
+    assert blocked == (None, [])

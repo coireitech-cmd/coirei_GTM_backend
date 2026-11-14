@@ -572,6 +572,7 @@ def _grounded(text: str, ids: list[str], refs: dict[str, dict[str, Any]]) -> lis
 
 _INLINE = re.compile(r"\[(e\d+)\]")
 _SENTENCE = re.compile(r"(?<=[.!?])\s+|(?<=\])\s+(?=[A-Z])")
+_IDS_AFTER_STOP = re.compile(r"([.!?])((?:\s*\[e\d+\])+)")
 
 
 def _reasoning(data: Any, refs: dict[str, dict[str, Any]], stats: dict[str, int]) -> Any:
@@ -585,6 +586,8 @@ def _reasoning(data: Any, refs: dict[str, dict[str, Any]], stats: dict[str, int]
         data = text
     if not isinstance(data, str):
         return None
+    # Ids after the full stop ("...buyers. [e3][e9] Next...") are the sentence's before it.
+    data = _IDS_AFTER_STOP.sub(r"\2\1", data)
     kept: list[str] = []
     cited: list[str] = []
     for sentence in _SENTENCE.split(data.strip()):
@@ -717,6 +720,8 @@ def clean(spec: Any, data: Any, refs: dict[str, dict[str, Any]], stats: dict[str
                if (v := clean(s, data.get(k), refs, stats, k)) is not None}  # fmt: skip
         return out or None
     if isinstance(spec, list):
+        if isinstance(data, dict):  # one item where a list was asked: a small model's habit
+            data = [data]
         if not isinstance(data, list):
             return None
         required = _REQUIRED.get(path)

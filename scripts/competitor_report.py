@@ -49,18 +49,36 @@ def card(c: dict[str, Any]) -> str:
     if any(f.get("how") == "alternative" for f in c.get("found_by", [])):
         found += "<li>the business profile names it as what buyers use instead</li>"
     score = "" if c.get("score") is None else f"{c['score']:.2f}"
+    checks = "".join(f"<li>{esc(x)}</li>" for x in c.get("checks") or [])
     return f"""<section class=card>
 <h3>{esc(c["name"])} <a href="https://{esc(c["domain"])}/">{esc(c["domain"])}</a></h3>
 <p class=meta>score {score} · {esc(BASIS.get(c["basis"], c["basis"]))} ·
 review: <b>{esc(c.get("review"))}</b></p>
+{f"<div class=warn>Check first:<ul>{checks}</ul></div>" if checks else ""}
 {f"<p>{esc(c['reasoning'])}</p>" if c.get("reasoning") else ""}
 <table>{"".join(f"<tr><th>{esc(k)}</th><td>{v}</td></tr>" for k, v in rows if v)}</table>
 {f"<p class=meta>Found on:</p><ul>{found}</ul>" if found else ""}
 </section>"""
 
 
-def report(view: dict[str, Any], title: str) -> str:
-    body = []
+def run_note(job: dict[str, Any] | None, view: dict[str, Any]) -> str:
+    """What the run searched for and its warnings (``discovery_check.run_warnings``)."""
+    if not job:
+        return ""
+    from discovery_check import run_warnings
+
+    stats = (job.get("discovery") or {}).get("stats") or {}
+    hyp = stats.get("hypotheses") or {}
+    keys = ("kind", "where", "categories", "rivals", "alternatives")
+    searched = ", ".join(f"{k}: {esc('; '.join(hyp[k]))}" for k in keys if hyp.get(k))
+    warn = "".join(f"<li>{esc(w)}</li>" for w in run_warnings(job, view))
+    return (f"<p class=meta>Searched as {searched} · {len(stats.get('queries') or {})} queries"
+            f" · {stats.get('candidates', 0)} candidates, {stats.get('profiled', 0)} read</p>"
+            + (f"<div class=warn>Run warnings:<ul>{warn}</ul></div>" if warn else ""))  # fmt: skip
+
+
+def report(view: dict[str, Any], title: str, job: dict[str, Any] | None = None) -> str:
+    body = [run_note(job, view)]
     for cls, label in CLASSES.items():
         items = view["competitors"].get(cls) or []
         body.append(f"<h2>{label} ({len(items)})</h2>")
@@ -85,8 +103,8 @@ def main() -> None:
     data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     view = data.get("view", data)
     out = Path(sys.argv[2])
-    out.write_text(report(view, f"Competitors of {view.get('domain') or view['company_id']}"),
-                   encoding="utf-8")  # fmt: skip
+    title = f"Competitors of {view.get('domain') or view['company_id']}"
+    out.write_text(report(view, title, data.get("job")), encoding="utf-8")
     if len(sys.argv) > 3:
         from playwright.sync_api import sync_playwright
 
